@@ -12,12 +12,7 @@ body {
   min-height: 100%;
 }
 body {
-  background: radial-gradient(
-    at top left,
-    rgb(82, 82, 82) 0%,
-    rgba(82, 82, 82, 1) 100%
-  );
-  background-repeat: no-repeat;
+  background-color: #3f3f3f;
 }
 p {
   margin: 16px auto;
@@ -48,8 +43,31 @@ nav a {
 nav a:hover {
   border-color: white;
 }
-footer p {
+
+.links {
+  justify-content: space-around;
+  display: flex;
+
+  position: fixed;
+  height: 80px;
+  background-color: black;
+  bottom: 0px;
+  left: 0px;
+  right: 0px;
+  margin-bottom: 0px;
+  align-items: center;
+}
+.link {
+  background-color: red;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
   text-align: center;
-  color: #bbb;
-  margin: 40px auto;
+  border: 1px solid black;
+}
+
+.footerText {
+  justify-content: center;
+  vertical-align: baseline;
 }
