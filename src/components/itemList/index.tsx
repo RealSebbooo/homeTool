@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
-import theme, { breakpoints, device } from "./../theme";
+import theme, { device } from "./../theme";
+import Icon from "./../../icons";
 
 const ItemWrapper = styled.div`
   display: grid;
@@ -18,26 +19,55 @@ const ItemWrapper = styled.div`
   @media ${device.laptop} {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   }
-
-  @media ${device.laptopL} {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  }
-
-  @media ${device.desktop} {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  }
 `;
 const ItemBox = styled.div`
   background-color: ${theme.primary};
   aspect-ratio: 1;
   border-radius: 4px;
+
+  border: none;
+  color: white;
+  text-align: center;
+  align-content: center;
+  text-decoration: none;
+  display: flex;
+  font-size: 16px;
+  text-align: center;
+  cursor: pointer;
 `;
 
+const ItemInnerBox = styled.div`
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 30%;
+`;
+
+const Text = styled.p`
+  font-size: 12px;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  margin-left: auto;
+  margin-right: auto;
+  @media ${device.mobile} {
+    max-width: 110px;
+  }
+
+  @media ${device.tablet} {
+    max-width: 100px;
+  }
+
+  @media ${device.laptop} {
+    max-width: 90px;
+  }
+
+  word-break: break-all;
+`;
 const items = [];
 
 for (let i = 0; i < 50; i++) {
   items.push({
-    name: "Mehl",
+    name: "Paulaner Spezi",
     category: "mehl",
     unit: "KG",
     icon: "asdasd",
@@ -49,7 +79,12 @@ const ItemList = () => {
   return (
     <ItemWrapper>
       {items?.map((item, key) => (
-        <ItemBox key={key}>{item.name}</ItemBox>
+        <ItemBox key={key}>
+          <ItemInnerBox>
+            <Icon name="a" />
+            <Text>{item.name}</Text>
+          </ItemInnerBox>
+        </ItemBox>
       ))}
     </ItemWrapper>
   );
