@@ -35,13 +35,15 @@ const FooterButton = styled.div`
 `;
 type TextProps = {
   width: number;
+  numberOfItems: number;
 };
 const ButtonText = styled.p<TextProps>`
   font-size: 12px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  max-width: ${({ width }) => (width / 4 - 20).toString() + "px" || "100px"};
+  max-width: ${({ width, numberOfItems }) =>
+    (width / numberOfItems - 20).toString() + "px" || "100px"};
 `;
 type NavItemType = {
   name: string;
@@ -79,11 +81,16 @@ const Footer: FC = () => {
   console.log("location", window.innerWidth);
   return (
     <FooterNav>
-      {navItems.map((element: NavItemType) => (
-        <FooterButton onClick={() => handleClickOfButton(element.to)}>
+      {navItems.map((element: NavItemType, key: number) => (
+        <FooterButton onClick={() => handleClickOfButton(element.to)} key={key}>
           <div>
             <Icon name={element.icon} />
-            <ButtonText width={window.innerWidth}>{element.name}</ButtonText>
+            <ButtonText
+              width={window.innerWidth}
+              numberOfItems={navItems.length}
+            >
+              {element.name}
+            </ButtonText>
           </div>
         </FooterButton>
       ))}

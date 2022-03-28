@@ -1,23 +1,32 @@
-export type Colors = {
+type Colors = {
   white: string;
   background: string;
   primary: string;
   surface: string;
 };
 
-export enum Breakpoints {
-  XL = 1920,
-  LG = 1280,
-  MD = 960,
-  SM = 600,
-  XS = 360,
+type BreakpointWidths  = {
+  xl: number,
+  lg: number,
+  md: number,
+  sm: number,
+  xs: number,
 }
 
-const theme: Colors = {
+ const theme: Colors = {
   white: "#ffffff",
   surface: "#585858",
   background: "#141414",
   primary: "#0183b7",
 };
+
+export const breakpoints: BreakpointWidths = {
+
+  xl: 1920,
+  lg: 1280,
+  md: 960,
+  sm: 600,
+  xs: 360,
+}
 
 export default theme;
