@@ -39,9 +39,11 @@ for (let i = 0; i < 50; i++) {
   });
 }
 console.log("items", items);
+const isBrowser = () => typeof window !== "undefined";
+const windowWidth = isBrowser() ? window.innerWidth : 0;
 const ItemList = () => {
   return (
-    <ItemWrapper windowWidth={window.innerWidth}>
+    <ItemWrapper windowWidth={windowWidth}>
       {items?.map((item, key) => (
         <ItemBox key={key}>{item.name}</ItemBox>
       ))}

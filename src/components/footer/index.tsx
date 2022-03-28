@@ -78,17 +78,15 @@ const Footer: FC = () => {
       icon: "b",
     },
   ];
-  console.log("location", window.innerWidth);
+  const isBrowser = () => typeof window !== "undefined";
+  const windowWidth = isBrowser() ? window.innerWidth : 0;
   return (
     <FooterNav>
       {navItems.map((element: NavItemType, key: number) => (
         <FooterButton onClick={() => handleClickOfButton(element.to)} key={key}>
           <div>
             <Icon name={element.icon} />
-            <ButtonText
-              width={window.innerWidth}
-              numberOfItems={navItems.length}
-            >
+            <ButtonText width={windowWidth} numberOfItems={navItems.length}>
               {element.name}
             </ButtonText>
           </div>

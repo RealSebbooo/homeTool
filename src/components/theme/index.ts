@@ -13,7 +13,7 @@ type BreakpointWidths  = {
   xs: number,
 }
 
- const theme: Colors = {
+const theme: Colors = {
   white: "#ffffff",
   surface: "#585858",
   background: "#141414",
