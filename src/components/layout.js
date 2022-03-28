@@ -1,16 +1,21 @@
-import React from "react"
+import React from "react";
+import styled from "styled-components";
 
-import Header from "./header"
-import Footer from "./footer"
+import FooterNav from "./footer";
 
-import "./../styles/index.css"
+import "./../styles/index.css";
+const Container = styled.div`
+  max-width: 800px;
+  margin-right: auto;
+  margin-left: auto;
+  padding: 16px;
+`;
 
 export default function Layout({ children }) {
   return (
-    <div className="layout">
-      <Header></Header>
+    <Container>
       <div className="content">{children}</div>
-      <Footer></Footer>
-    </div>
-  )
+      <FooterNav></FooterNav>
+    </Container>
+  );
 }

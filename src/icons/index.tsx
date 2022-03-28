@@ -1,5 +1,7 @@
+import theme from "./../components/theme";
 import React, { FC } from "react";
-import { YoutubeIcon } from "./svgs/youtube";
+import { CloseIcon } from "./close";
+import { Iconsizer } from "./styled";
 
 export type IconProps = {
   //* * Icon Name */
@@ -44,7 +46,7 @@ export type IconTagProps = {
 };
 
 export const Icons = {
-  youtube: YoutubeIcon,
+  close: CloseIcon,
 };
 
 const Icon: FC<IconProps> = ({
@@ -53,7 +55,7 @@ const Icon: FC<IconProps> = ({
   small = false,
   onClick,
   className,
-  size = small ? IconSizes.Small : IconSizes.Regular,
+  size = "16px",
   ready,
   progress,
   title,
@@ -67,7 +69,7 @@ const Icon: FC<IconProps> = ({
   let fill = color.startsWith("#")
     ? color
     : (theme[color as keyof typeof theme] as string);
-  fill = fill || theme.black;
+  fill = fill || theme.white;
 
   return (
     <Iconsizer

@@ -1,7 +1,9 @@
-import React from "react"
-import { Link, graphql, useStaticQuery } from "gatsby"
+import React from "react";
+import { Link, graphql, useStaticQuery } from "gatsby";
+import { useNavigate } from "react-router-dom";
 
 export default function Header() {
+  const navigate = useNavigate();
   const data = useStaticQuery(graphql`
     query SiteInfo {
       site {
@@ -10,9 +12,9 @@ export default function Header() {
         }
       }
     }
-  `)
+  `);
 
-  const { title } = data?.site?.siteMetadata
+  const { title } = data?.site?.siteMetadata;
   return (
     <header>
       <nav>
@@ -25,5 +27,5 @@ export default function Header() {
         </div>
       </nav>
     </header>
-  )
+  );
 }
