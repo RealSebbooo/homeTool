@@ -1,0 +1,18 @@
+{
+    "name": "@ab-core/input",
+    "version": "4.4.0",
+    "description": "",
+    "main": "index.tsx",
+    "scripts": {
+        "test": "jest --passWithNoTests",
+        "lint": "eslint . --ext .ts,.tsx --no-error-on-unmatched-pattern --cache --cache",
+        "format": "prettier --config ../../.prettierrc --ignore-path ../../.prettierignore './**/*.ts' './**/*.tsx' './**/*.js' './**/*.jsx' --no-error-on-unmatched-pattern --write"
+    },
+    "author": "",
+    "license": "ISC",
+    "dependencies": {
+        "react": "17.0.2",
+        "react-dom": "17.0.2"
+    },
+    "gitHead": "36858a3b1dd3f5bbc49910011c1e93251ba3b22f"
+}
