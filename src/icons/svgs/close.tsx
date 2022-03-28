@@ -1,6 +1,6 @@
 import React, { FC } from "react";
-import { IconTagProps } from "./index";
-import { SVG } from "./styled";
+import { IconTagProps } from "../index";
+import { SVG } from "../styled";
 
 export const CloseIcon: FC<IconTagProps> = ({ fill }) => (
   <SVG viewBox="0 0 20 20" fill="none">

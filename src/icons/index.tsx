@@ -1,6 +1,8 @@
 import theme from "./../components/theme";
 import React, { FC } from "react";
-import { CloseIcon } from "./close";
+import { CloseIcon } from "./svgs/close";
+import { AIcon } from "./svgs/a";
+import { BIcon } from "./svgs/b";
 import { Iconsizer } from "./styled";
 
 export type IconProps = {
@@ -39,7 +41,7 @@ export type IconTagProps = {
   mask?: string;
   path?: string;
   small?: boolean;
-  size?: IconSizes;
+  size?: string;
   progress?: boolean;
   ready?: boolean;
   title?: string;
@@ -47,6 +49,8 @@ export type IconTagProps = {
 
 export const Icons = {
   close: CloseIcon,
+  a: AIcon,
+  b: BIcon,
 };
 
 const Icon: FC<IconProps> = ({
@@ -55,7 +59,7 @@ const Icon: FC<IconProps> = ({
   small = false,
   onClick,
   className,
-  size = "16px",
+  size = "24px",
   ready,
   progress,
   title,

@@ -7,7 +7,8 @@ export const SVG = styled.svg`
 `;
 
 export const Iconsizer = styled.div<IconTagProps>`
-  display: flex;
+  margin-left: auto;
+  margin-right: auto;
   width: ${({ size }) => size};
   min-width: ${({ size }) => size};
   height: ${({ size }) => size};

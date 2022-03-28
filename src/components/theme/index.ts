@@ -2,6 +2,7 @@ export type Colors = {
   white: string;
   background: string;
   primary: string;
+  surface: string;
 };
 
 export enum Breakpoints {
@@ -14,6 +15,7 @@ export enum Breakpoints {
 
 const theme: Colors = {
   white: "#ffffff",
+  surface: "#585858",
   background: "#141414",
   primary: "#0183b7",
 };
