@@ -2,10 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import theme, { breakpoints, device } from "./../theme";
 
-type ItemWrapperProps = {
-  windowWidth: number;
-};
-const ItemWrapper = styled.div<ItemWrapperProps>`
+const ItemWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-gap: 10px;
@@ -29,16 +26,6 @@ const ItemWrapper = styled.div<ItemWrapperProps>`
   @media ${device.desktop} {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   }
-  grid-template-columns: ${({ windowWidth }) =>
-    windowWidth <= breakpoints.xl && "1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr"};
-  grid-template-columns: ${({ windowWidth }) =>
-    windowWidth <= breakpoints.lg && "1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr"};
-  grid-template-columns: ${({ windowWidth }) =>
-    windowWidth <= breakpoints.md && "1fr 1fr 1fr 1fr 1fr"};
-  grid-template-columns: ${({ windowWidth }) =>
-    windowWidth <= breakpoints.sm && "1fr 1fr 1fr 1fr"};
-  grid-template-columns: ${({ windowWidth }) =>
-    windowWidth <= breakpoints.xs && "1fr 1fr 1fr"};
 `;
 const ItemBox = styled.div`
   background-color: ${theme.primary};
@@ -58,11 +45,9 @@ for (let i = 0; i < 50; i++) {
   });
 }
 console.log("items", items);
-const isBrowser = () => typeof window !== "undefined";
-const windowWidth = isBrowser() ? window.innerWidth : 0;
 const ItemList = () => {
   return (
-    <ItemWrapper windowWidth={windowWidth}>
+    <ItemWrapper>
       {items?.map((item, key) => (
         <ItemBox key={key}>{item.name}</ItemBox>
       ))}

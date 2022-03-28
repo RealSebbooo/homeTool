@@ -19,7 +19,7 @@ const FooterNav = styled.div`
   margin-left: auto;
 `;
 const FooterButton = styled.div`
-  background-color: ${theme.primary};
+  background-color: ${theme.surface};
   justify-content: space-around;
   border: none;
   color: white;
