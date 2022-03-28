@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import theme, { breakpoints } from "./../theme";
+import theme, { breakpoints, device } from "./../theme";
 
 type ItemWrapperProps = {
   windowWidth: number;
@@ -10,6 +10,25 @@ const ItemWrapper = styled.div<ItemWrapperProps>`
   grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   grid-gap: 10px;
 
+  @media ${device.mobile} {
+    grid-template-columns: 1fr 1fr 1fr;
+  }
+
+  @media ${device.tablet} {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
+  }
+
+  @media ${device.laptop} {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  }
+
+  @media ${device.laptopL} {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  }
+
+  @media ${device.desktop} {
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
+  }
   grid-template-columns: ${({ windowWidth }) =>
     windowWidth <= breakpoints.xl && "1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr"};
   grid-template-columns: ${({ windowWidth }) =>
