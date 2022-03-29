@@ -185,6 +185,8 @@ const ItemList = () => {
               onClick={() => removeItem(item)}
               onMouseDown={startCounter}
               onMouseUp={stopCounter}
+              onTouchStart={startCounter}
+              onTouchEnd={stopCounter}
             >
               <ItemInnerBox>
                 <Icon name="a" />
