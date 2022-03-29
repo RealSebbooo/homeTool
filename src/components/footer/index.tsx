@@ -2,6 +2,7 @@ import React, { FC } from "react";
 import styled from "styled-components";
 import theme from "./../theme";
 import Icon from "./../../icons";
+import { navigate } from "gatsby";
 
 const FooterNav = styled.div`
   justify-content: space-around;
@@ -53,9 +54,9 @@ type NavItemType = {
 
 const Footer: FC = () => {
   const handleClickOfButton = (to: string) => {
-    console.log("click", to);
-    location.href = to;
+    navigate(to);
   };
+
   const navItems = [
     {
       name: "Einkaufsliste",

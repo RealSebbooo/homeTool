@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import theme, { device } from "./../theme";
 import Icon from "./../../icons";
@@ -72,14 +72,50 @@ for (let i = 0; i < 50; i++) {
     unit: "KG",
     icon: "asdasd",
     added: new Date().toLocaleDateString(),
+    id: i,
   });
 }
 console.log("items", items);
+
 const ItemList = () => {
+  const intervalRef = React.useRef(null);
+  const [isHoldModal, setIsHoldModal] = useState(false);
+
+  React.useEffect(() => {
+    return () => stopCounter(); // when App is unmounted we should stop counter
+  }, []);
+
+  // functions -----------------------------------
+
+  const startCounter = () => {
+    if (intervalRef.current) return;
+    intervalRef.current = setTimeout(() => {
+      console.log("hold");
+      setIsHoldModal(true);
+    }, 2000);
+  };
+
+  const stopCounter = () => {
+    if (intervalRef.current) {
+      clearInterval(intervalRef.current);
+      intervalRef.current = null;
+    }
+  };
+
+  const removeItem = () => {
+    if (!isHoldModal) {
+      console.log("remoev");
+    }
+  };
   return (
     <ItemWrapper>
       {items?.map((item, key) => (
-        <ItemBox key={key}>
+        <ItemBox
+          key={key}
+          onClick={removeItem}
+          onMouseDown={startCounter}
+          onMouseUp={stopCounter}
+        >
           <ItemInnerBox>
             <Icon name="a" />
             <Text>{item.name}</Text>
