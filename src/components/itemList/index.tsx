@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import theme, { device } from "./../theme";
 import Icon from "./../../icons";
@@ -20,8 +20,12 @@ const ItemWrapper = styled.div`
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   }
 `;
-const ItemBox = styled.div`
-  background-color: ${theme.primary};
+type ItemBoxProps = {
+  isRecent: boolean;
+};
+const ItemBox = styled.div<ItemBoxProps>`
+  background-color: ${({ isRecent }) =>
+    isRecent ? theme.surface : theme.primary};
   aspect-ratio: 1;
   border-radius: 4px;
 
@@ -45,8 +49,11 @@ const ItemInnerBox = styled.div`
 const Text = styled.p`
   font-size: 12px;
   overflow: hidden;
-  white-space: nowrap;
   text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2; /* number of lines to show */
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
   margin-left: auto;
   margin-right: auto;
   @media ${device.mobile} {
@@ -63,23 +70,49 @@ const Text = styled.p`
 
   word-break: break-all;
 `;
-const items = [];
 
-for (let i = 0; i < 50; i++) {
-  items.push({
-    name: "Paulaner Spezi",
-    category: "mehl",
-    unit: "KG",
-    icon: "asdasd",
-    added: new Date().toLocaleDateString(),
-    id: i,
-  });
+type article = {
+  name: string;
+  category: string;
+  unit: string;
+  icon: string;
+  id: number;
+};
+
+interface recentArticle extends article {
+  lastUsed: Date;
 }
-console.log("items", items);
+
+type shoppingListType = {
+  owner: string;
+  members: string[];
+  activeArticles: article[];
+  recentArticles: recentArticle[];
+};
 
 const ItemList = () => {
   const intervalRef = React.useRef(null);
   const [isHoldModal, setIsHoldModal] = useState(false);
+  const [shoppingList, setShoppingList] = useState<shoppingListType>();
+  const [refresh, setRefresh] = React.useState(1);
+  useEffect(() => {
+    const list = {
+      owner: "Sebbooo",
+      members: ["Sebbooo"],
+      activeArticles: [],
+      recentArticles: [],
+    };
+    for (let i = 0; i < 50; i++) {
+      list?.activeArticles?.push({
+        name: "Paulaner Spezi " + i.toString(),
+        category: "mehl",
+        unit: "KG",
+        icon: "asdasd",
+        id: i,
+      });
+    }
+    setShoppingList(list);
+  }, []);
 
   React.useEffect(() => {
     return () => stopCounter(); // when App is unmounted we should stop counter
@@ -92,7 +125,7 @@ const ItemList = () => {
     intervalRef.current = setTimeout(() => {
       console.log("hold");
       setIsHoldModal(true);
-    }, 2000);
+    }, 400);
   };
 
   const stopCounter = () => {
@@ -102,27 +135,69 @@ const ItemList = () => {
     }
   };
 
-  const removeItem = () => {
+  const removeItem = (item: article) => {
     if (!isHoldModal) {
-      console.log("remoev");
+      console.log("remoev", item);
+      const index = shoppingList?.activeArticles?.indexOf(item);
+      if (index > -1) {
+        shoppingList?.activeArticles?.splice(index, 1);
+      }
+      shoppingList?.recentArticles.push({ ...item, lastUsed: new Date() });
+      console.log("first", shoppingList);
+
+      setRefresh(0);
     }
   };
+
+  useEffect(() => {
+    if (refresh === 0) {
+      setRefresh(1);
+    }
+  }, [refresh]);
+
   return (
-    <ItemWrapper>
-      {items?.map((item, key) => (
-        <ItemBox
-          key={key}
-          onClick={removeItem}
-          onMouseDown={startCounter}
-          onMouseUp={stopCounter}
-        >
-          <ItemInnerBox>
-            <Icon name="a" />
-            <Text>{item.name}</Text>
-          </ItemInnerBox>
-        </ItemBox>
-      ))}
-    </ItemWrapper>
+    <>
+      <ItemWrapper>
+        {shoppingList?.activeArticles?.length > 0 &&
+          refresh &&
+          shoppingList?.activeArticles?.map((item) => (
+            <ItemBox
+              key={item.id}
+              onClick={() => removeItem(item)}
+              onMouseDown={startCounter}
+              onMouseUp={stopCounter}
+            >
+              <ItemInnerBox>
+                <Icon name="a" />
+                <Text>{item.name}</Text>
+              </ItemInnerBox>
+            </ItemBox>
+          ))}
+      </ItemWrapper>
+      {shoppingList?.recentArticles?.length > 0 && (
+        <>
+          <h1>Recent</h1>
+          <ItemWrapper>
+            {shoppingList?.recentArticles?.length > 0 &&
+              refresh &&
+              shoppingList?.recentArticles?.map((item) => (
+                <ItemBox
+                  isRecent={true}
+                  key={item.id}
+                  onClick={() => removeItem(item)}
+                  onMouseDown={startCounter}
+                  onMouseUp={stopCounter}
+                >
+                  <ItemInnerBox>
+                    <Icon name="a" />
+                    <Text>{item.name}</Text>
+                  </ItemInnerBox>
+                </ItemBox>
+              ))}
+          </ItemWrapper>
+        </>
+      )}
+    </>
   );
 };
 
