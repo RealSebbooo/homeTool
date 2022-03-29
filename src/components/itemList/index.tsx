@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import theme, { device } from "./../theme";
 import Icon from "./../../icons";
+import Modal from "./../modal";
 
 const ItemWrapper = styled.div`
   display: grid;
@@ -125,6 +126,7 @@ const ItemList = () => {
     intervalRef.current = setTimeout(() => {
       console.log("hold");
       setIsHoldModal(true);
+      setRefresh(0);
     }, 400);
   };
 
@@ -149,14 +151,31 @@ const ItemList = () => {
     }
   };
 
+  const readdItem = (item: recentArticle) => {
+    delete item.lastUsed;
+    const index = shoppingList?.recentArticles?.indexOf(item);
+    if (index > -1) {
+      shoppingList?.recentArticles?.splice(index, 1);
+    }
+    shoppingList?.activeArticles.push(item);
+    setRefresh(0);
+  };
+
   useEffect(() => {
     if (refresh === 0) {
       setRefresh(1);
     }
   }, [refresh]);
 
+  const disableModal = () => {
+    console.log("disable");
+    setIsHoldModal(false);
+    stopCounter();
+    setRefresh(0);
+  };
   return (
     <>
+      {isHoldModal && <Modal disableModal={disableModal}></Modal>}
       <ItemWrapper>
         {shoppingList?.activeArticles?.length > 0 &&
           refresh &&
@@ -184,9 +203,7 @@ const ItemList = () => {
                 <ItemBox
                   isRecent={true}
                   key={item.id}
-                  onClick={() => removeItem(item)}
-                  onMouseDown={startCounter}
-                  onMouseUp={stopCounter}
+                  onClick={() => readdItem(item)}
                 >
                   <ItemInnerBox>
                     <Icon name="a" />
