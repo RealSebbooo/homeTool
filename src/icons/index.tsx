@@ -9,7 +9,6 @@ export type IconProps = {
   //* * Icon Name */
   name?: string;
   //* * SVG Fill Color */
-  color?: string;
   /** @deprecated use size instead */
   small?: boolean;
   //* *  onClick Event  */
@@ -22,6 +21,7 @@ export type IconProps = {
   progress?: boolean;
   title?: string;
   clickable?: boolean;
+  light?: boolean;
 };
 
 export enum IconSizes {
@@ -35,7 +35,6 @@ export type IconTagProps = {
   fill?: string;
   viewBox?: string;
   xmlns?: string;
-  color?: string;
   filter?: string;
   style?: string;
   clipPath?: string;
@@ -47,6 +46,7 @@ export type IconTagProps = {
   ready?: boolean;
   title?: string;
   clickable?: boolean;
+  light?: boolean;
 };
 
 export const Icons = {
@@ -57,7 +57,6 @@ export const Icons = {
 
 const Icon: FC<IconProps> = ({
   name = "loading",
-  color = "gray3",
   small = false,
   onClick,
   className,
@@ -66,6 +65,7 @@ const Icon: FC<IconProps> = ({
   progress,
   title,
   clickable,
+  light,
 }) => {
   // @TODO use Typscript enum
 
@@ -73,10 +73,6 @@ const Icon: FC<IconProps> = ({
   if (!IconTag) {
     return null;
   }
-  let fill = color.startsWith("#")
-    ? color
-    : (theme[color as keyof typeof theme] as string);
-  fill = fill || theme.white;
 
   return (
     <Iconsizer
@@ -87,7 +83,7 @@ const Icon: FC<IconProps> = ({
       clickable={clickable}
     >
       <IconTag
-        fill={fill}
+        fill={light ? theme.white : theme.background}
         small={small}
         size={size}
         ready={ready}

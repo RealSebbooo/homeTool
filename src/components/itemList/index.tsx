@@ -3,6 +3,7 @@ import styled from "styled-components";
 import theme, { device } from "./../theme";
 import Icon from "./../../icons";
 import Modal from "./../modal";
+import Text from "./../text";
 
 const ItemWrapper = styled.div`
   display: grid;
@@ -47,10 +48,11 @@ const ItemInnerBox = styled.div`
   margin-top: 30%;
 `;
 
-const Text = styled.p`
+const ArticleText = styled.p`
   font-size: 12px;
   overflow: hidden;
   text-overflow: ellipsis;
+  color: ${theme.white};
   display: -webkit-box;
   -webkit-line-clamp: 2; /* number of lines to show */
   line-clamp: 2;
@@ -145,8 +147,8 @@ const ItemList = () => {
       }
       shoppingList?.recentArticles.push({ ...item, lastUsed: new Date() });
       console.log("first", shoppingList);
-
-      setRefresh(0);
+      const arr = JSON.parse(JSON.stringify(shoppingList));
+      setShoppingList(arr);
     }
   };
 
@@ -157,14 +159,9 @@ const ItemList = () => {
       shoppingList?.recentArticles?.splice(index, 1);
     }
     shoppingList?.activeArticles.push(item);
-    setRefresh(0);
+    const arr = JSON.parse(JSON.stringify(shoppingList));
+    setShoppingList(arr);
   };
-
-  useEffect(() => {
-    if (refresh === 0) {
-      setRefresh(1);
-    }
-  }, [refresh]);
 
   const disableModal = () => {
     console.log("disable");
@@ -187,15 +184,21 @@ const ItemList = () => {
               onTouchEnd={stopCounter}
             >
               <ItemInnerBox>
-                <Icon name="a" />
-                <Text>{item.name}</Text>
+                <Icon name="a" light={true} />
+                <ArticleText>{item.name}</ArticleText>
               </ItemInnerBox>
             </ItemBox>
           ))}
       </ItemWrapper>
       {shoppingList?.recentArticles?.length > 0 && (
         <>
-          <h1>Recent</h1>
+          <Text
+            fontSize="24"
+            bold={false}
+            content="Zuletzt verwendet"
+            light={true}
+            heading={true}
+          ></Text>
           <ItemWrapper>
             {shoppingList?.recentArticles?.length > 0 &&
               refresh &&
@@ -206,8 +209,8 @@ const ItemList = () => {
                   onClick={() => readdItem(item)}
                 >
                   <ItemInnerBox>
-                    <Icon name="a" />
-                    <Text>{item.name}</Text>
+                    <Icon name="a" light={true} />
+                    <ArticleText>{item.name}</ArticleText>
                   </ItemInnerBox>
                 </ItemBox>
               ))}

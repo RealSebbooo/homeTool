@@ -43,6 +43,7 @@ const ButtonText = styled.p<TextProps>`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  color: ${theme.white};
   max-width: ${({ width, numberOfItems }) =>
     (width / numberOfItems - 20).toString() + "px" || "100px"};
 `;
@@ -86,7 +87,7 @@ const Footer: FC = () => {
       {navItems.map((element: NavItemType, key: number) => (
         <FooterButton onClick={() => handleClickOfButton(element.to)} key={key}>
           <div>
-            <Icon name={element.icon} />
+            <Icon name={element.icon} light={true} />
             <ButtonText width={windowWidth} numberOfItems={navItems.length}>
               {element.name}
             </ButtonText>

@@ -1,6 +1,7 @@
 import React, { FC } from "react";
 import Icon from "../../icons";
-import "./style.css";
+import Text from "./../text";
+import Textfield from "./../textfield";
 import {
   ModalHeader,
   ModalBody,
@@ -14,19 +15,31 @@ type ModalProps = {
 };
 
 const Modal: FC<ModalProps> = ({ disableModal }) => {
+  const textInputChanged = (value: string) => {
+    console.log("value", value);
+  };
   return (
-    <ModalContainer id="myModal" className="modal">
-      <ModalContent className="modal-content">
-        <ModalHeader className="modal-header">
-          <Icon name="close" onClick={() => disableModal()} clickable={true} />
-          <h2>Modal Header</h2>
+    <ModalContainer>
+      <ModalContent>
+        <ModalHeader>
+          <Icon
+            name="close"
+            onClick={() => disableModal()}
+            clickable={true}
+            light={false}
+          />
+          <Text bold={true} fontSize="28" content="Modal Header"></Text>
         </ModalHeader>
-        <ModalBody className="modal-body">
+        <ModalBody>
+          <Textfield
+            placeholder="Artikel"
+            textInputChanged={(value) => textInputChanged(value)}
+          ></Textfield>
           <p>Some text in the Modal Body</p>
           <p>Some other text...</p>
         </ModalBody>
-        <ModalFooter className="modal-footer">
-          <h3>Modal Footer</h3>
+        <ModalFooter>
+          <Text bold={false} fontSize="24" content="Modal Footer"></Text>
         </ModalFooter>
       </ModalContent>
     </ModalContainer>
