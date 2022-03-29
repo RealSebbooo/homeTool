@@ -21,6 +21,7 @@ export type IconProps = {
   ready?: boolean;
   progress?: boolean;
   title?: string;
+  clickable?: boolean;
 };
 
 export enum IconSizes {
@@ -45,6 +46,7 @@ export type IconTagProps = {
   progress?: boolean;
   ready?: boolean;
   title?: string;
+  clickable?: boolean;
 };
 
 export const Icons = {
@@ -63,6 +65,7 @@ const Icon: FC<IconProps> = ({
   ready,
   progress,
   title,
+  clickable,
 }) => {
   // @TODO use Typscript enum
 
@@ -81,6 +84,7 @@ const Icon: FC<IconProps> = ({
       small={small}
       size={size}
       onClick={onClick}
+      clickable={clickable}
     >
       <IconTag
         fill={fill}

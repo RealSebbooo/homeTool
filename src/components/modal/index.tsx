@@ -1,5 +1,13 @@
 import React, { FC } from "react";
+import Icon from "../../icons";
 import "./style.css";
+import {
+  ModalHeader,
+  ModalBody,
+  ModalContent,
+  ModalContainer,
+  ModalFooter,
+} from "./styled";
 
 type ModalProps = {
   disableModal: () => void;
@@ -7,23 +15,21 @@ type ModalProps = {
 
 const Modal: FC<ModalProps> = ({ disableModal }) => {
   return (
-    <div id="myModal" className="modal">
-      <div className="modal-content">
-        <div className="modal-header">
-          <span className="close" onClick={() => disableModal()}>
-            &times;
-          </span>
+    <ModalContainer id="myModal" className="modal">
+      <ModalContent className="modal-content">
+        <ModalHeader className="modal-header">
+          <Icon name="close" onClick={() => disableModal()} clickable={true} />
           <h2>Modal Header</h2>
-        </div>
-        <div className="modal-body">
+        </ModalHeader>
+        <ModalBody className="modal-body">
           <p>Some text in the Modal Body</p>
           <p>Some other text...</p>
-        </div>
-        <div className="modal-footer">
+        </ModalBody>
+        <ModalFooter className="modal-footer">
           <h3>Modal Footer</h3>
-        </div>
-      </div>
-    </div>
+        </ModalFooter>
+      </ModalContent>
+    </ModalContainer>
   );
 };
 

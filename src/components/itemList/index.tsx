@@ -126,7 +126,6 @@ const ItemList = () => {
     intervalRef.current = setTimeout(() => {
       console.log("hold");
       setIsHoldModal(true);
-      setRefresh(0);
     }, 400);
   };
 
@@ -171,7 +170,6 @@ const ItemList = () => {
     console.log("disable");
     setIsHoldModal(false);
     stopCounter();
-    setRefresh(0);
   };
   return (
     <>
