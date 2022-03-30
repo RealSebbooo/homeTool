@@ -32,6 +32,7 @@ const Modal: FC<ModalProps> = ({ disableModal }) => {
         </ModalHeader>
         <ModalBody>
           <Textfield
+            type="text"
             placeholder="Artikel"
             textInputChanged={(value) => textInputChanged(value)}
           ></Textfield>

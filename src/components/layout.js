@@ -3,7 +3,7 @@ import styled from "styled-components";
 import FooterNav from "./footer";
 import { isLoggedIn } from "./../services/auth";
 import "./../styles/index.css";
-import { navigate, useStaticQuery, graphql } from "gatsby";
+import { navigate } from "gatsby";
 import { globalHistory } from "@reach/router";
 
 const Container = styled.div`
@@ -16,11 +16,13 @@ const Container = styled.div`
 
 export default function Layout({ children }) {
   useEffect(() => {
-    const path = globalHistory.location.pathname;
-    console.log("hier", isLoggedIn(), path);
-    if (!isLoggedIn() && path !== "/login") {
-      navigate("/login");
-    }
+    const check = async () => {
+      const path = globalHistory.location.pathname;
+      if (!(await isLoggedIn()) && path !== "/login" && path !== "/register") {
+        navigate("/login");
+      }
+    };
+    check();
   }, []);
   return (
     <Container>

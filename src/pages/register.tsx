@@ -1,15 +1,14 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "./../components/layout";
 import Textfield from "./../components/textfield";
-import { login } from "./../services/auth";
-
 import { LoginCard } from "./login.styled";
-import { UserObjectType } from "../types";
 import Button from "./../components/button";
+import { UserObjectType } from "../types";
+import { register } from "./../services/auth";
 import { navigate } from "gatsby";
 import Title from "../components/title";
 
-const Login: FC = () => {
+export default function Register() {
   const [userObject, setUserObject] = useState<UserObjectType>();
 
   const emailValueChanged = (value: string) => {
@@ -25,7 +24,7 @@ const Login: FC = () => {
   return (
     <Layout>
       <LoginCard>
-        <Title titleText="Login"></Title>
+        <Title titleText="Registrieren"></Title>
         <Textfield
           type="text"
           placeholder="Email"
@@ -37,19 +36,18 @@ const Login: FC = () => {
           textInputChanged={(value) => passwordValueChanged(value)}
         ></Textfield>
         <Button
-          value="Noch kein Account? Registrieren"
-          onClick={() => navigate("/register")}
+          value="Bereits ein Account? Anmelden"
+          onClick={() => navigate("/login")}
           dense={true}
           text={true}
         ></Button>
         <br />
         <Button
-          value="Anmelden"
-          onClick={() => login(userObject)}
+          value="Registrieren"
+          onClick={() => register(userObject)}
           right={true}
         ></Button>
       </LoginCard>
     </Layout>
   );
-};
-export default Login;
+}
