@@ -4,7 +4,10 @@ import Title from "./../components/title";
 
 import ItemList from "./../components/itemList";
 
+import { getShoppinglistItems } from "./../services/databaseHelper";
+
 const Index = () => {
+  getShoppinglistItems();
   return (
     <Layout>
       <Title titleText="Einkaufsliste"></Title>
