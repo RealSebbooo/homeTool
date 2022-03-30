@@ -56,13 +56,20 @@ export const register = (user: UserObjectType) => {
 };
 
 export const isLoggedIn = async () => {
-  await onAuthStateChanged(auth, (user) => {
-    const lsUser = localStorage.getItem("htUser");
-    if (lsUser === null || user === null) {
-      const path = globalHistory.location.pathname;
-      if (path !== "/login" && path !== "/register") {
-        navigate("/login");
-      }
+  const lsUser = localStorage.getItem("htUser");
+  if (lsUser === null) {
+    const path = globalHistory.location.pathname;
+    if (path !== "/login" && path !== "/register") {
+      navigate("/login");
     }
-  });
+  } else {
+    await onAuthStateChanged(auth, (user) => {
+      if (user === null) {
+        const path = globalHistory.location.pathname;
+        if (path !== "/login" && path !== "/register") {
+          navigate("/login");
+        }
+      }
+    });
+  }
 };
