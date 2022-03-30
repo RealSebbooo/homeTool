@@ -3,7 +3,7 @@ import Layout from "./../components/layout";
 import Textfield from "./../components/textfield";
 import { login } from "./../services/auth";
 
-import { LoginCard } from "./login.styled";
+import { LoginCard } from "../styles/login.styled";
 import { UserObjectType } from "../types";
 import Button from "./../components/button";
 import { navigate } from "gatsby";

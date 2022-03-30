@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Layout from "./../components/layout";
 import Textfield from "./../components/textfield";
-import { LoginCard } from "./login.styled";
+import { LoginCard } from "./../styles/login.styled";
 import Button from "./../components/button";
 import { UserObjectType } from "../types";
 import { register } from "./../services/auth";
