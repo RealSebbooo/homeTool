@@ -1,78 +1,12 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import theme, { device } from "./../theme";
 import Icon from "./../../icons";
 import Modal from "./../modal";
 import Text from "./../text";
+import { ItemBox, ItemInnerBox, ArticleText, ItemWrapper } from "./styled";
 
-const ItemWrapper = styled.div`
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  grid-gap: 10px;
-
-  @media ${device.mobile} {
-    grid-template-columns: 1fr 1fr 1fr;
-  }
-
-  @media ${device.tablet} {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr;
-  }
-
-  @media ${device.laptop} {
-    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
-  }
-`;
-type ItemBoxProps = {
+export type ItemBoxProps = {
   isRecent: boolean;
 };
-const ItemBox = styled.div<ItemBoxProps>`
-  background-color: ${({ isRecent }) =>
-    isRecent ? theme.surface : theme.primary};
-  aspect-ratio: 1;
-  border-radius: 4px;
-
-  border: none;
-  color: white;
-  text-align: center;
-  align-content: center;
-  text-decoration: none;
-  display: flex;
-  font-size: 16px;
-  text-align: center;
-  cursor: pointer;
-`;
-
-const ItemInnerBox = styled.div`
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 30%;
-`;
-
-const ArticleText = styled.p`
-  font-size: 12px;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  color: ${theme.white};
-  display: -webkit-box;
-  -webkit-line-clamp: 2; /* number of lines to show */
-  line-clamp: 2;
-  -webkit-box-orient: vertical;
-  margin-left: auto;
-  margin-right: auto;
-  @media ${device.mobile} {
-    max-width: 110px;
-  }
-
-  @media ${device.tablet} {
-    max-width: 100px;
-  }
-
-  @media ${device.laptop} {
-    max-width: 90px;
-  }
-
-  word-break: break-all;
-`;
 
 type article = {
   name: string;
@@ -97,7 +31,6 @@ const ItemList = () => {
   const intervalRef = React.useRef(null);
   const [isHoldModal, setIsHoldModal] = useState(false);
   const [shoppingList, setShoppingList] = useState<shoppingListType>();
-  const [refresh, setRefresh] = React.useState(1);
   useEffect(() => {
     const list = {
       owner: "Sebbooo",
@@ -173,7 +106,6 @@ const ItemList = () => {
       {isHoldModal && <Modal disableModal={disableModal}></Modal>}
       <ItemWrapper>
         {shoppingList?.activeArticles?.length > 0 &&
-          refresh &&
           shoppingList?.activeArticles?.map((item) => (
             <ItemBox
               key={item.id}
@@ -201,7 +133,6 @@ const ItemList = () => {
           ></Text>
           <ItemWrapper>
             {shoppingList?.recentArticles?.length > 0 &&
-              refresh &&
               shoppingList?.recentArticles?.map((item) => (
                 <ItemBox
                   isRecent={true}

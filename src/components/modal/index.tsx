@@ -27,6 +27,7 @@ const Modal: FC<ModalProps> = ({ disableModal }) => {
             onClick={() => disableModal()}
             clickable={true}
             light={false}
+            right={true}
           />
           <Text bold={true} fontSize="28" content="Modal Header"></Text>
         </ModalHeader>

@@ -3,7 +3,9 @@ import React, { FC } from "react";
 import { CloseIcon } from "./svgs/close";
 import { AIcon } from "./svgs/a";
 import { BIcon } from "./svgs/b";
+import { ArrowLeft } from "./svgs/arrowleft";
 import { Iconsizer } from "./styled";
+import { navigate } from "gatsby";
 
 export type IconProps = {
   //* * Icon Name */
@@ -16,19 +18,16 @@ export type IconProps = {
   //* *  prop from styled components  */
   className?: string;
   // Tiny Small Regular
-  size?: IconSizes;
+  size?: string;
   ready?: boolean;
   progress?: boolean;
   title?: string;
   clickable?: boolean;
   light?: boolean;
+  backButton?: boolean;
+  to?: string;
+  right?: boolean;
 };
-
-export enum IconSizes {
-  Tiny = "12px",
-  Small = "16px",
-  Regular = "20px",
-}
 
 export type IconTagProps = {
   height?: string;
@@ -47,12 +46,16 @@ export type IconTagProps = {
   title?: string;
   clickable?: boolean;
   light?: boolean;
+  backButton?: boolean;
+  to?: string;
+  right?: boolean;
 };
 
 export const Icons = {
   close: CloseIcon,
   a: AIcon,
   b: BIcon,
+  arrowLeft: ArrowLeft,
 };
 
 const Icon: FC<IconProps> = ({
@@ -66,6 +69,9 @@ const Icon: FC<IconProps> = ({
   title,
   clickable,
   light,
+  backButton = false,
+  to = "/",
+  right = false,
 }) => {
   // @TODO use Typscript enum
 
@@ -77,9 +83,10 @@ const Icon: FC<IconProps> = ({
   return (
     <Iconsizer
       className={className}
+      right={right}
       small={small}
       size={size}
-      onClick={onClick}
+      onClick={backButton ? () => navigate(to) : onClick}
       clickable={clickable}
     >
       <IconTag
