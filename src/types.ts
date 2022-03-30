@@ -14,3 +14,14 @@ export type ArticelType = {
   uid?: string;
   added: Date;
 };
+export type ShoppingListType = {
+  owner?: string;
+  members?: string[];
+  activeArticles?: ArticelType[];
+  recentArticles?: recentArticle[];
+  uid: string;
+};
+
+export interface recentArticle extends ArticelType {
+  lastUsed: Date;
+}

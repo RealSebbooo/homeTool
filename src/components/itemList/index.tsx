@@ -1,56 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Icon from "./../../icons";
 import Modal from "./../modal";
 import Text from "./../text";
 import { ItemBox, ItemInnerBox, ArticleText, ItemWrapper } from "./styled";
+import { ArticelType, ShoppingListType, recentArticle } from "./../../types";
+import {
+  getShoppingList,
+  updateShoppingList,
+} from "./../../services/databaseHelper";
 
 export type ItemBoxProps = {
   isRecent: boolean;
 };
-
-type ArticelType = {
-  name: string;
-  category: string;
-  unit: string;
-  icon: string;
-  id: number;
+type ItemListProp = {
+  shoppingList: ShoppingListType;
 };
 
-interface recentArticle extends ArticelType {
-  lastUsed: Date;
-}
-
-type shoppingListType = {
-  owner: string;
-  members: string[];
-  activeArticles: ArticelType[];
-  recentArticles: recentArticle[];
-};
-
-const ItemList = () => {
+const ItemList: FC<ItemListProp> = ({ shoppingList }) => {
   const intervalRef = React.useRef(null);
   const [isHoldModal, setIsHoldModal] = useState(false);
-  const [shoppingList, setShoppingList] = useState<shoppingListType>();
-  useEffect(() => {
-    const list = {
-      owner: "Sebbooo",
-      members: ["Sebbooo"],
-      activeArticles: [],
-      recentArticles: [],
-    };
-    for (let i = 0; i < 50; i++) {
-      list?.activeArticles?.push({
-        name: "Paulaner Spezi " + i.toString(),
-        category: "mehl",
-        unit: "KG",
-        icon: "asdasd",
-        id: i,
-      });
-    }
-    setShoppingList(list);
-  }, []);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return () => stopCounter(); // when App is unmounted we should stop counter
   }, []);
 
@@ -70,8 +40,8 @@ const ItemList = () => {
       intervalRef.current = null;
     }
   };
-
-  const removeItem = (item: article) => {
+  getShoppingList();
+  const removeItem = (item: ArticelType) => {
     if (!isHoldModal) {
       console.log("remoev", item);
       const index = shoppingList?.activeArticles?.indexOf(item);
@@ -80,8 +50,8 @@ const ItemList = () => {
       }
       shoppingList?.recentArticles.push({ ...item, lastUsed: new Date() });
       console.log("first", shoppingList);
-      const arr = JSON.parse(JSON.stringify(shoppingList));
-      setShoppingList(arr);
+
+      updateShoppingList(shoppingList);
     }
   };
 
@@ -92,8 +62,7 @@ const ItemList = () => {
       shoppingList?.recentArticles?.splice(index, 1);
     }
     shoppingList?.activeArticles.push(item);
-    const arr = JSON.parse(JSON.stringify(shoppingList));
-    setShoppingList(arr);
+    updateShoppingList(shoppingList);
   };
 
   const disableModal = () => {
@@ -108,7 +77,7 @@ const ItemList = () => {
         {shoppingList?.activeArticles?.length > 0 &&
           shoppingList?.activeArticles?.map((item) => (
             <ItemBox
-              key={item.id}
+              key={item.uid}
               onClick={() => removeItem(item)}
               onMouseDown={startCounter}
               onMouseUp={stopCounter}
@@ -136,7 +105,7 @@ const ItemList = () => {
               shoppingList?.recentArticles?.map((item) => (
                 <ItemBox
                   isRecent={true}
-                  key={item.id}
+                  key={item.uid}
                   onClick={() => readdItem(item)}
                 >
                   <ItemInnerBox>

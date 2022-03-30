@@ -11,15 +11,8 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-import { ArticelType } from "./../types";
+import { ArticelType, ShoppingListType } from "./../types";
 
-export const getShoppinglistItems = async () => {
-  const ref = collection(db, "shoppingsLists");
-  const snapshot = await getDocs(ref);
-  const items = snapshot.docs.map((doc) => doc.data());
-
-  console.log("ites", items);
-};
 export const getUserFromDatabase = async (email: string) => {
   const ref = collection(db, "users");
   const snapshot = await getDocs(ref);
@@ -77,4 +70,22 @@ export const deleteArticle = (uid: string) => {
 
 export const saveArticleInDatabase = (item: ArticelType) => {
   setDoc(doc(db, "articles", item.uid), item);
+};
+
+export const getShoppingList = async (): Promise<ShoppingListType> => {
+  const userId = JSON.parse(localStorage.getItem("htUser"))?.uid;
+
+  const ref = collection(db, "shoppingLists");
+  const q = query(ref, where("members", "array-contains", userId));
+  const snapshot = await getDocs(q);
+  const itemsDoc = snapshot.docs.map((doc) => {
+    var rObj = { ...doc.data(), uid: doc.id };
+    return rObj;
+  });
+  console.log("itemsDoc", itemsDoc[0]);
+  return itemsDoc[0];
+};
+
+export const updateShoppingList = (item: ShoppingListType) => {
+  setDoc(doc(db, "shoppingLists", item.uid), item);
 };

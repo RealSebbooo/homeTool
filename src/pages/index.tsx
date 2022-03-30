@@ -1,17 +1,21 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "./../components/layout";
 import Title from "./../components/title";
 
 import ItemList from "./../components/itemList";
-
-import { getShoppinglistItems } from "./../services/databaseHelper";
+import { ShoppingListType } from "../types";
+import { getShoppingList } from "../services/databaseHelper";
 
 const Index = () => {
-  getShoppinglistItems();
+  const [shoppingList, setShoppingList] = useState<ShoppingListType>();
+
+  useEffect(async () => {
+    setShoppingList(await getShoppingList());
+  }, []);
   return (
     <Layout>
       <Title titleText="Einkaufsliste"></Title>
-      <ItemList></ItemList>
+      <ItemList shoppingList={shoppingList}></ItemList>
     </Layout>
   );
 };
