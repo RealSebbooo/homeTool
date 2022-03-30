@@ -74,3 +74,7 @@ export const saveNewArticleToDatabase = (item: ArticelType) => {
 export const deleteArticle = (uid: string) => {
   deleteDoc(doc(db, "articles", uid));
 };
+
+export const saveArticleInDatabase = (item: ArticelType) => {
+  setDoc(doc(db, "articles", item.uid), item);
+};

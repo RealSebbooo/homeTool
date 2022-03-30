@@ -6,6 +6,7 @@ import { ArticelType } from "./../../types";
 import {
   saveNewArticleToDatabase,
   deleteArticle,
+  saveArticleInDatabase,
 } from "./../../services/databaseHelper";
 
 import {
@@ -52,9 +53,10 @@ const Modal: FC<ModalProps> = ({
     if (!item.name || !item.category || !item.icon || !item.unit) return;
     else saveNewArticleToDatabase(item);
   };
-
-  if (editItem) {
-  }
+  const saveItem = () => {
+    if (!item.name || !item.category || !item.icon || !item.unit) return;
+    else saveArticleInDatabase(item);
+  };
   return (
     <>
       {newItem || editItem ? (
@@ -73,21 +75,25 @@ const Modal: FC<ModalProps> = ({
               <Textfield
                 type="text"
                 placeholder="Name"
+                value={item.name}
                 textInputChanged={(value) => nameChanged(value)}
               ></Textfield>
               <Textfield
                 type="text"
                 placeholder="Standardeinheit"
+                value={item.unit}
                 textInputChanged={(value) => unitChanged(value)}
               ></Textfield>
               <Textfield
                 type="text"
                 placeholder="Kategorie"
+                value={item.category}
                 textInputChanged={(value) => categoryChanged(value)}
               ></Textfield>
               <Textfield
                 type="text"
                 placeholder="Icon"
+                value={item.icon}
                 textInputChanged={(value) => iconChanged(value)}
               ></Textfield>
             </ModalBody>
@@ -110,7 +116,7 @@ const Modal: FC<ModalProps> = ({
               <Button
                 value="Speichern"
                 onClick={() => {
-                  saveNewArticle();
+                  editItem ? saveItem() : saveNewArticle();
                   disableModal();
                 }}
               ></Button>
