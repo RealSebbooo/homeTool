@@ -2,9 +2,10 @@ import styled from "styled-components";
 import theme from "./../theme";
 
 export const ButtonComp = styled.input`
+  border-radius: 4px;
   border: none;
   color: white;
-  padding: ${({ dense }) => (dense ? "8px 32px" : "16px 32px")};
+  padding: ${({ dense }) => (dense ? "8px 16px" : "8px 16px")};
   text-align: center;
   text-decoration: none;
   display: inline-block;

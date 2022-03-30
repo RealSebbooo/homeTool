@@ -8,7 +8,7 @@ export type ItemBoxProps = {
   isRecent: boolean;
 };
 
-type article = {
+type ArticelType = {
   name: string;
   category: string;
   unit: string;
@@ -16,14 +16,14 @@ type article = {
   id: number;
 };
 
-interface recentArticle extends article {
+interface recentArticle extends ArticelType {
   lastUsed: Date;
 }
 
 type shoppingListType = {
   owner: string;
   members: string[];
-  activeArticles: article[];
+  activeArticles: ArticelType[];
   recentArticles: recentArticle[];
 };
 

@@ -1,10 +1,22 @@
 import db from "./firebase";
-import { collection, doc, getDocs, setDoc } from "firebase/firestore";
-import { UserType } from "./../types";
+import {
+  collection,
+  doc,
+  getDocs,
+  setDoc,
+  query,
+  where,
+  onSnapshot,
+  addDoc,
+  deleteDoc,
+} from "firebase/firestore";
+
+import { ArticelType } from "./../types";
+
 export const getShoppinglistItems = async () => {
-  const citiesCol = collection(db, "shoppingsLists");
-  const citySnapshot = await getDocs(citiesCol);
-  const items = citySnapshot.docs.map((doc) => doc.data());
+  const ref = collection(db, "shoppingsLists");
+  const snapshot = await getDocs(ref);
+  const items = snapshot.docs.map((doc) => doc.data());
 
   console.log("ites", items);
 };
@@ -43,4 +55,22 @@ export const userAddedToAuth = async (email: string) => {
 const setItem = (collectionName: string, data: object) => {
   const citiesRef = collection(db, collectionName);
   setDoc(doc(citiesRef), data);
+};
+
+export const getArticles = async () => {
+  const ref = collection(db, "articles");
+  const snapshot = await getDocs(ref);
+  const itemsDoc = snapshot.docs.map((doc) => {
+    var rObj = { ...doc.data(), uid: doc.id };
+    return rObj;
+  });
+  return itemsDoc;
+};
+
+export const saveNewArticleToDatabase = (item: ArticelType) => {
+  addDoc(collection(db, "articles"), item);
+};
+
+export const deleteArticle = (uid: string) => {
+  deleteDoc(doc(db, "articles", uid));
 };
