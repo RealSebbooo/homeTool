@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, { FC, useState } from "react";
 import Layout from "./../components/layout";
 import Textfield from "./../components/textfield";
 import { login } from "./../services/auth";
