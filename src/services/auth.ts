@@ -8,6 +8,7 @@ import { UserObjectType } from "../types";
 import { auth } from "./firebase";
 import { getUserFromDatabase, userAddedToAuth } from "./databaseHelper";
 import { navigate } from "gatsby";
+import { globalHistory } from "@reach/router";
 
 export const login = (user: UserObjectType) => {
   console.log("login", user);
@@ -55,16 +56,13 @@ export const register = (user: UserObjectType) => {
 };
 
 export const isLoggedIn = async () => {
-  let loggedIn = false;
   await onAuthStateChanged(auth, (user) => {
     const lsUser = localStorage.getItem("htUser");
-    console.log("lsUser", lsUser !== null || user !== null);
-    if (lsUser !== null || user !== null) {
-      loggedIn = true;
-    } else {
-      loggedIn = false;
+    if (lsUser === null || user === null) {
+      const path = globalHistory.location.pathname;
+      if (path !== "/login" && path !== "/register") {
+        navigate("/login");
+      }
     }
   });
-  console.log("loggedIn", loggedIn);
-  return loggedIn;
 };

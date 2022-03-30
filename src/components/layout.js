@@ -1,10 +1,8 @@
 import React, { useEffect } from "react";
 import styled from "styled-components";
 import FooterNav from "./footer";
-import { isLoggedIn } from "./../services/auth";
 import "./../styles/index.css";
-import { navigate } from "gatsby";
-import { globalHistory } from "@reach/router";
+import { isLoggedIn } from "./../services/auth";
 
 const Container = styled.div`
   max-width: 800px;
@@ -16,13 +14,7 @@ const Container = styled.div`
 
 export default function Layout({ children }) {
   useEffect(() => {
-    const check = async () => {
-      const path = globalHistory.location.pathname;
-      if (!(await isLoggedIn()) && path !== "/login" && path !== "/register") {
-        navigate("/login");
-      }
-    };
-    check();
+    isLoggedIn();
   }, []);
   return (
     <Container>
