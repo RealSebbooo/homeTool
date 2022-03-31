@@ -1,13 +1,7 @@
 import React, { FC, useEffect, useState } from "react";
-import Icon from "./../../icons";
 import Modal from "./../modal";
 import Text from "./../text";
-import {
-  ItemBox,
-  ItemInnerBox,
-  ArticleText,
-  ItemWrapper,
-} from "./../item/item.styled";
+import { ItemWrapper } from "./../item/item.styled";
 import { ArticelType, ShoppingListType, recentArticle } from "./../../types";
 import {
   getShoppingList,
@@ -15,6 +9,7 @@ import {
 } from "./../../services/databaseHelper";
 import { doc, onSnapshot } from "firebase/firestore";
 import db from "./../../services/firebase";
+import Item from "../item/item";
 
 export type ItemBoxProps = {
   isRecent: boolean;
@@ -91,19 +86,16 @@ const ItemList: FC = () => {
       <ItemWrapper>
         {shoppingList?.activeArticles?.length > 0 &&
           shoppingList?.activeArticles?.map((item, key) => (
-            <ItemBox
+            <Item
+              isRecent={false}
               key={key}
-              onClick={() => removeItem(item)}
-              onMouseDown={startCounter}
-              onMouseUp={stopCounter}
-              onTouchStart={startCounter}
-              onTouchEnd={stopCounter}
-            >
-              <ItemInnerBox>
-                <Icon name="a" light={true} />
-                <ArticleText>{item.name}</ArticleText>
-              </ItemInnerBox>
-            </ItemBox>
+              emitClick={() => removeItem(item)}
+              articleTextValue={item.name}
+              emitMouseDown={() => startCounter()}
+              emitMouseUp={() => stopCounter()}
+              emitTouchStart={() => startCounter()}
+              emitTouchEnd={() => stopCounter()}
+            ></Item>
           ))}
       </ItemWrapper>
       {shoppingList?.recentArticles?.length > 0 && (
@@ -118,16 +110,12 @@ const ItemList: FC = () => {
           <ItemWrapper>
             {shoppingList?.recentArticles?.length > 0 &&
               shoppingList?.recentArticles?.map((item, key) => (
-                <ItemBox
+                <Item
                   isRecent={true}
                   key={key}
-                  onClick={() => readdItem(item)}
-                >
-                  <ItemInnerBox>
-                    <Icon name="a" light={true} />
-                    <ArticleText>{item.name}</ArticleText>
-                  </ItemInnerBox>
-                </ItemBox>
+                  emitClick={() => readdItem(item)}
+                  articleTextValue={item.name}
+                ></Item>
               ))}
           </ItemWrapper>
         </>

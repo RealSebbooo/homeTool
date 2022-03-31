@@ -13,6 +13,7 @@ import {
   ItemWrapper,
 } from "./../item/item.styled";
 import Icon from "../../icons";
+import Item from "../item/item";
 
 const AutocompleteField: FC = () => {
   const [articles, setArticles] = useState([]);
@@ -67,7 +68,6 @@ const AutocompleteField: FC = () => {
         placeholder="Artikel hinzufügen"
         onChange={inputChanged}
         onFocus={focusHandler}
-        // onBlur={blurHandler}
       ></AutocompleteTextfield>
       <AutocompleteBox id="bottomBox">
         <Icon
@@ -79,13 +79,13 @@ const AutocompleteField: FC = () => {
         ></Icon>
         <ItemWrapper>
           {matchingArticles?.length > 0 &&
-            matchingArticles?.map((item) => (
-              <ItemBox key={item.id} onClick={() => addItemToList(item)}>
-                <ItemInnerBox>
-                  <Icon name="a" light={true} />
-                  <ArticleText>{item.name}</ArticleText>
-                </ItemInnerBox>
-              </ItemBox>
+            matchingArticles?.map((item, key) => (
+              <Item
+                isRecent={false}
+                key={key}
+                emitClick={() => addItemToList(item)}
+                articleTextValue={item.name}
+              ></Item>
             ))}
         </ItemWrapper>
       </AutocompleteBox>

@@ -1,18 +1,13 @@
 import React, { useEffect, useState } from "react";
-import styled from "styled-components";
-import theme, { device } from "./../theme";
-import Icon from "./../../icons";
 import Modal from "./../modal";
 import { ArticelType } from "./../../types";
 
-import {
-  ItemBox,
-  ItemInnerBox,
-  ArticleText,
-  ItemWrapper,
-} from "./../item/item.styled";
+import { ItemWrapper } from "./../item/item.styled";
 import { getArticles } from "../../services/databaseHelper";
 import Button from "./../button";
+import { collection, doc, onSnapshot } from "firebase/firestore";
+import db from "./../../services/firebase";
+import Item from "../item/item";
 
 let itemModel: ArticelType = {
   name: "",
@@ -41,11 +36,20 @@ const ItemList = () => {
 
   const getArticleObjects = async () => {
     setArticles(await getArticles());
+    listenToArticleList();
   };
   useEffect(() => {
     getArticleObjects();
   }, []);
 
+  const listenToArticleList = () =>
+    onSnapshot(collection(db, "articles"), (snapshot) => {
+      const itemsDoc = [];
+      snapshot.forEach((element) => {
+        itemsDoc.push({ ...element.data(), uid: element.id });
+      });
+      setArticles(itemsDoc);
+    });
   const disableModal = () => {
     setModal(false);
   };
@@ -76,13 +80,13 @@ const ItemList = () => {
       <Button value="Neuer Artikel" onClick={() => openAddModal()}></Button>
       <ItemWrapper>
         {articles?.length > 0 &&
-          articles?.map((item) => (
-            <ItemBox key={item.id} onClick={() => openEditModal(item)}>
-              <ItemInnerBox>
-                <Icon name="a" light={true} />
-                <ArticleText>{item.name}</ArticleText>
-              </ItemInnerBox>
-            </ItemBox>
+          articles?.map((item, key) => (
+            <Item
+              isRecent={false}
+              key={key}
+              emitClick={() => openEditModal(item)}
+              articleTextValue={item.name}
+            ></Item>
           ))}
       </ItemWrapper>
     </>

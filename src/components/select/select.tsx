@@ -9,7 +9,7 @@ type SelectProps = {
   showAdditionalInfos: boolean;
   onChange: (value: string) => void;
   value: string;
-  hasIcon: boolean;
+  hasIcon?: boolean;
 };
 
 const Select: FC<SelectProps> = ({
