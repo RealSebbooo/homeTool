@@ -31,7 +31,7 @@ const ItemList: FC = () => {
 
   const getShoppingListObjects = async () => {
     await setShoppingList(await getShoppingList());
-    listenToShoppingList("GqzKcwVlYEobK5an1HaQ");
+    listenToShoppingList("dv1dnjZ1QicYNfQhuMzB");
   };
 
   const listenToShoppingList = (uid) =>

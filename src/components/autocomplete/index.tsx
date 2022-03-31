@@ -27,8 +27,10 @@ const AutocompleteField: FC = () => {
   const getArticleObjects = async () => {
     setArticles(await getArticles());
   };
+  useEffect(() => {
+    getArticleObjects();
+  }, []);
 
-  getArticleObjects();
   const focusHandler = () => {
     document.getElementById("bottomBox").style.display = "inline";
     setMachingArticles(JSON.parse(JSON.stringify(articles)));

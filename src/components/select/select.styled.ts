@@ -13,7 +13,7 @@ export const SelectField = styled.select`
   margin: 8px 0;
 
   option {
-    color: ${theme.white};
+    color: ${theme.black};
     display: flex;
     white-space: pre;
     min-height: 20px;

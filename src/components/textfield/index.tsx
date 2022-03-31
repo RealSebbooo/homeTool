@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useState } from "react";
 import { InputField } from "./styled";
 
 export type TextFieldProps = {
@@ -13,7 +13,7 @@ const Textfield: FC<TextFieldProps> = ({
   placeholder = "",
   type = "text",
   textColor = "white",
-  value = "",
+  value,
 }) => {
   const onchangeMethod = (e: React.ChangeEvent<HTMLInputElement>) => {
     textInputChanged(e?.target?.value);

@@ -24,11 +24,13 @@ export default function Register() {
       <LoginCard>
         <Title titleText="Registrieren"></Title>
         <Textfield
+          value=""
           type="text"
           placeholder="Email"
           textInputChanged={(value) => emailValueChanged(value)}
         ></Textfield>
         <Textfield
+          value=""
           type="password"
           placeholder="Password"
           textInputChanged={(value) => passwordValueChanged(value)}

@@ -48,6 +48,7 @@ const setItem = (collectionName: string, data: object) => {
 };
 
 export const getArticles = async () => {
+  console.log("getARticles");
   const ref = collection(db, "articles");
   const snapshot = await getDocs(ref);
   const itemsDoc = snapshot.docs.map((doc) => {
@@ -70,6 +71,7 @@ export const saveArticleInDatabase = (item: ArticelType) => {
 };
 
 export const getShoppingList = async (): Promise<ShoppingListType> => {
+  console.log("getShoppingList");
   if (typeof window == "undefined") return;
   const userId = JSON.parse(localStorage.getItem("htUser"))?.uid;
 

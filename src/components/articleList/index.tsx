@@ -42,7 +42,10 @@ const ItemList = () => {
   const getArticleObjects = async () => {
     setArticles(await getArticles());
   };
-  getArticleObjects();
+  useEffect(() => {
+    getArticleObjects();
+  }, []);
+
   const disableModal = () => {
     setModal(false);
   };

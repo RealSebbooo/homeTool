@@ -1,5 +1,6 @@
 type Colors = {
   white: string;
+  black: string;
   background: string;
   primary: string;
   surface: string;
@@ -16,6 +17,7 @@ type BreakpointWidths = {
 
 const theme: Colors = {
   white: "#ffffff",
+  black: "#000000",
   disabled: "#696969",
   surface: "#585858",
   background: "#141414",
