@@ -52,7 +52,7 @@ const Select: FC<SelectProps> = ({
           {label}
         </option>
         {options?.map((element, key) => (
-          <option value={key.toString()}>{element.label}</option>
+          <option value={key.toString()} key={key}>{element.label}</option>
         ))}
       </SelectField>
       {showAdditionalInfos && (

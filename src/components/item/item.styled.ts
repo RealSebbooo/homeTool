@@ -20,11 +20,14 @@ export const ItemBox = styled.div<ItemBoxProps>`
   text-align: center;
   cursor: pointer;
 `;
-
-export const ItemInnerBox = styled.div`
+type InnerBoxType = {
+  hasBadge?: boolean;
+};
+export const ItemInnerBox = styled.div<InnerBoxType>`
+  position: relative;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 30%;
+  margin-top: ${({ hasBadge }) => (hasBadge ? "20%" : "30%")};
 `;
 
 export const ArticleText = styled.p`
@@ -69,4 +72,17 @@ export const ItemWrapper = styled.div`
   @media ${device.laptop} {
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 1fr 1fr;
   }
+`;
+export const Badge = styled.div`
+  position: absolute;
+  margin-top: 80px;
+  margin-left: 4px;
+  height: 20px;
+  padding-left: 4px;
+  padding-right: 4px;
+  font-size: 14px;
+  border-radius: 25px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+  color: ${theme.white};
+  background-color: rgba(0, 0, 0, 0.25);
 `;

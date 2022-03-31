@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Icon, { iconNames } from "../../icons";
 import Text from "./../text";
 import Textfield from "./../textfield";
@@ -19,12 +19,19 @@ import {
   ModalFooter,
 } from "./styled";
 import Button from "../button";
+import {
+  AmountUnitsFluessigkeiten,
+  AmountUnitsGewicht,
+  AmountUnitsMengen,
+} from "../../services/amountUnits";
 
 type ModalProps = {
   disableModal: () => void;
   newItem?: boolean;
   item?: ArticelType;
   editItem?: boolean;
+  editItemAmount?: boolean;
+  itemChanged?: (item) => void;
 };
 
 const Modal: FC<ModalProps> = ({
@@ -32,7 +39,19 @@ const Modal: FC<ModalProps> = ({
   newItem = false,
   item,
   editItem = false,
+  editItemAmount = false,
+  itemChanged,
 }) => {
+  const [amount, setAmount] = useState<string>();
+  const [amountUnit, setAmountUnit] = useState<string>();
+
+  useEffect(() => {
+    if (editItemAmount) {
+      setAmount(item?.amount);
+      setAmountUnit(item?.amountUnit);
+    }
+  }, []);
+
   const nameChanged = (value: string) => {
     item.name = value;
   };
@@ -44,6 +63,12 @@ const Modal: FC<ModalProps> = ({
   };
   const iconChanged = (value: string) => {
     item.icon = value;
+  };
+  const amountChanged = (value: string) => {
+    setAmount(value);
+  };
+  const amountUnitChanged = (value: string) => {
+    setAmountUnit(value);
   };
   const saveNewArticle = () => {
     item.added = new Date();
@@ -73,9 +98,24 @@ const Modal: FC<ModalProps> = ({
       additionalInfos: "Milliliter, Liter",
     },
   ];
+  const getOptions = () => {
+    if (item.unit === "Menge") {
+      return AmountUnitsMengen;
+    } else if (item.unit === "Flüssigkeit") {
+      return AmountUnitsFluessigkeiten;
+    } else if (item.unit === "Gewicht") {
+      return AmountUnitsGewicht;
+    }
+  };
+
+  const saveEditedItem = () => {
+    item.amount = amount;
+    item.amountUnit = amountUnit;
+    itemChanged(item);
+  };
   return (
     <>
-      {newItem || editItem ? (
+      {editItemAmount ? (
         <ModalContainer>
           <ModalContent>
             <ModalHeader>
@@ -90,84 +130,99 @@ const Modal: FC<ModalProps> = ({
             <ModalBody>
               <Textfield
                 type="text"
-                placeholder="Name"
-                value={item.name}
-                textInputChanged={(value) => nameChanged(value)}
+                placeholder="Menge"
+                value={item.amount}
+                textInputChanged={(value) => amountChanged(value)}
               ></Textfield>
               <Select
                 showAdditionalInfos={true}
                 label="Einheit"
-                options={defaultUnits}
-                value={item.unit}
-                onChange={(value) => unitChanged(value)}
-              ></Select>
-              <Select
-                showAdditionalInfos={false}
-                label="Kategorie"
-                options={Categories}
-                value={item.category}
-                onChange={(value) => categoryChanged(value)}
-              ></Select>
-              <Select
-                showAdditionalInfos={false}
-                label="Icon"
-                options={iconNames}
-                hasIcon={true}
-                value={item.icon}
-                onChange={(value) => iconChanged(value)}
+                options={getOptions()}
+                value={item.amountUnit}
+                onChange={(value) => amountUnitChanged(value)}
               ></Select>
             </ModalBody>
             <ModalFooter>
-              {editItem ? (
-                <Button
-                  value="Löschen"
-                  onClick={() => {
-                    deleteArticle(item.uid);
-                    disableModal();
-                  }}
-                ></Button>
-              ) : (
-                <Button
-                  value="Abbrechen"
-                  onClick={() => disableModal()}
-                ></Button>
-              )}
+              <Button value="Abbrechen" onClick={() => disableModal()}></Button>
 
               <Button
                 value="Speichern"
                 right={true}
-                onClick={() => {
-                  editItem ? saveItem() : saveNewArticle();
-                }}
+                onClick={() => saveEditedItem()}
               ></Button>
             </ModalFooter>
           </ModalContent>
         </ModalContainer>
       ) : (
-        <ModalContainer>
-          <ModalContent>
-            <ModalHeader>
-              <Icon
-                name="close"
-                onClick={() => disableModal()}
-                clickable={true}
-                light={false}
-                right={true}
-              />
-              <Text bold={true} fontSize="28" content="Modal Header"></Text>
-            </ModalHeader>
-            <ModalBody>
-              <Textfield
-                type="text"
-                placeholder="Artikel"
-                textInputChanged={(value) => textInputChanged(value)}
-              ></Textfield>
-            </ModalBody>
-            <ModalFooter>
-              <Text bold={false} fontSize="24" content="Modal Footer"></Text>
-            </ModalFooter>
-          </ModalContent>
-        </ModalContainer>
+        (newItem || editItem) && (
+          <ModalContainer>
+            <ModalContent>
+              <ModalHeader>
+                <Icon
+                  name="close"
+                  onClick={() => disableModal()}
+                  clickable={true}
+                  light={true}
+                  right={true}
+                />
+              </ModalHeader>
+              <ModalBody>
+                <Textfield
+                  type="text"
+                  placeholder="Name"
+                  value={item.name}
+                  textInputChanged={(value) => nameChanged(value)}
+                ></Textfield>
+                <Select
+                  showAdditionalInfos={true}
+                  label="Einheit"
+                  options={defaultUnits}
+                  value={item.unit}
+                  onChange={(value) => unitChanged(value)}
+                ></Select>
+                <Select
+                  showAdditionalInfos={false}
+                  label="Kategorie"
+                  options={Categories}
+                  value={item.category}
+                  onChange={(value) => categoryChanged(value)}
+                ></Select>
+                <Select
+                  showAdditionalInfos={false}
+                  label="Icon"
+                  options={iconNames}
+                  hasIcon={true}
+                  value={item.icon}
+                  onChange={(value) => iconChanged(value)}
+                ></Select>
+              </ModalBody>
+              <ModalFooter>
+                {editItem ? (
+                  <Button
+                    value="Löschen"
+                    onClick={() => {
+                      deleteArticle(item.uid);
+                      disableModal();
+                    }}
+                  ></Button>
+                ) : (
+                  <Button
+                    value="Abbrechen"
+                    onClick={() => disableModal()}
+                  ></Button>
+                )}
+
+                <Button
+                  value="Speichern"
+                  right={true}
+                  onClick={() => {
+                    editItem ? saveItem() : saveNewArticle();
+                  }}
+                ></Button>
+              </ModalFooter>
+            </ModalContent>
+          </ModalContainer>
+        )
       )}
     </>
   );

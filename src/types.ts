@@ -13,6 +13,8 @@ export type ArticelType = {
   icon: string;
   uid?: string;
   added: Date;
+  amount?: string;
+  amountUnit?: string;
 };
 export type ShoppingListType = {
   owner?: string;

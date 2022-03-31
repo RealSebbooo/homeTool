@@ -10,6 +10,11 @@ import {
 import { doc, onSnapshot } from "firebase/firestore";
 import db from "./../../services/firebase";
 import Item from "../item/item";
+import {
+  AmountUnitsFluessigkeiten,
+  AmountUnitsGewicht,
+  AmountUnitsMengen,
+} from "../../services/amountUnits";
 
 export type ItemBoxProps = {
   isRecent: boolean;
@@ -18,6 +23,8 @@ export type ItemBoxProps = {
 const ItemList: FC = () => {
   const intervalRef = React.useRef(null);
   const [isHoldModal, setIsHoldModal] = useState(false);
+  const [itemToEdit, setItemToEdit] = useState<ArticelType>();
+  const [itemToEditKey, setItemToEditKey] = useState<number>();
 
   const [shoppingList, setShoppingList] = useState<ShoppingListType>();
   useEffect(() => {
@@ -40,9 +47,12 @@ const ItemList: FC = () => {
 
   // functions -----------------------------------
 
-  const startCounter = () => {
+  const startCounter = (item: ArticelType, key: number) => {
     if (intervalRef.current) return;
     intervalRef.current = setTimeout(() => {
+      console.log("item", item);
+      setItemToEdit(item);
+      setItemToEditKey(key);
       setIsHoldModal(true);
     }, 400);
   };
@@ -80,9 +90,49 @@ const ItemList: FC = () => {
     setIsHoldModal(false);
     stopCounter();
   };
+
+  const itemChanged = (item: ArticelType) => {
+    console.log(
+      "itemChanged",
+      item,
+      itemToEditKey,
+      shoppingList?.activeArticles
+    );
+
+    const index = shoppingList?.activeArticles?.indexOf(itemToEdit);
+    if (index > -1) {
+      shoppingList?.activeArticles?.splice(index, 1);
+    }
+    shoppingList?.activeArticles.push(item);
+    updateShoppingList(shoppingList);
+    disableModal();
+  };
+
+  const getShortAmountUnit = (item: ArticelType) => {
+    if (item.unit === "Menge") {
+      return AmountUnitsMengen?.find(
+        (element) => element.label === item.amountUnit
+      )?.short;
+    } else if (item.unit === "Flüssigkeit") {
+      return AmountUnitsFluessigkeiten?.find(
+        (element) => element.label === item.amountUnit
+      )?.short;
+    } else if (item.unit === "Gewicht") {
+      return AmountUnitsGewicht?.find(
+        (element) => element.label === item.amountUnit
+      )?.short;
+    }
+  };
   return (
     <>
-      {isHoldModal && <Modal disableModal={disableModal}></Modal>}
+      {isHoldModal && (
+        <Modal
+          disableModal={disableModal}
+          editItemAmount={true}
+          item={itemToEdit}
+          itemChanged={(item) => itemChanged(item)}
+        ></Modal>
+      )}
       <ItemWrapper>
         {shoppingList?.activeArticles?.length > 0 &&
           shoppingList?.activeArticles?.map((item, key) => (
@@ -91,10 +141,15 @@ const ItemList: FC = () => {
               key={key}
               emitClick={() => removeItem(item)}
               articleTextValue={item.name}
-              emitMouseDown={() => startCounter()}
+              emitMouseDown={() => startCounter(item, key)}
               emitMouseUp={() => stopCounter()}
-              emitTouchStart={() => startCounter()}
+              emitTouchStart={() => startCounter(item, key)}
               emitTouchEnd={() => stopCounter()}
+              tag={
+                item.amount && item.amountUnit
+                  ? `${item.amount} ${getShortAmountUnit(item)}`
+                  : null
+              }
             ></Item>
           ))}
       </ItemWrapper>
@@ -115,6 +170,11 @@ const ItemList: FC = () => {
                   key={key}
                   emitClick={() => readdItem(item)}
                   articleTextValue={item.name}
+                  tag={
+                    item.amount && item.amountUnit
+                      ? `${item.amount} ${getShortAmountUnit(item)}`
+                      : null
+                  }
                 ></Item>
               ))}
           </ItemWrapper>

@@ -1,6 +1,6 @@
 import React, { FC } from "react";
 import Icon from "../../icons";
-import { ArticleText, ItemBox, ItemInnerBox } from "./item.styled";
+import { ArticleText, ItemBox, ItemInnerBox, Badge } from "./item.styled";
 
 type ItemProps = {
   articleTextValue: string;
@@ -11,6 +11,7 @@ type ItemProps = {
   emitTouchStart?: () => void;
   emitTouchEnd?: () => void;
   isRecent?: boolean;
+  tag?: string;
 };
 const Item: FC<ItemProps> = ({
   articleTextValue,
@@ -20,6 +21,7 @@ const Item: FC<ItemProps> = ({
   emitTouchStart,
   emitTouchEnd,
   isRecent,
+  tag,
 }) => {
   return (
     <ItemBox
@@ -30,10 +32,11 @@ const Item: FC<ItemProps> = ({
       onTouchStart={emitTouchStart}
       onTouchEnd={emitTouchEnd}
     >
-      <ItemInnerBox>
+      <ItemInnerBox hasBadge={tag ? true : false}>
         <Icon name="a" light={true} />
         <ArticleText>{articleTextValue}</ArticleText>
       </ItemInnerBox>
+      {tag && <Badge>{tag}</Badge>}
     </ItemBox>
   );
 };
