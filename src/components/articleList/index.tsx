@@ -10,11 +10,20 @@ import {
   ItemInnerBox,
   ArticleText,
   ItemWrapper,
-} from "./../itemList/styled";
+} from "./../item/item.styled";
 import { getArticles } from "../../services/databaseHelper";
 import Button from "./../button";
 
 let itemModel: ArticelType = {
+  name: "",
+  category: "",
+  unit: "",
+  icon: "",
+  uid: "",
+  added: new Date(),
+};
+
+const backupItemModel: ArticelType = {
   name: "",
   category: "",
   unit: "",
@@ -41,6 +50,7 @@ const ItemList = () => {
 
   const openAddModal = () => {
     console.log("open");
+    itemModel = JSON.parse(JSON.stringify(backupItemModel));
     setNewItem(true);
     setEditItem(false);
     setModal(true);

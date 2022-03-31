@@ -58,6 +58,13 @@ export const Icons = {
   arrowLeft: ArrowLeft,
 };
 
+export const iconNames = [
+  { label: "close" },
+  { label: "a" },
+  { label: "b" },
+  { label: "arrowLeft" },
+];
+
 const Icon: FC<IconProps> = ({
   name = "loading",
   small = false,

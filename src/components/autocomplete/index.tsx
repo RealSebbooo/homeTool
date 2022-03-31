@@ -11,7 +11,7 @@ import {
   ItemInnerBox,
   ArticleText,
   ItemWrapper,
-} from "./../itemList/styled";
+} from "./../item/item.styled";
 import Icon from "../../icons";
 
 const AutocompleteField: FC = () => {

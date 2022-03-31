@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { TextFieldProps } from "./index";
+import theme from "./../theme";
 
 export const InputField = styled.input<TextFieldProps>`
   width: 100%;
@@ -10,6 +11,7 @@ export const InputField = styled.input<TextFieldProps>`
   background-color: transparent;
   border-radius: 4px;
   box-sizing: border-box;
+  color: ${theme.white};
 
   ::placeholder {
     color: #ccc;

@@ -2,7 +2,12 @@ import React, { FC, useEffect, useState } from "react";
 import Icon from "./../../icons";
 import Modal from "./../modal";
 import Text from "./../text";
-import { ItemBox, ItemInnerBox, ArticleText, ItemWrapper } from "./styled";
+import {
+  ItemBox,
+  ItemInnerBox,
+  ArticleText,
+  ItemWrapper,
+} from "./../item/item.styled";
 import { ArticelType, ShoppingListType, recentArticle } from "./../../types";
 import {
   getShoppingList,

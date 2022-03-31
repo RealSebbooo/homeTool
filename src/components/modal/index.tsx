@@ -1,8 +1,10 @@
 import React, { FC } from "react";
-import Icon from "../../icons";
+import Icon, { iconNames } from "../../icons";
 import Text from "./../text";
 import Textfield from "./../textfield";
+import Select from "./../select/select";
 import { ArticelType } from "./../../types";
+import Categories from "../../services/categories";
 import {
   saveNewArticleToDatabase,
   deleteArticle,
@@ -52,11 +54,29 @@ const Modal: FC<ModalProps> = ({
 
     if (!item.name || !item.category || !item.icon || !item.unit) return;
     else saveNewArticleToDatabase(item);
+
+    disableModal();
   };
   const saveItem = () => {
     if (!item.name || !item.category || !item.icon || !item.unit) return;
     else saveArticleInDatabase(item);
+
+    disableModal();
   };
+  const defaultUnits = [
+    {
+      label: "Menge",
+      additionalInfos: "Packung, Stück, Priese, Esslöffel, Teelöffel, Becher",
+    },
+    {
+      label: "Gewicht",
+      additionalInfos: "Gramm, Kilogram",
+    },
+    {
+      label: "Flüssigkeit",
+      additionalInfos: "Milliliter, Liter",
+    },
+  ];
   return (
     <>
       {newItem || editItem ? (
@@ -67,7 +87,7 @@ const Modal: FC<ModalProps> = ({
                 name="close"
                 onClick={() => disableModal()}
                 clickable={true}
-                light={false}
+                light={true}
                 right={true}
               />
             </ModalHeader>
@@ -78,24 +98,28 @@ const Modal: FC<ModalProps> = ({
                 value={item.name}
                 textInputChanged={(value) => nameChanged(value)}
               ></Textfield>
-              <Textfield
-                type="text"
-                placeholder="Standardeinheit"
+              <Select
+                showAdditionalInfos={true}
+                label="Einheit"
+                options={defaultUnits}
                 value={item.unit}
-                textInputChanged={(value) => unitChanged(value)}
-              ></Textfield>
-              <Textfield
-                type="text"
-                placeholder="Kategorie"
+                onChange={(value) => unitChanged(value)}
+              ></Select>
+              <Select
+                showAdditionalInfos={false}
+                label="Kategorie"
+                options={Categories}
                 value={item.category}
-                textInputChanged={(value) => categoryChanged(value)}
-              ></Textfield>
-              <Textfield
-                type="text"
-                placeholder="Icon"
+                onChange={(value) => categoryChanged(value)}
+              ></Select>
+              <Select
+                showAdditionalInfos={false}
+                label="Icon"
+                options={iconNames}
+                hasIcon={true}
                 value={item.icon}
-                textInputChanged={(value) => iconChanged(value)}
-              ></Textfield>
+                onChange={(value) => iconChanged(value)}
+              ></Select>
             </ModalBody>
             <ModalFooter>
               {editItem ? (
@@ -117,7 +141,6 @@ const Modal: FC<ModalProps> = ({
                 value="Speichern"
                 onClick={() => {
                   editItem ? saveItem() : saveNewArticle();
-                  disableModal();
                 }}
               ></Button>
             </ModalFooter>

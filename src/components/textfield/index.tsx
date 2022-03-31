@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC, useEffect } from "react";
 import { InputField } from "./styled";
 
 export type TextFieldProps = {
@@ -19,8 +19,10 @@ const Textfield: FC<TextFieldProps> = ({
     console.log("e", e?.target?.value);
     textInputChanged(e?.target?.value);
   };
+
   return (
     <InputField
+      value={value}
       type={type}
       onChange={onchangeMethod}
       placeholder={placeholder}
