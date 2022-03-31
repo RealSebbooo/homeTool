@@ -8,16 +8,11 @@ import { ShoppingListType } from "../types";
 import { getShoppingList } from "../services/databaseHelper";
 
 const Index = () => {
-  const [shoppingList, setShoppingList] = useState<ShoppingListType>();
-
-  useEffect(async () => {
-    setShoppingList(await getShoppingList());
-  }, []);
   return (
     <Layout>
       <Title titleText="Einkaufsliste"></Title>
       <AutocompleteField></AutocompleteField>
-      <ItemList shoppingList={shoppingList}></ItemList>
+      <ItemList></ItemList>
     </Layout>
   );
 };

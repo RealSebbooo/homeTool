@@ -82,7 +82,6 @@ export const getShoppingList = async (): Promise<ShoppingListType> => {
     var rObj = { ...doc.data(), uid: doc.id };
     return rObj;
   });
-  console.log("itemsDoc", itemsDoc[0]);
   return itemsDoc[0];
 };
 

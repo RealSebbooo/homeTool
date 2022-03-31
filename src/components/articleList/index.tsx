@@ -11,7 +11,7 @@ import {
   ArticleText,
   ItemWrapper,
 } from "./../itemList/styled";
-import { getArticles, getArticlesLive } from "../../services/databaseHelper";
+import { getArticles } from "../../services/databaseHelper";
 import Button from "./../button";
 
 let itemModel: ArticelType = {

@@ -1,18 +1,99 @@
-import React from "react";
-import Autocomplete from "@mui/material/Autocomplete";
-import TextField from "@mui/material/TextField";
+import React, { FC, useEffect, useState } from "react";
+import { AutocompleteTextfield, AutocompleteBox } from "./styled";
+import { ArticelType, ShoppingListType } from "./../../types";
+import {
+  getArticles,
+  getShoppingList,
+  updateShoppingList,
+} from "../../services/databaseHelper";
+import {
+  ItemBox,
+  ItemInnerBox,
+  ArticleText,
+  ItemWrapper,
+} from "./../itemList/styled";
+import Icon from "../../icons";
 
-const AutocompleteField = () => {
+const AutocompleteField: FC = () => {
+  const [articles, setArticles] = useState([]);
+  const [shoppingList, setShoppingList] = useState<ShoppingListType>();
+  const [matchingArticles, setMachingArticles] = useState([]);
+  useEffect(() => {
+    getShoppingListObjects();
+  }, []);
+  const getShoppingListObjects = async () => {
+    setShoppingList(await getShoppingList());
+    console.log("shoppingLists", shoppingList);
+  };
+  const getArticleObjects = async () => {
+    setArticles(await getArticles());
+  };
+
+  getArticleObjects();
+  const focusHandler = () => {
+    document.getElementById("bottomBox").style.display = "inline";
+    setMachingArticles(JSON.parse(JSON.stringify(articles)));
+  };
+
+  const disableModal = () => {
+    document.getElementById("bottomBox").style.display = "none";
+  };
+
+  const addItemToList = (item: ArticelType) => {
+    console.log("update", item);
+    const newShoppingList = JSON.parse(JSON.stringify(shoppingList));
+
+    newShoppingList?.activeArticles?.push(item);
+    updateShoppingList(newShoppingList);
+    getShoppingListObjects();
+  };
+
+  const inputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e?.target?.value;
+    console.log("e", e, value);
+    if (value)
+      setMachingArticles(
+        articles?.filter((item) =>
+          item?.name?.toLowerCase().includes(value?.toLowerCase())
+        )
+      );
+    else {
+      setMachingArticles(JSON.parse(JSON.stringify(articles)));
+    }
+  };
   return (
-    <Autocomplete
-      disablePortal
-      id="combo-box-demo"
-      options={top100Films}
-      sx={{ width: 300 }}
-      renderInput={(params) => <TextField {...params} label="Movie" />}
-    />
+    <>
+      <AutocompleteTextfield
+        type="text"
+        placeholder="Artikel hinzufügen"
+        onChange={inputChanged}
+        onFocus={focusHandler}
+        // onBlur={blurHandler}
+      ></AutocompleteTextfield>
+      <AutocompleteBox id="bottomBox">
+        <Icon
+          name="close"
+          light={true}
+          right={true}
+          onClick={() => disableModal()}
+          clickable={true}
+        ></Icon>
+        <ItemWrapper>
+          {matchingArticles?.length > 0 &&
+            matchingArticles?.map((item) => (
+              <ItemBox key={item.id} onClick={() => addItemToList(item)}>
+                <ItemInnerBox>
+                  <Icon name="a" light={true} />
+                  <ArticleText>{item.name}</ArticleText>
+                </ItemInnerBox>
+              </ItemBox>
+            ))}
+        </ItemWrapper>
+      </AutocompleteBox>
+    </>
   );
 };
+
 export default AutocompleteField;
 
 const top100Films = [

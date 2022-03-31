@@ -8,17 +8,32 @@ import {
   getShoppingList,
   updateShoppingList,
 } from "./../../services/databaseHelper";
+import { doc, onSnapshot } from "firebase/firestore";
+import db from "./../../services/firebase";
 
 export type ItemBoxProps = {
   isRecent: boolean;
 };
-type ItemListProp = {
-  shoppingList: ShoppingListType;
-};
 
-const ItemList: FC<ItemListProp> = ({ shoppingList }) => {
+const ItemList: FC = () => {
   const intervalRef = React.useRef(null);
   const [isHoldModal, setIsHoldModal] = useState(false);
+
+  const [shoppingList, setShoppingList] = useState<ShoppingListType>();
+  useEffect(() => {
+    getShoppingListObjects();
+  }, []);
+  const getShoppingListObjects = async () => {
+    await setShoppingList(await getShoppingList());
+    listenToShoppingList("GqzKcwVlYEobK5an1HaQ");
+  };
+
+  const listenToShoppingList = (uid) =>
+    onSnapshot(doc(db, "shoppingLists", uid), (doc) => {
+      console.log("Current data: ", doc.data());
+
+      setShoppingList({ ...doc.data(), uid: doc.id });
+    });
 
   useEffect(() => {
     return () => stopCounter(); // when App is unmounted we should stop counter
@@ -49,7 +64,6 @@ const ItemList: FC<ItemListProp> = ({ shoppingList }) => {
         shoppingList?.activeArticles?.splice(index, 1);
       }
       shoppingList?.recentArticles.push({ ...item, lastUsed: new Date() });
-      console.log("first", shoppingList);
 
       updateShoppingList(shoppingList);
     }
@@ -75,9 +89,9 @@ const ItemList: FC<ItemListProp> = ({ shoppingList }) => {
       {isHoldModal && <Modal disableModal={disableModal}></Modal>}
       <ItemWrapper>
         {shoppingList?.activeArticles?.length > 0 &&
-          shoppingList?.activeArticles?.map((item) => (
+          shoppingList?.activeArticles?.map((item, key) => (
             <ItemBox
-              key={item.uid}
+              key={key}
               onClick={() => removeItem(item)}
               onMouseDown={startCounter}
               onMouseUp={stopCounter}
@@ -102,10 +116,10 @@ const ItemList: FC<ItemListProp> = ({ shoppingList }) => {
           ></Text>
           <ItemWrapper>
             {shoppingList?.recentArticles?.length > 0 &&
-              shoppingList?.recentArticles?.map((item) => (
+              shoppingList?.recentArticles?.map((item, key) => (
                 <ItemBox
                   isRecent={true}
-                  key={item.uid}
+                  key={key}
                   onClick={() => readdItem(item)}
                 >
                   <ItemInnerBox>

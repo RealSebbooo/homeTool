@@ -22,7 +22,6 @@ const Textfield: FC<TextFieldProps> = ({
   return (
     <InputField
       type={type}
-      value={value}
       onChange={onchangeMethod}
       placeholder={placeholder}
       textColor={textColor}
