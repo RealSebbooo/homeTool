@@ -27,4 +27,5 @@ export const ButtonComp = styled.input`
 
   ${({ disabled }) => (disabled ? `cursor: auto` : `cursor: pointer`)};
   ${({ text }) => text && `padding-left: 0px`};
+  ${({ right }) => right && "margin-left: auto"}
 `;

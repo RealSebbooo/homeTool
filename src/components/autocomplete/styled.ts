@@ -17,7 +17,8 @@ export const AutocompleteTextfield = styled.input`
   margin-left: auto;
   padding: 0px 8px;
 
-  border: 1px solid ${theme.surface};
+  border: 1px solid ${theme.white};
+  border-bottom: none;
   background-color: ${theme.background};
   z-index: 100;
   ::placeholder {

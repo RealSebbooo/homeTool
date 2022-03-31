@@ -38,6 +38,7 @@ export const ModalBody = styled.div`
   padding: 2px 16px;
 `;
 export const ModalFooter = styled.div`
+  display: flex;
   padding: 2px 16px;
   color: black !important;
 `;

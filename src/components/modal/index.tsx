@@ -135,6 +135,7 @@ const Modal: FC<ModalProps> = ({
 
               <Button
                 value="Speichern"
+                right={true}
                 onClick={() => {
                   editItem ? saveItem() : saveNewArticle();
                 }}
