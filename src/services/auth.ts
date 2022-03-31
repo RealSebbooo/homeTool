@@ -17,7 +17,8 @@ export const login = (user: UserObjectType) => {
       const user = userCredential.user;
       const newUser = await getUserFromDatabase(user?.email);
       if (newUser) {
-        localStorage.setItem("htUser", JSON.stringify(newUser));
+        if (typeof window !== "undefined")
+          localStorage.setItem("htUser", JSON.stringify(newUser));
         navigate("/");
       }
     })
@@ -28,7 +29,7 @@ export const login = (user: UserObjectType) => {
 
 export const logout = () => {
   signOut(auth).then(() => {
-    localStorage.removeItem("htUser");
+    if (typeof window !== "undefined") localStorage.removeItem("htUser");
     navigate("/login");
   });
 };
@@ -43,7 +44,8 @@ export const register = (user: UserObjectType) => {
 
       const newUser = await getUserFromDatabase(user?.email);
       if (newUser) {
-        localStorage.setItem("htUser", JSON.stringify(newUser));
+        if (typeof window !== "undefined")
+          localStorage.setItem("htUser", JSON.stringify(newUser));
         navigate("/");
       }
       // ...
@@ -56,6 +58,7 @@ export const register = (user: UserObjectType) => {
 };
 
 export const isLoggedIn = async () => {
+  if (typeof window == "undefined") return;
   const lsUser = localStorage.getItem("htUser");
   if (lsUser === null) {
     const path = globalHistory.location.pathname;

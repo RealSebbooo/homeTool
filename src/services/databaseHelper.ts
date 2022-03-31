@@ -73,6 +73,7 @@ export const saveArticleInDatabase = (item: ArticelType) => {
 };
 
 export const getShoppingList = async (): Promise<ShoppingListType> => {
+  if (typeof window == "undefined") return;
   const userId = JSON.parse(localStorage.getItem("htUser"))?.uid;
 
   const ref = collection(db, "shoppingLists");
