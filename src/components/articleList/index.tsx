@@ -44,12 +44,10 @@ const ItemList = () => {
   };
   getArticleObjects();
   const disableModal = () => {
-    console.log("disable");
     setModal(false);
   };
 
   const openAddModal = () => {
-    console.log("open");
     itemModel = JSON.parse(JSON.stringify(backupItemModel));
     setNewItem(true);
     setEditItem(false);

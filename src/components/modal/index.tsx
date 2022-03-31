@@ -35,19 +35,15 @@ const Modal: FC<ModalProps> = ({
 }) => {
   const nameChanged = (value: string) => {
     item.name = value;
-    console.log("nameChanged", value);
   };
   const unitChanged = (value: string) => {
     item.unit = value;
-    console.log("unitChanged", value);
   };
   const categoryChanged = (value: string) => {
     item.category = value;
-    console.log("categoryChanged", value);
   };
   const iconChanged = (value: string) => {
     item.icon = value;
-    console.log("iconChanged", value);
   };
   const saveNewArticle = () => {
     item.added = new Date();

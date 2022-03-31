@@ -31,7 +31,6 @@ const Select: FC<SelectProps> = ({
   };
 
   useEffect(() => {
-    console.log("value", value);
     if (!value) {
       document.getElementById("selectId" + label).selectedIndex = 0;
     } else {

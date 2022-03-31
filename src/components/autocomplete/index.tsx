@@ -23,7 +23,6 @@ const AutocompleteField: FC = () => {
   }, []);
   const getShoppingListObjects = async () => {
     setShoppingList(await getShoppingList());
-    console.log("shoppingLists", shoppingList);
   };
   const getArticleObjects = async () => {
     setArticles(await getArticles());
@@ -40,7 +39,6 @@ const AutocompleteField: FC = () => {
   };
 
   const addItemToList = (item: ArticelType) => {
-    console.log("update", item);
     const newShoppingList = JSON.parse(JSON.stringify(shoppingList));
 
     newShoppingList?.activeArticles?.push(item);
@@ -50,7 +48,6 @@ const AutocompleteField: FC = () => {
 
   const inputChanged = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e?.target?.value;
-    console.log("e", e, value);
     if (value)
       setMachingArticles(
         articles?.filter((item) =>

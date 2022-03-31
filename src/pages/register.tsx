@@ -12,12 +12,10 @@ export default function Register() {
   const [userObject, setUserObject] = useState<UserObjectType>();
 
   const emailValueChanged = (value: string) => {
-    console.log("email", value, userObject);
     setUserObject({ ...userObject, email: value });
   };
 
   const passwordValueChanged = (value: string) => {
-    console.log("passwort", value, userObject);
     setUserObject({ ...userObject, password: value });
   };
 

@@ -16,7 +16,6 @@ const Textfield: FC<TextFieldProps> = ({
   value = "",
 }) => {
   const onchangeMethod = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("e", e?.target?.value);
     textInputChanged(e?.target?.value);
   };
 

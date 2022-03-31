@@ -17,7 +17,6 @@ const Button: FC<ButtonProps> = ({
   disabled = false,
 }) => {
   const buttonClicked = () => {
-    console.log("hier");
     onClick();
   };
   return (

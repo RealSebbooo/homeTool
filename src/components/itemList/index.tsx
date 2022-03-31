@@ -28,6 +28,7 @@ const ItemList: FC = () => {
   useEffect(() => {
     getShoppingListObjects();
   }, []);
+
   const getShoppingListObjects = async () => {
     await setShoppingList(await getShoppingList());
     listenToShoppingList("GqzKcwVlYEobK5an1HaQ");
@@ -35,8 +36,6 @@ const ItemList: FC = () => {
 
   const listenToShoppingList = (uid) =>
     onSnapshot(doc(db, "shoppingLists", uid), (doc) => {
-      console.log("Current data: ", doc.data());
-
       setShoppingList({ ...doc.data(), uid: doc.id });
     });
 
@@ -49,7 +48,6 @@ const ItemList: FC = () => {
   const startCounter = () => {
     if (intervalRef.current) return;
     intervalRef.current = setTimeout(() => {
-      console.log("hold");
       setIsHoldModal(true);
     }, 400);
   };
@@ -63,7 +61,6 @@ const ItemList: FC = () => {
   getShoppingList();
   const removeItem = (item: ArticelType) => {
     if (!isHoldModal) {
-      console.log("remoev", item);
       const index = shoppingList?.activeArticles?.indexOf(item);
       if (index > -1) {
         shoppingList?.activeArticles?.splice(index, 1);
@@ -85,7 +82,6 @@ const ItemList: FC = () => {
   };
 
   const disableModal = () => {
-    console.log("disable");
     setIsHoldModal(false);
     stopCounter();
   };

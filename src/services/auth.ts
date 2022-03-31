@@ -11,9 +11,8 @@ import { navigate } from "gatsby";
 import { globalHistory } from "@reach/router";
 
 export const login = (user: UserObjectType) => {
-  console.log("login", user);
-  signInWithEmailAndPassword(auth, user?.email, user?.password)
-    .then(async (userCredential) => {
+  signInWithEmailAndPassword(auth, user?.email, user?.password).then(
+    async (userCredential) => {
       const user = userCredential.user;
       const newUser = await getUserFromDatabase(user?.email);
       if (newUser) {
@@ -21,10 +20,8 @@ export const login = (user: UserObjectType) => {
           localStorage.setItem("htUser", JSON.stringify(newUser));
         navigate("/");
       }
-    })
-    .catch((error) => {
-      console.log("error", error);
-    });
+    }
+  );
 };
 
 export const logout = () => {
@@ -39,7 +36,6 @@ export const register = (user: UserObjectType) => {
     .then(async (userCredential) => {
       // Signed in
       const user = userCredential.user;
-      console.log("signed in", user);
       userAddedToAuth(user?.email);
 
       const newUser = await getUserFromDatabase(user?.email);
