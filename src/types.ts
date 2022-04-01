@@ -4,6 +4,7 @@ export type UserObjectType = {
 };
 export type UserType = {
   email: string;
+  name: string;
   uid: string;
 };
 export type ArticelType = {

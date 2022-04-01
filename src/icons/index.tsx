@@ -4,6 +4,10 @@ import { CloseIcon } from "./svgs/close";
 import { AIcon } from "./svgs/a";
 import { BIcon } from "./svgs/b";
 import { ArrowLeft } from "./svgs/arrowleft";
+import { User } from "./svgs/user";
+import { Pencil } from "./svgs/pencil";
+import { Save } from "./svgs/save";
+import { Email } from "./svgs/email";
 import { Iconsizer } from "./styled";
 import { navigate } from "gatsby";
 
@@ -27,6 +31,7 @@ export type IconProps = {
   backButton?: boolean;
   to?: string;
   right?: boolean;
+  spaceRight?: boolean;
 };
 
 export type IconTagProps = {
@@ -49,6 +54,7 @@ export type IconTagProps = {
   backButton?: boolean;
   to?: string;
   right?: boolean;
+  spaceRight?: boolean;
 };
 
 export const Icons = {
@@ -56,6 +62,10 @@ export const Icons = {
   a: AIcon,
   b: BIcon,
   arrowLeft: ArrowLeft,
+  user: User,
+  pencil: Pencil,
+  save: Save,
+  email: Email,
 };
 
 export const iconNames = [
@@ -63,9 +73,14 @@ export const iconNames = [
   { label: "a" },
   { label: "b" },
   { label: "arrowLeft" },
+  { label: "user" },
+  { label: "pencil" },
+  { label: "save" },
+  { label: "email" },
 ];
 
 const Icon: FC<IconProps> = ({
+  spaceRight = false,
   name = "loading",
   small = false,
   onClick,
@@ -89,6 +104,7 @@ const Icon: FC<IconProps> = ({
 
   return (
     <Iconsizer
+      spaceRight={spaceRight}
       className={className}
       right={right}
       small={small}

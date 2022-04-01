@@ -7,6 +7,8 @@ export type TextFieldProps = {
   type?: string;
   textColor?: string;
   value?: string;
+  short?: boolean;
+  dense?: boolean;
 };
 const Textfield: FC<TextFieldProps> = ({
   textInputChanged,
@@ -14,6 +16,8 @@ const Textfield: FC<TextFieldProps> = ({
   type = "text",
   textColor = "white",
   value = "",
+  short = false,
+  dense = false,
 }) => {
   const onchangeMethod = (e: React.ChangeEvent<HTMLInputElement>) => {
     textInputChanged(e?.target?.value);
@@ -32,9 +36,11 @@ const Textfield: FC<TextFieldProps> = ({
       name="fakeusernameremembered"
       id="inputFieldValue"
       type={type}
+      dense={dense}
       onChange={onchangeMethod}
       placeholder={placeholder}
       textColor={textColor}
+      short={short}
     ></InputField>
   );
 };

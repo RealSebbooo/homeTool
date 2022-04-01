@@ -26,7 +26,7 @@ const Button: FC<ButtonProps> = ({
       right={right}
       type="button"
       value={value}
-      onClick={buttonClicked}
+      onClick={!disabled && buttonClicked}
       text={text}
     ></ButtonComp>
   );
