@@ -99,7 +99,14 @@ const Modal: FC<ModalProps> = ({
     },
   ];
   const getOptions = () => {
-    if (item.unit === "Menge") {
+    console.log("itemUnit", item.unit, AmountUnitsMengen);
+    if (item.unit === "all") {
+      return [
+        ...AmountUnitsMengen,
+        ...AmountUnitsFluessigkeiten,
+        ...AmountUnitsGewicht,
+      ];
+    } else if (item.unit === "Menge") {
       return AmountUnitsMengen;
     } else if (item.unit === "Flüssigkeit") {
       return AmountUnitsFluessigkeiten;

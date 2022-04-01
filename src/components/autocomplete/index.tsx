@@ -61,6 +61,21 @@ const AutocompleteField: FC = () => {
       setMachingArticles(JSON.parse(JSON.stringify(articles)));
     }
   };
+  const handleKeyDown = (event) => {
+    if (event.key === "Enter") {
+      const customItem: ArticelType = {
+        name: event?.target?.value,
+        category: "custom",
+        unit: "all",
+        icon: "a",
+        uid: "694201337" + event?.target?.value,
+        added: new Date(),
+        amount: "",
+        amountUnit: "",
+      };
+      addItemToList(customItem);
+    }
+  };
   return (
     <>
       <AutocompleteTextfield
@@ -68,6 +83,7 @@ const AutocompleteField: FC = () => {
         placeholder="Artikel hinzufügen"
         onChange={inputChanged}
         onFocus={focusHandler}
+        onKeyDown={handleKeyDown}
       ></AutocompleteTextfield>
       <AutocompleteBox id="bottomBox">
         <Icon

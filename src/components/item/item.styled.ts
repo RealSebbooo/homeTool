@@ -9,13 +9,13 @@ export const ItemBox = styled.div<ItemBoxProps>`
     isRecent ? theme.surface : theme.primary};
   aspect-ratio: 1;
   border-radius: 4px;
-
   border: none;
   color: white;
   text-align: center;
   align-content: center;
   text-decoration: none;
   display: flex;
+  flex-direction: column;
   font-size: 16px;
   text-align: center;
   cursor: pointer;
@@ -27,7 +27,8 @@ export const ItemInnerBox = styled.div<InnerBoxType>`
   position: relative;
   margin-left: auto;
   margin-right: auto;
-  margin-top: ${({ hasBadge }) => (hasBadge ? "20%" : "30%")};
+  margin-bottom: -10px;
+  margin-top: ${({ hasBadge }) => (hasBadge ? "20%" : "20%")};
 `;
 
 export const ArticleText = styled.p`
@@ -37,6 +38,18 @@ export const ArticleText = styled.p`
   color: ${theme.white};
   display: -webkit-box;
   -webkit-line-clamp: 2; /* number of lines to show */
+
+  @media ${device.mobile} {
+    line-height: 1.2rem;
+  }
+
+  @media ${device.tablet} {
+    line-height: 1.2rem;
+  }
+
+  @media ${device.laptop} {
+    line-height: 1rem;
+  }
   line-clamp: 2;
   -webkit-box-orient: vertical;
   margin-left: auto;
@@ -74,13 +87,15 @@ export const ItemWrapper = styled.div`
   }
 `;
 export const Badge = styled.div`
-  position: absolute;
-  margin-top: 80px;
+  margin-top: auto;
+  margin-bottom: 4px;
   margin-left: 4px;
-  height: 20px;
+  margin-right: 4px;
+  height: 16px;
   padding-left: 4px;
   padding-right: 4px;
-  font-size: 14px;
+  font-size: 12px;
+  max-width: auto;
   border-radius: 25px;
   border: 1px solid rgba(0, 0, 0, 0.5);
   color: ${theme.white};

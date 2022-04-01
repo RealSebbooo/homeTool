@@ -109,7 +109,13 @@ const ItemList: FC = () => {
   };
 
   const getShortAmountUnit = (item: ArticelType) => {
-    if (item.unit === "Menge") {
+    if (item.unit === "all") {
+      return [
+        ...AmountUnitsMengen,
+        ...AmountUnitsFluessigkeiten,
+        ...AmountUnitsGewicht,
+      ]?.find((element) => element.label === item.amountUnit)?.short;
+    } else if (item.unit === "Menge") {
       return AmountUnitsMengen?.find(
         (element) => element.label === item.amountUnit
       )?.short;
