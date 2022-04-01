@@ -1,5 +1,4 @@
 import React, { FC, useState } from "react";
-import Layout from "./../components/layout";
 import Textfield from "./../components/textfield";
 import { login } from "./../services/auth";
 
@@ -21,7 +20,7 @@ const Login: FC = () => {
   };
 
   return (
-    <Layout>
+    <>
       <LoginCard>
         <Title titleText="Login"></Title>
         <Textfield
@@ -47,7 +46,7 @@ const Login: FC = () => {
           right={true}
         ></Button>
       </LoginCard>
-    </Layout>
+    </>
   );
 };
 export default Login;

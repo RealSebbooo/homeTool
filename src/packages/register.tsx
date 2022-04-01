@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Layout from "./../components/layout";
 import Textfield from "./../components/textfield";
 import { LoginCard } from "./../styles/login.styled";
 import Button from "./../components/button";
@@ -20,7 +19,7 @@ export default function Register() {
   };
 
   return (
-    <Layout>
+    <>
       <LoginCard>
         <Title titleText="Registrieren"></Title>
         <Textfield
@@ -48,6 +47,6 @@ export default function Register() {
           right={true}
         ></Button>
       </LoginCard>
-    </Layout>
+    </>
   );
 }

@@ -2,11 +2,11 @@ import React from "react";
 import { isLoggedIn } from "./src/services/auth";
 import Container from "./src/components/container";
 import FooterNav from "./src/components/footer";
-// Adds a class name to the body element
+import "./src/styles/index.css";
+
 export const onRouteUpdate = () => {
   isLoggedIn();
 };
-// Wraps every page in a component
 
 export const wrapPageElement = ({ element, props }) => {
   return (
