@@ -12,7 +12,7 @@ const Account = () => {
 
       <Button
         value="Artikel"
-        onClick={() => navigate("/articles")}
+        onClick={() => navigate("/artikel")}
         right={true}
       ></Button>
       <Button value="Abmelden" onClick={() => logout()} right={true}></Button>
