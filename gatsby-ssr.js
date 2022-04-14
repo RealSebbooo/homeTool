@@ -4,7 +4,7 @@ import Container from "./src/components/container";
 import FooterNav from "./src/components/footer";
 import "./src/styles/index.css";
 
-export const onRouteUpdate = () => {
+export const onRenderBody = () => {
   isLoggedIn();
 };
 
