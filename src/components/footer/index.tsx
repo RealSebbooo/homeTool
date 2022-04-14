@@ -43,7 +43,7 @@ const ButtonText = styled.p<TextProps>`
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
-  color: white;
+  color: ${theme.white};
   max-width: ${({ width, numberOfItems }) =>
     (width / numberOfItems - 20).toString() + "px" || "100px"};
 `;
