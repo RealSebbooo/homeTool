@@ -14,7 +14,7 @@ _Have another more specific idea? You may want to check out our vibrant collecti
 
 https://capacitorjs.com/docs/v2/basics/building-your-app## 🚀 Quick start
 
-1.  **Create a Gatsby site.**
+1.  **Create a Gatsby site.**.
 
     Use the Gatsby CLI ([install instructions](https://www.gatsbyjs.com/docs/tutorial/part-0/#gatsby-cli)) to create a new site, specifying the hello-world starter.
 
