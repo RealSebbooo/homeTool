@@ -17,22 +17,21 @@ export type ArticelType = {
   amount?: string;
   amountUnit?: string;
 };
-
-export type ShoppingListType = {
+type ListType = {
   owner: string;
   members: string[];
-  activeArticles: ArticelType[];
-  recentArticles: recentArticle[];
   uid: string;
   name: string;
+  listType: string;
 };
+export interface ShoppingListType extends ListType {
+  activeArticles: ArticelType[];
+  recentArticles: recentArticle[];
+}
 
-export type RecipesType = {
-  name: string;
+export interface RecipesType extends ListType {
   image: string;
   description: string;
-  owner: string;
-  members: string[];
   ingredients: [
     {
       article: ArticelType;
@@ -40,17 +39,14 @@ export type RecipesType = {
       amountUnit: string;
     }
   ];
-};
+}
 type WeekplanDayType = {
   date: Date;
   recipes: RecipesType[];
 };
-export type WeekplanType = {
-  owner: string;
-  members: string[];
-  name: string;
+export interface WeekplanType extends ListType {
   days: WeekplanDayType[];
-};
+}
 
 export interface recentArticle extends ArticelType {
   lastUsed: Date;

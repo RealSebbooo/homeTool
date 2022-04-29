@@ -11,7 +11,13 @@ import {
   deleteDoc,
 } from "firebase/firestore";
 
-import { ArticelType, ShoppingListType, UserType } from "./../types";
+import {
+  ArticelType,
+  RecipesType,
+  ShoppingListType,
+  UserType,
+  WeekplanType,
+} from "./../types";
 
 export const getUserFromDatabase = async (email: string) => {
   const ref = collection(db, "users");
@@ -89,13 +95,23 @@ export const getShoppingList = async (): Promise<ShoppingListType[]> => {
 export const updateShoppingList = (item: ShoppingListType) => {
   setDoc(doc(db, "shoppingLists", item.uid), item);
 };
+export const updateRecipe = (item: RecipesType) => {
+  setDoc(doc(db, "recipes", item.uid), item);
+};
+export const updateWeekplan = (item: WeekplanType) => {
+  setDoc(doc(db, "weekplans", item.uid), item);
+};
 
 export const updateUser = async (item: UserType) => {
-  setDoc(doc(db, "users", item.uid), item);
+  await setDoc(doc(db, "users", item.uid), item);
 
   const newUser = await getUserFromDatabase(item?.email);
+  console.log("newUser", newUser);
   if (newUser) {
-    if (typeof window !== "undefined")
+    if (typeof window !== "undefined") {
       localStorage.setItem("htUser", JSON.stringify(newUser));
+
+      location.reload();
+    }
   }
 };

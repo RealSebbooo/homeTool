@@ -1,8 +1,15 @@
 import React, { useEffect, useState } from "react";
+import Checkbox from "../../../components/checkbox";
 import Modal from "../../../components/modal";
 import Text from "../../../components/text";
 import Textfield from "../../../components/textfield";
-import { getShoppingList } from "../../../services/databaseHelper";
+import {
+  getShoppingList,
+  updateRecipe,
+  updateShoppingList,
+  updateUser,
+  updateWeekplan,
+} from "../../../services/databaseHelper";
 import { ShoppingListType, RecipesType, WeekplanType } from "../../../types";
 import {
   ListWrapper,
@@ -16,9 +23,10 @@ type AllListsType = {
   weekplanLists: WeekplanType[];
 };
 const Lists = () => {
+  if (typeof window == "undefined") return;
+  const user = JSON.parse(localStorage.getItem("htUser"));
   const [allLists, setAllLists] = useState<AllListsType>();
   const [editModal, setEditModal] = useState(false);
-  const [editName, setEditName] = useState<string>();
   const [itemToEdit, setItemToEdit] = useState<
     ShoppingListType | RecipesType | WeekplanType
   >();
@@ -33,8 +41,7 @@ const Lists = () => {
   };
 
   const editClicked = (item: ShoppingListType | RecipesType | WeekplanType) => {
-    setItemToEdit(JSON.parse(JSON.stringify(item)));
-    setEditName(item.name);
+    setItemToEdit(item);
     setEditModal(true);
   };
   const deleteClicked = (
@@ -50,8 +57,48 @@ const Lists = () => {
   };
 
   const editNameChanged = (name: string) => {
-    setEditName(name);
+    itemToEdit.name = name;
+    if (itemToEdit.listType === "shoppingList")
+      updateShoppingList(itemToEdit as ShoppingListType);
+    else if (itemToEdit.listType === "recipe")
+      updateRecipe(itemToEdit as RecipesType);
+    else if (itemToEdit.listType === "weekplan")
+      updateWeekplan(itemToEdit as WeekplanType);
+    else return;
   };
+  const checkboxChanged = (checked: boolean) => {
+    console.log("changed", checked);
+    setListAsActive();
+  };
+  const setListAsActive = () => {
+    if (itemToEdit.listType === "shoppingList") {
+      if (user.shoppingList === itemToEdit.uid) {
+        updateUser({ ...user, shoppingList: "" });
+      } else {
+        updateUser({ ...user, shoppingList: itemToEdit.uid });
+      }
+    } else if (itemToEdit.listType === "recipe") {
+      if (user.recipe === itemToEdit.uid) {
+        updateUser({ ...user, recipe: "" });
+      } else {
+        updateUser({ ...user, recipe: itemToEdit.uid });
+      }
+    } else if (itemToEdit.listType === "weekplan") {
+      if (user.recipe === itemToEdit.uid) {
+        updateUser({ ...user, weekplan: "" });
+      } else {
+        updateUser({ ...user, weekplan: itemToEdit.uid });
+      }
+    } else return;
+  };
+  const isListActiveList = (): boolean => {
+    console.log("user", user, itemToEdit);
+    if (user[itemToEdit?.listType] === itemToEdit?.uid) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     <div>
       {editModal && (
@@ -63,18 +110,15 @@ const Lists = () => {
             <Textfield
               type="text"
               placeholder="Listenname"
-              value={editName}
-              disabled={true}
+              value={itemToEdit.name}
+              disabled={false}
               textInputChanged={(value) => editNameChanged(value)}
             ></Textfield>
-            <div>
-              <Text
-                fontSize="16"
-                bold={false}
-                content="Standard"
-                light={true}
-              ></Text>
-            </div>
+            <Checkbox
+              checked={isListActiveList()}
+              label="Standard"
+              checkboxChanged={(value) => checkboxChanged(value)}
+            ></Checkbox>
           </ModalCard>
         </Modal>
       )}
