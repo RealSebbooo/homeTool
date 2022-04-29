@@ -70,7 +70,7 @@ export const saveArticleInDatabase = (item: ArticelType) => {
   setDoc(doc(db, "articles", item.uid), item);
 };
 
-export const getShoppingList = async (): Promise<ShoppingListType> => {
+export const getShoppingList = async (): Promise<ShoppingListType[]> => {
   console.log("getShoppingList");
   if (typeof window == "undefined") return;
   const userId = JSON.parse(localStorage.getItem("htUser"))?.uid;
@@ -82,7 +82,8 @@ export const getShoppingList = async (): Promise<ShoppingListType> => {
     var rObj = { ...doc.data(), uid: doc.id };
     return rObj;
   });
-  return itemsDoc[0];
+  console.log("items", itemsDoc);
+  return itemsDoc;
 };
 
 export const updateShoppingList = (item: ShoppingListType) => {

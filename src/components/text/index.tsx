@@ -7,6 +7,8 @@ export type TextProps = {
   content?: string;
   light?: boolean;
   heading?: boolean;
+  spaceBetween?: boolean;
+  onClick?: () => void;
 };
 
 const Text: FC<TextProps> = ({
@@ -15,9 +17,18 @@ const Text: FC<TextProps> = ({
   content,
   light,
   heading,
+  spaceBetween,
+  onClick,
 }) => {
   return (
-    <Textfield bold={bold} fontSize={fontSize} light={light} heading={heading}>
+    <Textfield
+      bold={bold}
+      fontSize={fontSize}
+      light={light}
+      heading={heading}
+      spaceBetween={spaceBetween}
+      onClick={() => onClick()}
+    >
       {content}
     </Textfield>
   );

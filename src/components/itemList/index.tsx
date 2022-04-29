@@ -1,5 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
-import Modal from "./../modal";
+import Modal from "./../modaltest";
 import Text from "./../text";
 import { ItemWrapper } from "./../item/item.styled";
 import { ArticelType, ShoppingListType, recentArticle } from "./../../types";

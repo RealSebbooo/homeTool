@@ -1,15 +1,17 @@
 import React from "react";
-import Title from "./../components/title";
-import Button from "./../components/button";
+import Title from "../../../components/title";
+import Button from "../../../components/button";
 import { navigate } from "gatsby";
-import Textfield from "../components/textfield";
-import Icon from "../icons";
-import Row from "./../components/row";
-import Text from "../components/text";
+import Textfield from "../../../components/textfield";
+import Icon from "../../../icons";
+import Row from "../../../components/row";
+import Text from "../../../components/text";
 import { useState } from "react";
-import { updateUser } from "./../services/databaseHelper";
+import { updateUser } from "../../../services/databaseHelper";
 import styled from "styled-components";
-import theme from "../components/theme";
+import theme from "../../../components/theme";
+
+import Lists from "./../components/lists";
 
 const HorizontalLine = styled.div`
   background-color: ${theme.surface};
@@ -73,9 +75,11 @@ const Account = () => {
       </Row>
       <Row>
         <Icon name="email" light={true} spaceRight={true} clickable={false} />
-        <Text bold={false} light={true} fontSize="18" content={email}></Text>)
+        <Text bold={false} light={true} fontSize="18" content={email}></Text>
       </Row>
 
+      <HorizontalLine></HorizontalLine>
+      <Lists></Lists>
       <HorizontalLine></HorizontalLine>
       <Button
         value="Artikel"

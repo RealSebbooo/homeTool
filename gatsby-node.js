@@ -4,7 +4,9 @@ exports.createPages = async ({ actions }) => {
   const Einkaufsliste = require.resolve("./src/packages/index.tsx");
   const Rezepte = require.resolve("./src/packages/rezepte.tsx");
   const Wochenplan = require.resolve("./src/packages/wochenplan.tsx");
-  const Account = require.resolve("./src/packages/account.tsx");
+  const Account = require.resolve(
+    "./src/packages/account/template/account.tsx"
+  );
   const Artikel = require.resolve("./src/packages/articles.tsx");
   const Login = require.resolve("./src/packages/login.tsx");
   const Register = require.resolve("./src/packages/register.tsx");

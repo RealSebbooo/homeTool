@@ -9,6 +9,7 @@ export type TextFieldProps = {
   value?: string;
   short?: boolean;
   dense?: boolean;
+  disabled?: boolean;
 };
 const Textfield: FC<TextFieldProps> = ({
   textInputChanged,
@@ -18,6 +19,7 @@ const Textfield: FC<TextFieldProps> = ({
   value = "",
   short = false,
   dense = false,
+  disabled = false,
 }) => {
   const onchangeMethod = (e: React.ChangeEvent<HTMLInputElement>) => {
     textInputChanged(e?.target?.value);
@@ -41,6 +43,7 @@ const Textfield: FC<TextFieldProps> = ({
       placeholder={placeholder}
       textColor={textColor}
       short={short}
+      disabled={disabled}
     ></InputField>
   );
 };

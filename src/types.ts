@@ -17,12 +17,39 @@ export type ArticelType = {
   amount?: string;
   amountUnit?: string;
 };
+
 export type ShoppingListType = {
-  owner?: string;
-  members?: string[];
-  activeArticles?: ArticelType[];
-  recentArticles?: recentArticle[];
+  owner: string;
+  members: string[];
+  activeArticles: ArticelType[];
+  recentArticles: recentArticle[];
   uid: string;
+  name: string;
+};
+
+export type RecipesType = {
+  name: string;
+  image: string;
+  description: string;
+  owner: string;
+  members: string[];
+  ingredients: [
+    {
+      article: ArticelType;
+      amount: number;
+      amountUnit: string;
+    }
+  ];
+};
+type WeekplanDayType = {
+  date: Date;
+  recipes: RecipesType[];
+};
+export type WeekplanType = {
+  owner: string;
+  members: string[];
+  name: string;
+  days: WeekplanDayType[];
 };
 
 export interface recentArticle extends ArticelType {
