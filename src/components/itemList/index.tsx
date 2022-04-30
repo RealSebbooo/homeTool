@@ -43,7 +43,7 @@ const ItemList: FC = () => {
   const getShoppingListObjects = async () => {
     if (typeof window == "undefined") return;
     const userShoppingList = JSON.parse(
-      localStorage.getItem("htUser")
+      localStorage.getItem("htUser") || ""
     )?.shoppingList;
     await setShoppingList(await getShoppingList(userShoppingList));
     console.log(
@@ -52,7 +52,7 @@ const ItemList: FC = () => {
     );
     fillShoppingListArray(userShoppingList);
     if (typeof window == "undefined") return;
-    const user = JSON.parse(localStorage.getItem("htUser"));
+    const user = JSON.parse(localStorage.getItem("htUser") || "");
     listenToShoppingList(user?.shoppingList);
   };
 
@@ -69,11 +69,11 @@ const ItemList: FC = () => {
 
     setUserLists(mappedLists);
     const activeList = lists?.find((list) => list.uid === userShoppingList);
-    const mappedActiveList = { name: activeList.name, id: activeList.uid };
+    const mappedActiveList = { name: activeList?.name || "", id: activeList?.uid || "" };
     setActiveUserList(mappedActiveList);
   };
 
-  const listenToShoppingList = (uid) =>
+  const listenToShoppingList = (uid:string) =>
     onSnapshot(doc(db, "shoppingLists", uid), (doc) => {
       if (doc?.data())
         setShoppingList({
@@ -103,29 +103,29 @@ const ItemList: FC = () => {
   };
   if (typeof window == "undefined") return;
   const userShoppingList = JSON.parse(
-    localStorage.getItem("htUser")
+    localStorage.getItem("htUser") || ""
   )?.shoppingList;
   getShoppingList(userShoppingList);
   const removeItem = (item: ArticelType) => {
     if (!isHoldModal) {
-      const index = shoppingList?.activeArticles?.indexOf(item);
+      const index = shoppingList?.activeArticles?.indexOf(item) || -1;
       if (index > -1) {
         shoppingList?.activeArticles?.splice(index, 1);
       }
       shoppingList?.recentArticles.push({ ...item, lastUsed: new Date() });
 
-      updateShoppingList(shoppingList);
+      updateShoppingList(shoppingList as ShoppingListType);
     }
   };
 
   const readdItem = (item: recentArticle) => {
     delete item.lastUsed;
-    const index = shoppingList?.recentArticles?.indexOf(item);
+    const index = shoppingList?.recentArticles?.indexOf(item) || -1;
     if (index > -1) {
       shoppingList?.recentArticles?.splice(index, 1);
     }
     shoppingList?.activeArticles.push(item);
-    updateShoppingList(shoppingList);
+    updateShoppingList(shoppingList as ShoppingListType);
   };
 
   const disableModal = () => {
@@ -134,12 +134,12 @@ const ItemList: FC = () => {
   };
 
   const itemChanged = (item: ArticelType) => {
-    const index = shoppingList?.activeArticles?.indexOf(itemToEdit);
+    const index = shoppingList?.activeArticles?.indexOf(itemToEdit as ArticelType) || -1;
     if (index > -1) {
       shoppingList?.activeArticles?.splice(index, 1);
     }
     shoppingList?.activeArticles.push(item);
-    updateShoppingList(shoppingList);
+    updateShoppingList(shoppingList as ShoppingListType);
     disableModal();
   };
 
