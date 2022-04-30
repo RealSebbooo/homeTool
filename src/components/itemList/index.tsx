@@ -75,7 +75,11 @@ const ItemList: FC = () => {
 
   const listenToShoppingList = (uid) =>
     onSnapshot(doc(db, "shoppingLists", uid), (doc) => {
-      setShoppingList({ ...doc.data(), uid: doc.id });
+      if (doc?.data())
+        setShoppingList({
+          ...(doc.data() as ShoppingListType),
+          uid: doc.id,
+        });
     });
 
   useEffect(() => {
