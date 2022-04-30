@@ -4,6 +4,7 @@ import Text from "./../text";
 import { ItemWrapper } from "./../item/item.styled";
 import { ArticelType, ShoppingListType, recentArticle } from "./../../types";
 import {
+  getAllShoppingList,
   getShoppingList,
   updateShoppingList,
 } from "./../../services/databaseHelper";
@@ -15,16 +16,24 @@ import {
   AmountUnitsGewicht,
   AmountUnitsMengen,
 } from "../../services/amountUnits";
+import Dropdown from "../dropdown/dropdown";
 
 export type ItemBoxProps = {
   isRecent: boolean;
+};
+export type ListDropdownItems = {
+  name: string;
+  id: string;
 };
 
 const ItemList: FC = () => {
   const intervalRef = React.useRef(null);
   const [isHoldModal, setIsHoldModal] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<ArticelType>();
   const [itemToEditKey, setItemToEditKey] = useState<number>();
+  const [userLists, setUserLists] = useState<ListDropdownItems[]>();
+  const [activeUserList, setActiveUserList] = useState<ListDropdownItems>();
 
   const [shoppingList, setShoppingList] = useState<ShoppingListType>();
   useEffect(() => {
@@ -37,10 +46,31 @@ const ItemList: FC = () => {
       localStorage.getItem("htUser")
     )?.shoppingList;
     await setShoppingList(await getShoppingList(userShoppingList));
-
+    console.log(
+      "await getShoppingList(userShoppingList)",
+      await getShoppingList(userShoppingList)
+    );
+    fillShoppingListArray(userShoppingList);
     if (typeof window == "undefined") return;
     const user = JSON.parse(localStorage.getItem("htUser"));
     listenToShoppingList(user?.shoppingList);
+  };
+
+  const fillShoppingListArray = async (userShoppingList: string) => {
+    const lists = await getAllShoppingList();
+    console.log("lists", lists, userShoppingList);
+
+    const mappedLists = lists?.map((list) => {
+      return {
+        name: list.name,
+        id: list.uid,
+      };
+    });
+
+    setUserLists(mappedLists);
+    const activeList = lists?.find((list) => list.uid === userShoppingList);
+    const mappedActiveList = { name: activeList.name, id: activeList.uid };
+    setActiveUserList(mappedActiveList);
   };
 
   const listenToShoppingList = (uid) =>
@@ -51,8 +81,6 @@ const ItemList: FC = () => {
   useEffect(() => {
     return () => stopCounter(); // when App is unmounted we should stop counter
   }, []);
-
-  // functions -----------------------------------
 
   const startCounter = (item: ArticelType, key: number) => {
     if (intervalRef.current) return;
@@ -132,8 +160,19 @@ const ItemList: FC = () => {
       )?.short;
     }
   };
+  const itemHasClicked = (item: string) => {
+    console.log("item", item);
+    setIsOpen(false);
+  };
   return (
     <>
+      <Dropdown
+        activeItem={activeUserList}
+        items={userLists}
+        itemClicked={(value) => itemHasClicked(value)}
+        isOpen={isOpen}
+        setIsOpen={(value) => setIsOpen(value)}
+      ></Dropdown>
       {isHoldModal && (
         <Modal
           disableModal={disableModal}
