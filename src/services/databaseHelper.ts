@@ -65,9 +65,14 @@ export const userAddedToAuth = async (email: string) => {
   });
 };
 
-const setItem = (collectionName: string, data: object) => {
+const setItem = async (collectionName: string, data: object) => {
   const citiesRef = collection(db, collectionName);
-  setDoc(doc(citiesRef), data);
+  const docRef = await addDoc(citiesRef, data);
+  addUidToNewList(collectionName, { ...data, uid: docRef.id }, docRef.id);
+};
+
+const addUidToNewList = (collectionName: string, data: object, uid: string) => {
+  setDoc(doc(db, collectionName, uid), data);
 };
 
 export const getArticles = async () => {
@@ -92,7 +97,7 @@ export const saveArticleInDatabase = (item: ArticelType) => {
   setDoc(doc(db, "articles", item.uid), item);
 };
 
-export const getShoppingList = async (): Promise<ShoppingListType[]> => {
+export const getAllShoppingList = async (): Promise<ShoppingListType[]> => {
   if (typeof window == "undefined") return;
   const userId = JSON.parse(localStorage.getItem("htUser"))?.uid;
 
@@ -104,6 +109,19 @@ export const getShoppingList = async (): Promise<ShoppingListType[]> => {
     return rObj;
   });
   return itemsDoc;
+};
+
+export const getShoppingList = async (
+  listId: string
+): Promise<ShoppingListType> => {
+  const ref = collection(db, "shoppingLists");
+  const q = query(ref, where("uid", "==", listId));
+  const snapshot = await getDocs(q);
+  const itemsDoc = snapshot.docs.map((doc) => {
+    var rObj = { ...doc.data(), uid: doc.id };
+    return rObj;
+  });
+  return itemsDoc[0];
 };
 export const getWeekplans = async (): Promise<WeekplanType[]> => {
   if (typeof window == "undefined") return;

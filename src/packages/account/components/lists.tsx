@@ -6,7 +6,6 @@ import Text from "../../../components/text";
 import Textfield from "../../../components/textfield";
 import Icon from "../../../icons";
 import {
-  getShoppingList,
   updateRecipe,
   updateShoppingList,
   updateUser,
@@ -21,6 +20,7 @@ import {
   createNewShoppingList,
   createNewRecipeList,
   createNewWeekplanList,
+  getAllShoppingList,
 } from "../../../services/databaseHelper";
 import { ShoppingListType, RecipesType, WeekplanType } from "../../../types";
 import {
@@ -63,7 +63,7 @@ const Lists = () => {
   }, []);
 
   const getShoppingListFromDatabase = async () => {
-    allLists.shoppingLists = await getShoppingList();
+    allLists.shoppingLists = await getAllShoppingList();
     setAllLists(JSON.parse(JSON.stringify(allLists)));
   };
   const getWeekplansFromDatabase = async () => {
@@ -81,7 +81,6 @@ const Lists = () => {
     item?.members?.forEach((element) => {
       getUserFromDatabaseByUid(element);
     });
-    console.log("list", item, listToEdit);
   };
   const deleteClicked = (
     item: ShoppingListType | RecipesType | WeekplanType
@@ -221,7 +220,6 @@ const Lists = () => {
     setNewListName(name);
   };
   const addNewList = () => {
-    console.log("newListType", newListType);
     if (newListType === "shoppingLists") createNewShoppingList(newListName);
     else if (newListType === "recipesLists") createNewRecipeList(newListName);
     else if (newListType === "weekplansLists")

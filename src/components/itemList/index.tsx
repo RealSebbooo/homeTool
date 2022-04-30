@@ -32,8 +32,15 @@ const ItemList: FC = () => {
   }, []);
 
   const getShoppingListObjects = async () => {
-    await setShoppingList(await getShoppingList());
-    listenToShoppingList("dv1dnjZ1QicYNfQhuMzB");
+    if (typeof window == "undefined") return;
+    const userShoppingList = JSON.parse(
+      localStorage.getItem("htUser")
+    )?.shoppingList;
+    await setShoppingList(await getShoppingList(userShoppingList));
+
+    if (typeof window == "undefined") return;
+    const user = JSON.parse(localStorage.getItem("htUser"));
+    listenToShoppingList(user?.shoppingList);
   };
 
   const listenToShoppingList = (uid) =>
@@ -62,7 +69,11 @@ const ItemList: FC = () => {
       intervalRef.current = null;
     }
   };
-  getShoppingList();
+  if (typeof window == "undefined") return;
+  const userShoppingList = JSON.parse(
+    localStorage.getItem("htUser")
+  )?.shoppingList;
+  getShoppingList(userShoppingList);
   const removeItem = (item: ArticelType) => {
     if (!isHoldModal) {
       const index = shoppingList?.activeArticles?.indexOf(item);
