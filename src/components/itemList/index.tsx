@@ -50,7 +50,6 @@ const ItemList: FC = () => {
   const startCounter = (item: ArticelType, key: number) => {
     if (intervalRef.current) return;
     intervalRef.current = setTimeout(() => {
-      console.log("item", item);
       setItemToEdit(item);
       setItemToEditKey(key);
       setIsHoldModal(true);
@@ -92,13 +91,6 @@ const ItemList: FC = () => {
   };
 
   const itemChanged = (item: ArticelType) => {
-    console.log(
-      "itemChanged",
-      item,
-      itemToEditKey,
-      shoppingList?.activeArticles
-    );
-
     const index = shoppingList?.activeArticles?.indexOf(itemToEdit);
     if (index > -1) {
       shoppingList?.activeArticles?.splice(index, 1);

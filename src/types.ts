@@ -5,7 +5,10 @@ export type UserObjectType = {
 export type UserType = {
   email: string;
   name: string;
-  uid: string;
+  uid?: string;
+  recipe: "";
+  shoppingList: "";
+  weekplan: "";
 };
 export type ArticelType = {
   name: string;

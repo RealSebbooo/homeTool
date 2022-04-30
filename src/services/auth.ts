@@ -6,7 +6,11 @@ import {
 } from "firebase/auth";
 import { UserObjectType } from "../types";
 import { auth } from "./firebase";
-import { getUserFromDatabase, userAddedToAuth } from "./databaseHelper";
+import {
+  getUserFromDatabase,
+  updateUser,
+  userAddedToAuth,
+} from "./databaseHelper";
 import { navigate } from "gatsby";
 import { globalHistory } from "@reach/router";
 
@@ -40,11 +44,11 @@ export const register = (user: UserObjectType) => {
 
       const newUser = await getUserFromDatabase(user?.email);
       if (newUser) {
+        updateUser(newUser);
         if (typeof window !== "undefined")
           localStorage.setItem("htUser", JSON.stringify(newUser));
         navigate("/");
       }
-      // ...
     })
     .catch((error) => {
       const errorCode = error.code;

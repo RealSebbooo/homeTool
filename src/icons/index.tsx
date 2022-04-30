@@ -8,6 +8,7 @@ import { User } from "./svgs/user";
 import { Pencil } from "./svgs/pencil";
 import { Save } from "./svgs/save";
 import { Email } from "./svgs/email";
+import { Plus } from "./svgs/plus";
 import { Iconsizer } from "./styled";
 import { navigate } from "gatsby";
 
@@ -66,6 +67,7 @@ export const Icons = {
   pencil: Pencil,
   save: Save,
   email: Email,
+  plus: Plus,
 };
 
 export const iconNames = [
@@ -77,6 +79,7 @@ export const iconNames = [
   { label: "pencil" },
   { label: "save" },
   { label: "email" },
+  { label: "plus" },
 ];
 
 const Icon: FC<IconProps> = ({

@@ -11,13 +11,12 @@ const Checkbox = ({ checked, label, checkboxChanged, disabled = false }) => {
   return (
     <Label>
       {label}
-
       <StyledInput
         type="checkbox"
         label={label}
         value={checked}
         checked={checked}
-        onChange={() => checkboxChanged(!checked)}
+        onChange={() => checkboxChanged()}
         disabled={disabled}
       />
     </Label>

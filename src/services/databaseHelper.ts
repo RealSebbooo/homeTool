@@ -30,7 +30,13 @@ export const getUserFromDatabase = async (email: string) => {
 };
 
 export const userAddedToAuth = async (email: string) => {
-  setItem("users", { email: email, name: email });
+  setItem("users", {
+    email: email,
+    name: email,
+    shoppingList: "",
+    weekplan: "",
+    recipe: "",
+  });
 
   const user = await getUserFromDatabase(email);
   const uid = user?.uid;
@@ -39,12 +45,23 @@ export const userAddedToAuth = async (email: string) => {
     members: [uid],
     activeArticles: [],
     recentArticles: [],
+    name: user?.name + "s Einkaufsliste",
+    listType: "shoppingList",
   });
 
   setItem("weekplans", {
     owner: uid,
     members: [uid],
     days: [],
+    name: user?.name + "s Wochenplan",
+    listType: "weekplan",
+  });
+  setItem("recipes", {
+    owner: uid,
+    members: [uid],
+    recipes: [],
+    name: user?.name + "s Rezepte",
+    listType: "recipe",
   });
 };
 
@@ -54,7 +71,6 @@ const setItem = (collectionName: string, data: object) => {
 };
 
 export const getArticles = async () => {
-  console.log("getARticles");
   const ref = collection(db, "articles");
   const snapshot = await getDocs(ref);
   const itemsDoc = snapshot.docs.map((doc) => {
@@ -77,7 +93,6 @@ export const saveArticleInDatabase = (item: ArticelType) => {
 };
 
 export const getShoppingList = async (): Promise<ShoppingListType[]> => {
-  console.log("getShoppingList");
   if (typeof window == "undefined") return;
   const userId = JSON.parse(localStorage.getItem("htUser"))?.uid;
 
@@ -88,7 +103,32 @@ export const getShoppingList = async (): Promise<ShoppingListType[]> => {
     var rObj = { ...doc.data(), uid: doc.id };
     return rObj;
   });
-  console.log("items", itemsDoc);
+  return itemsDoc;
+};
+export const getWeekplans = async (): Promise<WeekplanType[]> => {
+  if (typeof window == "undefined") return;
+  const userId = JSON.parse(localStorage.getItem("htUser"))?.uid;
+
+  const ref = collection(db, "weekplans");
+  const q = query(ref, where("members", "array-contains", userId));
+  const snapshot = await getDocs(q);
+  const itemsDoc = snapshot.docs.map((doc) => {
+    var rObj = { ...doc.data(), uid: doc.id };
+    return rObj;
+  });
+  return itemsDoc;
+};
+export const getRecipes = async (): Promise<RecipesType[]> => {
+  if (typeof window == "undefined") return;
+  const userId = JSON.parse(localStorage.getItem("htUser"))?.uid;
+
+  const ref = collection(db, "recipes");
+  const q = query(ref, where("members", "array-contains", userId));
+  const snapshot = await getDocs(q);
+  const itemsDoc = snapshot.docs.map((doc) => {
+    var rObj = { ...doc.data(), uid: doc.id };
+    return rObj;
+  });
   return itemsDoc;
 };
 
@@ -106,7 +146,6 @@ export const updateUser = async (item: UserType) => {
   await setDoc(doc(db, "users", item.uid), item);
 
   const newUser = await getUserFromDatabase(item?.email);
-  console.log("newUser", newUser);
   if (newUser) {
     if (typeof window !== "undefined") {
       localStorage.setItem("htUser", JSON.stringify(newUser));
@@ -114,4 +153,74 @@ export const updateUser = async (item: UserType) => {
       location.reload();
     }
   }
+};
+
+export const getUserByEmailAdress = async (email: string) => {
+  const ref = collection(db, "users");
+  const q = query(ref, where("email", "==", email));
+  const snapshot = await getDocs(q);
+  const itemsDoc = snapshot.docs.map((doc) => {
+    var rObj = { ...doc.data(), uid: doc.id };
+    return rObj;
+  });
+  return itemsDoc[0];
+};
+
+export const getUserByUid = async (uid: string) => {
+  const ref = collection(db, "users");
+  const q = query(ref, where("uid", "==", uid));
+  const snapshot = await getDocs(q);
+  const itemsDoc = snapshot.docs.map((doc) => {
+    if (doc.data()) {
+      var rObj = { ...doc.data(), uid: doc.id };
+      return rObj;
+    }
+  });
+  return itemsDoc[0];
+};
+
+export const deleteShoppingList = (uid: string) => {
+  deleteDoc(doc(db, "shoppingLists", uid));
+};
+export const deleteRecipe = (uid: string) => {
+  deleteDoc(doc(db, "recipes", uid));
+};
+export const deleteWeekplan = (uid: string) => {
+  deleteDoc(doc(db, "weekplans", uid));
+};
+
+export const createNewShoppingList = (name: string) => {
+  if (typeof window == "undefined") return;
+  const user = JSON.parse(localStorage.getItem("htUser"));
+  setItem("shoppingLists", {
+    owner: user?.uid,
+    members: [user?.uid],
+    activeArticles: [],
+    recentArticles: [],
+    name: name,
+    listType: "shoppingList",
+  });
+};
+export const createNewWeekplanList = (name: string) => {
+  if (typeof window == "undefined") return;
+  const user = JSON.parse(localStorage.getItem("htUser"));
+
+  setItem("weekplans", {
+    owner: user?.uid,
+    members: [user?.uid],
+    days: [],
+    name: name,
+    listType: "weekplan",
+  });
+};
+export const createNewRecipeList = (name: string) => {
+  if (typeof window == "undefined") return;
+  const user = JSON.parse(localStorage.getItem("htUser"));
+  setItem("recipes", {
+    owner: user?.uid,
+    members: [user?.uid],
+    recipes: [],
+    name: name,
+    listType: "recipe",
+  });
 };

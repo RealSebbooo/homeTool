@@ -27,7 +27,7 @@ const Text: FC<TextProps> = ({
       light={light}
       heading={heading}
       spaceBetween={spaceBetween}
-      onClick={() => onClick()}
+      onClick={onClick ? () => onClick() : null}
     >
       {content}
     </Textfield>

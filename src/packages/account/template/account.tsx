@@ -29,7 +29,6 @@ const Account = () => {
       JSON.parse(localStorage.getItem("htUser"))?.email
   );
   const handleClick = () => {
-    console.log("handle");
     if (editName) {
       updateUser({
         ...(typeof window !== "undefined" &&

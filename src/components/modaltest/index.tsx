@@ -99,7 +99,6 @@ const Modal: FC<ModalProps> = ({
     },
   ];
   const getOptions = () => {
-    console.log("itemUnit", item.unit, AmountUnitsMengen);
     if (item.unit === "all") {
       return [
         ...AmountUnitsMengen,

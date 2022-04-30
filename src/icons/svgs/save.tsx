@@ -12,7 +12,6 @@ export const Save: FC<IconTagProps> = ({ fill }) => (
       fill="none"
       stroke={fill}
       stroke-miterlimit="10"
-      stroke-width="4"
       d="M58,58H12L6,52V8A2,2,0,0,1,8,6H56a2,2,0,0,1,2,2Z"
     />
     <rect
@@ -23,7 +22,6 @@ export const Save: FC<IconTagProps> = ({ fill }) => (
       fill="none"
       stroke={fill}
       stroke-miterlimit="10"
-      stroke-width="4"
     />
     <rect
       width="24"
@@ -33,7 +31,6 @@ export const Save: FC<IconTagProps> = ({ fill }) => (
       fill="none"
       stroke={fill}
       stroke-miterlimit="10"
-      stroke-width="4"
     />
     <line
       x1="26"
@@ -43,7 +40,6 @@ export const Save: FC<IconTagProps> = ({ fill }) => (
       fill="none"
       stroke={fill}
       stroke-miterlimit="10"
-      stroke-width="4"
     />
   </SVG>
 );
