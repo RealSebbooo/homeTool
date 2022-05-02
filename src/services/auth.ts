@@ -12,7 +12,7 @@ import {
   userAddedToAuth,
 } from "./databaseHelper";
 import { navigate } from "gatsby";
-// import { globalHistory } from "@reach/router";
+import { globalHistory } from "@reach/router";
 
 export const login = (user: UserObjectType) => {
   signInWithEmailAndPassword(auth, user?.email, user?.password).then(
@@ -59,19 +59,19 @@ export const register = (user: UserObjectType) => {
 export const isLoggedIn = async () => {
   if (typeof window == "undefined") return;
   const lsUser = localStorage.getItem("htUser");
-  // if (lsUser === null) {
-  //   const path = globalHistory.location.pathname;
-  //   if (path !== "/login" && path !== "/register") {
-  //     navigate("/login");
-  //   }
-  // } else {
-  //   await onAuthStateChanged(auth, (user) => {
-  //     if (user === null) {
-  //       const path = globalHistory.location.pathname;
-  //       if (path !== "/login" && path !== "/register") {
-  //         navigate("/login");
-  //       }
-  //     }
-  //   });
-  // }
+  if (lsUser === null) {
+    const path = globalHistory.location.pathname;
+    if (path !== "/login" && path !== "/register") {
+      navigate("/login");
+    }
+  } else {
+    await onAuthStateChanged(auth, (user) => {
+      if (user === null) {
+        const path = globalHistory.location.pathname;
+        if (path !== "/login" && path !== "/register") {
+          navigate("/login");
+        }
+      }
+    });
+  }
 };
