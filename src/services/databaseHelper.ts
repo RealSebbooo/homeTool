@@ -182,6 +182,7 @@ export const updateUser = async (item: UserType) => {
     if (typeof window !== "undefined") {
       localStorage.setItem("htUser", JSON.stringify(newUser));
 
+      if (typeof window == "undefined") return;
       location.reload();
     }
   }
