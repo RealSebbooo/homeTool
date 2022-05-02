@@ -1,7 +1,7 @@
-exports.createPages = async ({ actions }) => {
+exports.createPages = ({ actions }) => {
   const { createPage } = actions;
 
-  const Einkaufsliste = require.resolve("./src/packages/index.tsx");
+  const Einkaufsliste = require.resolve("./src/packages/shoppingList.tsx");
   const Rezepte = require.resolve(
     "./src/packages/rezepte/template/rezepte.tsx"
   );
@@ -46,4 +46,18 @@ exports.createPages = async ({ actions }) => {
     path: "/register",
     component: Register,
   });
+};
+exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
+  if (stage === "build-html" || stage === "develop-html") {
+    actions.setWebpackConfig({
+      module: {
+        rules: [
+          {
+            test: /bad-module/,
+            use: loaders.null(),
+          },
+        ],
+      },
+    });
+  }
 };

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { FC } from "react";
 import Title from "../../../components/title";
 import Button from "../../../components/button";
 import { navigate } from "gatsby";
@@ -18,7 +18,7 @@ const HorizontalLine = styled.div`
   height: 1px;
   margin: 8px 0;
 `;
-const Account = () => {
+const Account: FC = () => {
   const [editName, setEditName] = useState(false);
   const [username, setUsername] = useState(
     typeof window !== "undefined" &&

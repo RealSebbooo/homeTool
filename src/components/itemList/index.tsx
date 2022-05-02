@@ -26,7 +26,7 @@ export type ListDropdownItems = {
   id: string;
 };
 
-const ItemList: FC = () => {
+const ItemList: FC = (): JSX.Element => {
   const intervalRef = React.useRef(null);
   const [isHoldModal, setIsHoldModal] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<ArticelType>();
@@ -42,12 +42,35 @@ const ItemList: FC = () => {
     const userShoppingList = JSON.parse(
       localStorage.getItem("htUser") || ""
     )?.shoppingList;
-    if (userShoppingList) {
-      await setShoppingList(await getShoppingList(userShoppingList));
-      if (typeof window == "undefined") return;
-      const user = JSON.parse(localStorage.getItem("htUser") || "");
-      listenToShoppingList(user?.shoppingList);
-    }
+    await setShoppingList(await getShoppingList(userShoppingList));
+    console.log(
+      "await getShoppingList(userShoppingList)",
+      await getShoppingList(userShoppingList)
+    );
+    fillShoppingListArray(userShoppingList);
+    if (typeof window == "undefined") return;
+    const user = JSON.parse(localStorage.getItem("htUser") || "");
+    listenToShoppingList(user?.shoppingList);
+  };
+
+  const fillShoppingListArray = async (userShoppingList: string) => {
+    const lists = await getAllShoppingList();
+    console.log("lists", lists, userShoppingList);
+
+    const mappedLists = lists?.map((list) => {
+      return {
+        name: list.name,
+        id: list.uid,
+      };
+    });
+
+    setUserLists(mappedLists);
+    const activeList = lists?.find((list) => list.uid === userShoppingList);
+    const mappedActiveList = {
+      name: activeList?.name || "",
+      id: activeList?.uid || "",
+    };
+    setActiveUserList(mappedActiveList);
   };
 
   const listenToShoppingList = (uid: string) =>
@@ -60,7 +83,7 @@ const ItemList: FC = () => {
     });
 
   useEffect(() => {
-    return () => stopCounter(); // when App is unmounted we should stop counter
+    return () => stopCounter();
   }, []);
 
   const startCounter = (item: ArticelType, key: number) => {
@@ -115,16 +138,10 @@ const ItemList: FC = () => {
   };
 
   const itemChanged = (item: ArticelType) => {
-    const index = shoppingList?.activeArticles?.indexOf(
-      itemToEdit as ArticelType
-    );
-
-    if (typeof index === "number") {
-      if (index > -1) {
-        shoppingList?.activeArticles?.splice(index, 1);
-      }
-      shoppingList?.activeArticles.push(item);
-      updateShoppingList(shoppingList as ShoppingListType);
+    const index =
+      shoppingList?.activeArticles?.indexOf(itemToEdit as ArticelType) || -1;
+    if (index > -1) {
+      shoppingList?.activeArticles?.splice(index, 1);
     }
     disableModal();
   };

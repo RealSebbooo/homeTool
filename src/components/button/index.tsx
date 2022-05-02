@@ -1,12 +1,12 @@
 import React, { FC } from "react";
 import { ButtonComp } from "./styled";
-export type ButtonProps = {
+type ButtonProps = {
   value?: string;
-  onClick?: () => void;
+  onClick: () => void;
   right?: boolean;
   text?: boolean;
   dense?: boolean;
-  disabled?: string;
+  disabled?: boolean;
 };
 const Button: FC<ButtonProps> = ({
   value,
@@ -17,7 +17,7 @@ const Button: FC<ButtonProps> = ({
   disabled = false,
 }) => {
   const buttonClicked = () => {
-    onClick();
+    if (!disabled) onClick();
   };
   return (
     <ButtonComp
@@ -26,7 +26,7 @@ const Button: FC<ButtonProps> = ({
       right={right}
       type="button"
       value={value}
-      onClick={!disabled && buttonClicked}
+      onClick={buttonClicked}
       text={text}
     ></ButtonComp>
   );

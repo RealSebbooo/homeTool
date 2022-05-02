@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Button from "../../../../components/button";
 import Checkbox from "../../../../components/checkbox";
 import Modal from "../../../../components/modal";
@@ -40,7 +40,7 @@ type AllListsType = {
   recipesLists?: RecipesType[];
   weekplanLists?: WeekplanType[];
 };
-const Lists = () => {
+const Lists: FC = () => {
   if (typeof window == "undefined") return;
   const user = JSON.parse(localStorage.getItem("htUser"));
   const [allLists, setAllLists] = useState<AllListsType>({});

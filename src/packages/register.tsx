@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Textfield from "./../components/textfield";
 import { LoginCard } from "./../styles/login.styled";
 import Button from "./../components/button";
@@ -7,7 +7,7 @@ import { register } from "./../services/auth";
 import { navigate } from "gatsby";
 import Title from "../components/title";
 
-export default function Register() {
+const Register: FC = () => {
   const [userObject, setUserObject] = useState<UserObjectType>();
 
   const emailValueChanged = (value: string) => {
@@ -49,4 +49,6 @@ export default function Register() {
       </LoginCard>
     </>
   );
-}
+};
+
+export default Register;

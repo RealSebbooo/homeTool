@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from "react";
+import React, { FC, useEffect, useState } from "react";
 import Title from "../../../components/title";
 import { getRecipesFromDatabase } from "../../../services/databaseHelper";
-import { useLocation } from "@reach/router";
+// import { useLocation } from "@reach/router";
 import { RecipesType } from "../../../types";
 import {
   HorizontalLine,
@@ -12,12 +12,12 @@ import {
 } from "./recipe.styled";
 import Textfield from "../../../components/textfield";
 import Button from "../../../components/button";
-import { navigate } from "gatsby";
+import { navigate, PageProps } from "gatsby";
 import Text from "../../../components/text";
 
-const Recipe = () => {
+const Recipe: FC<PageProps> = ({ location }) => {
   if (typeof window == "undefined") return;
-  const search = useLocation().search;
+  const search = location.search?.substring(1);
   const [isNewItem, setIsNewItem] = useState(false);
   const [selectedRecipe, setSelectedRecipe] = useState<RecipesType>();
 
@@ -42,15 +42,15 @@ const Recipe = () => {
     if (recipes?.recipes?.length === 0) {
       return activateNewItem();
     }
-    const tempRecipe = recipes?.recipes?.find(
-      (recipe) => recipe.uid === search.split("=")[1]
-    );
+    // const tempRecipe = recipes?.recipes?.find(
+    //   (recipe) => recipe.uid === search.split("=")[1]
+    // );
 
-    if (tempRecipe) {
-      setSelectedRecipe(JSON.parse(JSON.stringify(tempRecipe)));
-    } else {
-      activateNewItem();
-    }
+    // if (tempRecipe) {
+    //   setSelectedRecipe(JSON.parse(JSON.stringify(tempRecipe)));
+    // } else {
+    activateNewItem();
+    // }
   };
 
   const activateNewItem = () => {

@@ -1,22 +1,25 @@
-import React from "react";
+import React, { FC } from "react";
 import { StyledInput, Label } from "./styled";
 
 type CheckboxProps = {
   checked: boolean;
   label?: string;
-  checkboxChanged?: () => void;
+  checkboxChanged: () => void;
   disabled?: boolean;
 };
-const Checkbox = ({ checked, label, checkboxChanged, disabled = false }) => {
+const Checkbox: FC<CheckboxProps> = ({
+  checked,
+  label,
+  checkboxChanged,
+  disabled = false,
+}) => {
   return (
     <Label>
       {label}
       <StyledInput
         type="checkbox"
-        label={label}
-        value={checked}
         checked={checked}
-        onChange={() => checkboxChanged()}
+        onClick={() => checkboxChanged()}
         disabled={disabled}
       />
     </Label>

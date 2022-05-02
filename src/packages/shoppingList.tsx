@@ -4,7 +4,7 @@ import AutocompleteField from "./../components/autocomplete";
 
 import ItemList from "./../components/itemList";
 
-const Index = () => {
+const ShoppingList = () => {
   return (
     <>
       <Title titleText="Einkaufsliste"></Title>
@@ -13,4 +13,4 @@ const Index = () => {
     </>
   );
 };
-export default Index;
+export default ShoppingList;
