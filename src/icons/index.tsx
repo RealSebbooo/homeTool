@@ -13,16 +13,10 @@ import { Iconsizer } from "./styled";
 import { navigate } from "gatsby";
 
 export type IconProps = {
-  //* * Icon Name */
   name?: string;
-  //* * SVG Fill Color */
-  /** @deprecated use size instead */
   small?: boolean;
-  //* *  onClick Event  */
   onClick?: () => void;
-  //* *  prop from styled components  */
   className?: string;
-  // Tiny Small Regular
   size?: string;
   ready?: boolean;
   progress?: boolean;
@@ -98,8 +92,6 @@ const Icon: FC<IconProps> = ({
   to = "/",
   right = false,
 }) => {
-  // @TODO use Typscript enum
-
   const IconTag = Icons[name as keyof typeof Icons];
   if (!IconTag) {
     return null;

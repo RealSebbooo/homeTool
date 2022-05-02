@@ -1,7 +1,6 @@
 import React, { FC, useEffect, useState } from "react";
 import Title from "../../../components/title";
 import { getRecipesFromDatabase } from "../../../services/databaseHelper";
-// import { useLocation } from "@reach/router";
 import { RecipesType } from "../../../types";
 import {
   HorizontalLine,
@@ -42,15 +41,15 @@ const Recipe: FC<PageProps> = ({ location }) => {
     if (recipes?.recipes?.length === 0) {
       return activateNewItem();
     }
-    // const tempRecipe = recipes?.recipes?.find(
-    //   (recipe) => recipe.uid === search.split("=")[1]
-    // );
+    const tempRecipe = recipes?.recipes?.find(
+      (recipe) => recipe.uid === search.split("=")[1]
+    );
 
-    // if (tempRecipe) {
-    //   setSelectedRecipe(JSON.parse(JSON.stringify(tempRecipe)));
-    // } else {
-    activateNewItem();
-    // }
+    if (tempRecipe) {
+      setSelectedRecipe(JSON.parse(JSON.stringify(tempRecipe)));
+    } else {
+      activateNewItem();
+    }
   };
 
   const activateNewItem = () => {

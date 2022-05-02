@@ -38,7 +38,6 @@ export const logout = () => {
 export const register = (user: UserObjectType) => {
   createUserWithEmailAndPassword(auth, user?.email, user?.password)
     .then(async (userCredential) => {
-      // Signed in
       const user = userCredential.user;
       userAddedToAuth(user?.email);
 

@@ -43,10 +43,7 @@ const ItemList: FC = (): JSX.Element => {
       localStorage.getItem("htUser") || ""
     )?.shoppingList;
     await setShoppingList(await getShoppingList(userShoppingList));
-    console.log(
-      "await getShoppingList(userShoppingList)",
-      await getShoppingList(userShoppingList)
-    );
+
     fillShoppingListArray(userShoppingList);
     if (typeof window == "undefined") return;
     const user = JSON.parse(localStorage.getItem("htUser") || "");
@@ -64,13 +61,13 @@ const ItemList: FC = (): JSX.Element => {
       };
     });
 
-    setUserLists(mappedLists);
-    const activeList = lists?.find((list) => list.uid === userShoppingList);
-    const mappedActiveList = {
-      name: activeList?.name || "",
-      id: activeList?.uid || "",
-    };
-    setActiveUserList(mappedActiveList);
+    // setUserLists(mappedLists);
+    // const activeList = lists?.find((list) => list.uid === userShoppingList);
+    // const mappedActiveList = {
+    //   name: activeList?.name || "",
+    //   id: activeList?.uid || "",
+    // };
+    // setActiveUserList(mappedActiveList);
   };
 
   const listenToShoppingList = (uid: string) =>
