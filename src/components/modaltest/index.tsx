@@ -115,9 +115,11 @@ const Modal: FC<ModalProps> = ({
   };
 
   const saveEditedItem = () => {
-    item.amount = amount;
-    item.amountUnit = amountUnit;
-    itemChanged(item);
+    if (item) {
+      item.amount = amount;
+      item.amountUnit = amountUnit;
+      itemChanged(item);
+    }
   };
   return (
     <>

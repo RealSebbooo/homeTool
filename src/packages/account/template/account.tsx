@@ -11,7 +11,7 @@ import { updateUser } from "../../../services/databaseHelper";
 import styled from "styled-components";
 import theme from "../../../components/theme";
 
-import Lists from "./../components/lists";
+import Lists from "./../components/lists/lists";
 
 const HorizontalLine = styled.div`
   background-color: ${theme.surface};

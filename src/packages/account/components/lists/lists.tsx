@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from "react";
-import Button from "../../../components/button";
-import Checkbox from "../../../components/checkbox";
-import Modal from "../../../components/modal";
-import Text from "../../../components/text";
-import Textfield from "../../../components/textfield";
-import Icon from "../../../icons";
+import Button from "../../../../components/button";
+import Checkbox from "../../../../components/checkbox";
+import Modal from "../../../../components/modal";
+import Text from "../../../../components/text";
+import Textfield from "../../../../components/textfield";
+import Icon from "../../../../icons";
 import {
   updateRecipe,
   updateShoppingList,
@@ -21,8 +21,8 @@ import {
   createNewRecipeList,
   createNewWeekplanList,
   getAllShoppingList,
-} from "../../../services/databaseHelper";
-import { ShoppingListType, RecipesType, WeekplanType } from "../../../types";
+} from "../../../../services/databaseHelper";
+import { ShoppingListType, RecipesType, WeekplanType } from "../../../../types";
 import {
   ListWrapper,
   ListInnerWrapper,

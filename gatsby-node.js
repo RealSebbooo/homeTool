@@ -2,7 +2,10 @@ exports.createPages = async ({ actions }) => {
   const { createPage } = actions;
 
   const Einkaufsliste = require.resolve("./src/packages/index.tsx");
-  const Rezepte = require.resolve("./src/packages/rezepte.tsx");
+  const Rezepte = require.resolve(
+    "./src/packages/rezepte/template/rezepte.tsx"
+  );
+  const Recipe = require.resolve("./src/packages/rezepte/template/recipe.tsx");
   const Wochenplan = require.resolve("./src/packages/wochenplan.tsx");
   const Account = require.resolve(
     "./src/packages/account/template/account.tsx"
@@ -18,6 +21,10 @@ exports.createPages = async ({ actions }) => {
   createPage({
     path: "/rezepte",
     component: Rezepte,
+  });
+  createPage({
+    path: "/recipe",
+    component: Recipe,
   });
   createPage({
     path: "/wochenplan",

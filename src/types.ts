@@ -31,18 +31,23 @@ export interface ShoppingListType extends ListType {
   activeArticles: ArticelType[];
   recentArticles: recentArticle[];
 }
-
-export interface RecipesType extends ListType {
+export interface RecipeListType extends ListType {
+  recipes: RecipesType[];
+}
+export type RecipesType = {
+  name: string;
+  uid: string;
   image: string;
   description: string;
+  portions: string;
   ingredients: [
     {
       article: ArticelType;
       amount: number;
       amountUnit: string;
-    }
+    }?
   ];
-}
+};
 type WeekplanDayType = {
   date: Date;
   recipes: RecipesType[];

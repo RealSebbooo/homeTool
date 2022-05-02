@@ -13,6 +13,7 @@ import {
 
 import {
   ArticelType,
+  RecipeListType,
   RecipesType,
   ShoppingListType,
   UserType,
@@ -148,6 +149,19 @@ export const getRecipes = async (): Promise<RecipesType[]> => {
     return rObj;
   });
   return itemsDoc;
+};
+
+export const getRecipesFromDatabase = async (
+  listId: string
+): Promise<RecipeListType> => {
+  const ref = collection(db, "recipes");
+  const q = query(ref, where("uid", "==", listId));
+  const snapshot = await getDocs(q);
+  const itemsDoc = snapshot.docs.map((doc) => {
+    var rObj = { ...doc.data(), uid: doc.id };
+    return rObj;
+  });
+  return itemsDoc[0];
 };
 
 export const updateShoppingList = (item: ShoppingListType) => {
