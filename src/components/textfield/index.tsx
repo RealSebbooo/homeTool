@@ -26,6 +26,7 @@ const Textfield: FC<TextFieldProps> = ({
   };
   const [inputValue] = useState(value);
   useEffect(() => {
+    if (typeof window == "undefined") return;
     if (value) {
       document.getElementById("inputFieldValue").value = JSON.parse(
         JSON.stringify(value)

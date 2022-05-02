@@ -38,11 +38,13 @@ const AutocompleteField: FC = () => {
   }, []);
 
   const focusHandler = () => {
+    if (typeof window == "undefined") return;
     document.getElementById("bottomBox").style.display = "inline";
     setMachingArticles(JSON.parse(JSON.stringify(articles)));
   };
 
   const disableModal = () => {
+    if (typeof window == "undefined") return;
     document.getElementById("bottomBox").style.display = "none";
   };
 

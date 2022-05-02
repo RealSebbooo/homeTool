@@ -21,6 +21,7 @@ const Select: FC<SelectProps> = ({
   hasIcon = false,
 }) => {
   const getAdditionalInfos = (e: any) => {
+    if (typeof window == "undefined") return;
     const value = document.getElementById(`selectId${label}`).selectedIndex;
     setSelectedOption(options[value - 1]);
     returnInfos(options[value - 1]?.label);
@@ -31,6 +32,7 @@ const Select: FC<SelectProps> = ({
   };
 
   useEffect(() => {
+    if (typeof window == "undefined") return;
     if (!value) {
       document.getElementById("selectId" + label).selectedIndex = 0;
     } else {
@@ -52,7 +54,9 @@ const Select: FC<SelectProps> = ({
           {label}
         </option>
         {options?.map((element, key) => (
-          <option value={key.toString()} key={key}>{element.label}</option>
+          <option value={key.toString()} key={key}>
+            {element.label}
+          </option>
         ))}
       </SelectField>
       {showAdditionalInfos && (
