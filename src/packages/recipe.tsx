@@ -1,18 +1,18 @@
 import React, { FC, useEffect, useState } from "react";
-import Title from "../../../components/title";
-import { getRecipesFromDatabase } from "../../../services/databaseHelper";
-import { RecipesType } from "../../../types";
+import Title from "../components/title";
+import { getRecipesFromDatabase } from "../services/databaseHelper";
+import { RecipesType } from "../types";
 import {
   HorizontalLine,
   RecipeActions,
   RecipeWrapper,
   PortionsWrapper,
   ArticlesWrapper,
-} from "./recipe.styled";
-import Textfield from "../../../components/textfield";
-import Button from "../../../components/button";
+} from "../styles/recipe.styled";
+import Textfield from "../components/textfield";
+import Button from "../components/button";
 import { navigate, PageProps } from "gatsby";
-import Text from "../../../components/text";
+import Text from "../components/text";
 
 const Recipe: FC<PageProps> = ({ location }) => {
   if (typeof window == "undefined") return;

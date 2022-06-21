@@ -1,5 +1,5 @@
 import styled from "styled-components";
-import theme from "../../../../components/theme";
+import theme from "./theme";
 
 export const ListWrapper = styled.div``;
 

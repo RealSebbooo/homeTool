@@ -1,10 +1,10 @@
 import React from "react";
 import { useEffect } from "react";
 import { useState } from "react";
-import { getRecipesFromDatabase } from "../../../../services/databaseHelper";
-import Button from "../../../../components/button";
-import Text from "../../../../components/text";
-import { RecipeListType, RecipesType } from "../../../../types";
+import { getRecipesFromDatabase } from "../services/databaseHelper";
+import Button from "./button";
+import Text from "./text";
+import { RecipeListType, RecipesType } from "../types";
 import { navigate } from "gatsby";
 
 const RecipesList = () => {

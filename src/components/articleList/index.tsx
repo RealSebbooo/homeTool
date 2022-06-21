@@ -38,6 +38,7 @@ const ItemList = () => {
     setArticles(await getArticles());
     listenToArticleList();
   };
+
   useEffect(() => {
     getArticleObjects();
   }, []);

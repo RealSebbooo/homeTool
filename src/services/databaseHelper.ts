@@ -26,8 +26,6 @@ export const getUserFromDatabase = async (email: string) => {
   const itemDoc = snapshot.docs.find((doc) => doc.data().email == email);
   const item = { ...itemDoc.data(), uid: itemDoc.id };
   return item;
-
-  // const item = snapshot.docs.map(doc => {...doc.data(), uid: doc.id})
 };
 
 export const userAddedToAuth = async (email: string) => {

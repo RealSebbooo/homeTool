@@ -52,7 +52,6 @@ export const register = (user: UserObjectType) => {
     .catch((error) => {
       const errorCode = error.code;
       const errorMessage = error.message;
-      // ..
     });
 };
 

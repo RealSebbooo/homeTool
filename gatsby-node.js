@@ -1,18 +1,15 @@
-exports.createPages = ({ actions }) => {
-  const { createPage } = actions;
+const path = require(`path`);
 
-  const Einkaufsliste = require.resolve("./src/packages/shoppingList.tsx");
-  const Rezepte = require.resolve(
-    "./src/packages/rezepte/template/rezepte.tsx"
-  );
-  const Recipe = require.resolve("./src/packages/rezepte/template/recipe.tsx");
-  const Wochenplan = require.resolve("./src/packages/wochenplan.tsx");
-  const Account = require.resolve(
-    "./src/packages/account/template/account.tsx"
-  );
-  const Artikel = require.resolve("./src/packages/articles.tsx");
-  const Login = require.resolve("./src/packages/login.tsx");
-  const Register = require.resolve("./src/packages/register.tsx");
+exports.createPages = ({ actions }) => {
+  const Einkaufsliste = path.resolve("./src/packages/shoppingList.tsx");
+  const Rezepte = path.resolve("./src/packages/rezepte.tsx");
+  const Recipe = path.resolve("./src/packages/recipe.tsx");
+  const Wochenplan = path.resolve("./src/packages/wochenplan.tsx");
+  const Account = path.resolve("./src/packages/account.tsx");
+  const Artikel = path.resolve("./src/packages/articles.tsx");
+  const Login = path.resolve("./src/packages/login.tsx");
+  const Register = path.resolve("./src/packages/register.tsx");
+  const { createPage } = actions;
 
   createPage({
     path: "/",

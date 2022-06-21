@@ -60,14 +60,6 @@ const ItemList: FC = (): JSX.Element => {
         id: list.uid,
       };
     });
-
-    // setUserLists(mappedLists);
-    // const activeList = lists?.find((list) => list.uid === userShoppingList);
-    // const mappedActiveList = {
-    //   name: activeList?.name || "",
-    //   id: activeList?.uid || "",
-    // };
-    // setActiveUserList(mappedActiveList);
   };
 
   const listenToShoppingList = (uid: string) =>

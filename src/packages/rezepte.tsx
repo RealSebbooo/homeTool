@@ -1,6 +1,6 @@
 import React, { FC } from "react";
-import RecipesList from "../components/recipesList/recipesList";
-import Title from "./../../../components/title";
+import RecipesList from "../components/recipesList";
+import Title from "../components/title";
 
 const Rezepte: FC = () => {
   return (

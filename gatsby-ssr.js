@@ -1,13 +1,14 @@
-const React = require("react");
-const { isLoggedIn } = require("./src/services/auth");
-const Container = require("./src/components/container");
-const FooterNav = require("./src/components/footer");
+import React from "react";
+import { isLoggedIn } from "./src/services/auth";
+import Container from "./src/components/container";
+import FooterNav from "./src/components/footer";
+import "./src/styles/index.css";
 
-exports.onRouteUpdate = () => {
+export const onRenderBody = () => {
   isLoggedIn();
 };
 
-exports.wrapPageElement = ({ element, props }) => {
+export const wrapPageElement = ({ element, props }) => {
   return (
     <Container {...props}>
       <div>{element}</div>
