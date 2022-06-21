@@ -10,18 +10,11 @@ import {
 
 type DropdownProps = {
   items: ListDropdownItems[];
-  activeItem: ListDropdownItems;
+  activeItem?: ListDropdownItems;
   itemClicked: (item: string) => void;
-  isOpen: boolean;
-  setIsOpen: (value) => void;
 };
-const Dropdown: FC<DropdownProps> = ({
-  activeItem,
-  items,
-  itemClicked,
-  isOpen,
-  setIsOpen,
-}) => {
+const Dropdown: FC<DropdownProps> = ({ activeItem, items, itemClicked }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const toggling = () => setIsOpen(!isOpen);
   return (
     <DropDownContainer>
@@ -31,7 +24,13 @@ const Dropdown: FC<DropdownProps> = ({
           <DropDownList>
             {items.map((item, key: number) => {
               return (
-                <ListItem key={key} onClick={() => itemClicked(item.id)}>
+                <ListItem
+                  key={key}
+                  onClick={() => {
+                    itemClicked(item.id);
+                    setIsOpen(false);
+                  }}
+                >
                   {item.name}
                 </ListItem>
               );

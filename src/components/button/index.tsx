@@ -1,4 +1,6 @@
+import { Theme } from "@mui/material";
 import React, { FC } from "react";
+import { theme } from "../theme";
 import { ButtonComp } from "./styled";
 type ButtonProps = {
   value?: string;
@@ -7,6 +9,8 @@ type ButtonProps = {
   text?: boolean;
   dense?: boolean;
   disabled?: boolean;
+  strech?: boolean;
+  color?: theme;
 };
 const Button: FC<ButtonProps> = ({
   value,
@@ -15,6 +19,8 @@ const Button: FC<ButtonProps> = ({
   text = false,
   dense = false,
   disabled = false,
+  strech = false,
+  color,
 }) => {
   const buttonClicked = () => {
     if (!disabled) onClick();
@@ -28,6 +34,8 @@ const Button: FC<ButtonProps> = ({
       value={value}
       onClick={buttonClicked}
       text={text}
+      strech={strech}
+      color={color}
     ></ButtonComp>
   );
 };

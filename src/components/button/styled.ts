@@ -8,6 +8,8 @@ type ButtonProps = {
   text?: boolean;
   dense?: boolean;
   disabled?: boolean;
+  strech?: boolean;
+  color?: theme;
 };
 
 export const ButtonComp = styled.input<ButtonProps>`
@@ -15,6 +17,7 @@ export const ButtonComp = styled.input<ButtonProps>`
   border: none;
   color: white;
   padding: ${({ dense }) => (dense ? "4px 16px" : "8px 16px")};
+  width: ${({ strech }) => strech && "100%"};
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -37,4 +40,6 @@ export const ButtonComp = styled.input<ButtonProps>`
   ${({ disabled }) => (disabled ? `cursor: auto` : `cursor: pointer`)};
   ${({ text }) => text && `padding-left: 0px`};
   ${({ right }) => right && "margin-left: auto"};
+
+  background-color: ${({ color }) => color && color};
 `;

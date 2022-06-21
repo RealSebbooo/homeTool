@@ -9,6 +9,7 @@ exports.createPages = ({ actions }) => {
   const Artikel = path.resolve("./src/packages/articles.tsx");
   const Login = path.resolve("./src/packages/login.tsx");
   const Register = path.resolve("./src/packages/register.tsx");
+  const Monopoly = path.resolve("./src/packages/monopoly.tsx");
   const { createPage } = actions;
 
   createPage({
@@ -42,6 +43,10 @@ exports.createPages = ({ actions }) => {
   createPage({
     path: "/register",
     component: Register,
+  });
+  createPage({
+    path: "/monopoly",
+    component: Monopoly,
   });
 };
 exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {

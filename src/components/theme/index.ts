@@ -1,10 +1,12 @@
-type Colors = {
+export type Colors = {
   white: string;
   black: string;
   background: string;
   primary: string;
   surface: string;
   disabled: string;
+  red: string;
+  green: string;
 };
 
 type BreakpointWidths = {
@@ -15,13 +17,15 @@ type BreakpointWidths = {
   xs: number;
 };
 
-const theme: Colors = {
+export const theme: Colors = {
   white: "#ffffff",
   black: "#000000",
   disabled: "#696969",
   surface: "#585858",
   background: "#141414",
   primary: "#0183b7",
+  green: "#3cb371",
+  red: "#ff6347",
 };
 
 export const breakpoints: BreakpointWidths = {

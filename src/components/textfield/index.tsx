@@ -32,7 +32,7 @@ const Textfield: FC<TextFieldProps> = ({
         JSON.stringify(value)
       );
     }
-  }, []);
+  }, [value]);
 
   return (
     <InputField

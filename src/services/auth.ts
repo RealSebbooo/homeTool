@@ -54,19 +54,28 @@ export const register = (user: UserObjectType) => {
       const errorMessage = error.message;
     });
 };
+export const showFooter = (): boolean => {
+  const exceptions = ["/monopoly"];
+  if (typeof window == "undefined") return false;
+  const path = globalHistory.location.pathname;
 
+  if (exceptions.includes(path)) {
+    return true;
+  }
+  return false;
+};
 export const isLoggedIn = async () => {
   if (typeof window == "undefined") return;
   const lsUser = localStorage.getItem("htUser");
+  const path = globalHistory.location.pathname;
+
   if (lsUser === null) {
-    const path = globalHistory.location.pathname;
     if (path !== "/login" && path !== "/register") {
       navigate("/login");
     }
   } else {
     await onAuthStateChanged(auth, (user) => {
       if (user === null) {
-        const path = globalHistory.location.pathname;
         if (path !== "/login" && path !== "/register") {
           navigate("/login");
         }

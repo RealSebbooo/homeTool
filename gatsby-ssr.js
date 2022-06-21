@@ -13,7 +13,7 @@ export const wrapPageElement = ({ element, props }) => {
     <Container {...props}>
       <div>{element}</div>
 
-      <FooterNav></FooterNav>
+      {!showFooter() && <FooterNav></FooterNav>}
     </Container>
   );
 };

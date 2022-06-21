@@ -9,6 +9,7 @@ import { Pencil } from "./svgs/pencil";
 import { Save } from "./svgs/save";
 import { Email } from "./svgs/email";
 import { Plus } from "./svgs/plus";
+import { ArrowRightIcon } from "./svgs/arrowRight";
 import { Iconsizer } from "./styled";
 import { navigate } from "gatsby";
 
@@ -62,6 +63,7 @@ export const Icons = {
   save: Save,
   email: Email,
   plus: Plus,
+  arrowRight: ArrowRightIcon,
 };
 
 export const iconNames = [
@@ -74,6 +76,7 @@ export const iconNames = [
   { label: "save" },
   { label: "email" },
   { label: "plus" },
+  { label: "arrowRight" },
 ];
 
 const Icon: FC<IconProps> = ({
