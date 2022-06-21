@@ -1,8 +1,7 @@
-import React from "react";
-import { isLoggedIn } from "./src/services/auth";
-import Container from "./src/components/container";
-import FooterNav from "./src/components/footer";
-import "./src/styles/index.css";
+const React = require("react");
+const { isLoggedIn } = require("./src/services/auth");
+const Container = require("./src/components/container");
+const FooterNav = require("./src/components/footer");
 
 exports.onRouteUpdate = () => {
   isLoggedIn();
