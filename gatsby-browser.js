@@ -4,11 +4,11 @@ import Container from "./src/components/container";
 import FooterNav from "./src/components/footer";
 import "./src/styles/index.css";
 
-export const onRouteUpdate = () => {
+exports.onRouteUpdate = () => {
   isLoggedIn();
 };
 
-export const wrapPageElement = ({ element, props }) => {
+exports.wrapPageElement = ({ element, props }) => {
   return (
     <Container {...props}>
       <div>{element}</div>
