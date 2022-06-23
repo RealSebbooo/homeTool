@@ -74,6 +74,11 @@ const Monopoly = () => {
       setGame(JSON.parse(game));
     }
   }, []);
+
+  useEffect(() => {
+    localStorage.setItem("monopolyGame", JSON.stringify(game));
+  }, [game]);
+
   const endGame = () => {
     localStorage.removeItem("monopolyGame");
     location.reload();
@@ -107,6 +112,75 @@ const Monopoly = () => {
     if (newValue < 0) {
       setCurrentAmount("0");
     } else setCurrentAmount(newValue.toString());
+  };
+
+  const bookMoney = () => {
+    console.log("bookMoney", fromUser, toUser, currentAmount);
+    if (fromUser !== "Bank") {
+      let userObject = game?.players.find((player) => player.name === fromUser);
+      if (userObject) {
+        userObject = bookUser(userObject, currentAmount, false);
+        console.log("foundFrom", userObject);
+      }
+    }
+    if (toUser !== "Bank") {
+      let userObject = game?.players.find((player) => player.name === toUser);
+      if (userObject) {
+        console.log("foundTo", userObject);
+
+        userObject = bookUser(userObject, currentAmount, true);
+      }
+    }
+    game?.moves.push({
+      from: fromUser,
+      to: toUser,
+      amount: parseInt(currentAmount),
+    });
+    setGame(JSON.parse(JSON.stringify(game)));
+    console.log("game", game);
+  };
+
+  const bookUser = (
+    userObject: PlayerType,
+    amount: string,
+    add: boolean
+  ): PlayerType => {
+    if (add) userObject.money += parseInt(amount) || 0;
+    else userObject.money -= parseInt(amount) || 0;
+    return userObject;
+  };
+  const undoLastMove = () => {
+    if (game?.moves.length || 0 > 0) {
+      const lastMove = game?.moves[game?.moves.length - 1];
+      if (lastMove?.to !== "Bank") {
+        let userObject = game?.players.find(
+          (player) => player.name === lastMove?.to
+        );
+        if (userObject)
+          userObject = bookUser(
+            userObject,
+            lastMove?.amount.toString() || "0",
+            false
+          );
+      }
+      if (lastMove?.from !== "Bank") {
+        let userObject = game?.players.find(
+          (player) => player.name === lastMove?.from
+        );
+        if (userObject)
+          userObject = bookUser(
+            userObject,
+            lastMove?.amount.toString() || "0",
+            true
+          );
+      }
+
+      game?.moves.pop();
+
+      setGame(JSON.parse(JSON.stringify(game)));
+
+      console.log("game", game);
+    }
   };
   return (
     <>
@@ -203,6 +277,8 @@ const Monopoly = () => {
                 );
               })}
             </ButtonWrapper>
+            <Button value="Buchen" onClick={() => bookMoney()}></Button>
+            <Button value="Rückgängig" onClick={() => undoLastMove()}></Button>
             <EndButton value="Beenden" onClick={endGame}></EndButton>
           </>
         )}
