@@ -372,6 +372,8 @@ const Monopoly = () => {
         ) : game && game.state === GameState.Waiting ? (
           <>
             <HorizontalLine></HorizontalLine>
+            <h1>Lobby</h1>
+            <HorizontalLine></HorizontalLine>
             {game?.players.length > 0 && (
               <>
                 <h1>Spieler</h1>
