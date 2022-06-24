@@ -19,6 +19,19 @@ import {
   HorizontalLine,
   SettingsButtons,
 } from "./../styles/monopoly.styled";
+
+import db from "./../services/firebase";
+import {
+  collection,
+  doc,
+  setDoc,
+  addDoc,
+  onSnapshot,
+  query,
+  getDocs,
+  where,
+} from "firebase/firestore";
+import { dividerClasses } from "@mui/material";
 type PlayerType = {
   name: string;
   money: number;
@@ -28,18 +41,26 @@ type Move = {
   to: string;
   amount: number;
 };
+enum GameState {
+  Waiting = "waiting",
+  Running = "running",
+  Finished = "finished",
+}
 type GameType = {
   players: PlayerType[];
   moneySteps: number[];
   moves: Move[];
+  uid: string;
+  state: GameState;
+  roomNumber: string;
 };
 const Monopoly = () => {
   if (typeof window === "undefined") return;
   const [names, setNames] = useState(["", ""]);
   const [money, setMoney] = useState("1500");
+  const [userName, setUserName] = useState("");
   const [currentAmount, setCurrentAmount] = useState("0");
   const [game, setGame] = useState<GameType | undefined>();
-  const [gameExists, setGameExists] = useState(false);
   const setNameToList = (name: string, key: number) => {
     names[key - 1] = name;
   };
@@ -49,41 +70,39 @@ const Monopoly = () => {
   const addUser = () => setNames([...names, ""]);
 
   const startGame = () => {
-    const game = {
-      players: [],
-      moneySteps: [1, 5, 10, 20, 50, 100, 200, 500],
-      moves: [],
+    const startingGame = {
+      ...game,
+      players: game?.players.map((player) => ({
+        ...player,
+        money: parseInt(money),
+      })),
     };
 
-    names.forEach((name) => {
-      if (name) {
-        const player = { name: name, money: parseInt(money) };
-        game.players.push(player);
-      }
-    });
-
-    console.log("startGame", names, money, game);
-
-    localStorage.setItem("monopolyGame", JSON.stringify(game));
-    location.reload();
+    startingGame.state = GameState.Running;
+    setDoc(doc(db, "monopoly", startingGame.uid), startingGame);
+    console.log("startingGame", startingGame);
   };
 
   useEffect(() => {
-    const game = localStorage.getItem("monopolyGame") || "";
+    const localGame = localStorage.getItem("monopolyGame") || "";
     console.log("game", game);
-    if (game) {
-      console.log("hiergame");
-      setGameExists(true);
-      setGame(JSON.parse(game));
+    if (localGame) {
+      setUserName(JSON.parse(localGame).name);
+      listenToGame(JSON.parse(localGame).uid);
     }
   }, []);
   const updateLocalstorageGame = () => {
-    localStorage.setItem("monopolyGame", JSON.stringify(game));
+    setDoc(doc(db, "monopoly", game.uid), game);
   };
 
   const endGame = () => {
     localStorage.removeItem("monopolyGame");
+    updateGame({ ...game, state: GameState.Finished });
     location.reload();
+  };
+  const updateGame = (game: GameType) => {
+    console.log("newGame", game);
+    setDoc(doc(db, "monopoly", game.uid), game);
   };
   const dropdownItems = () => {
     const items = [{ name: "Bank", id: "Bank" }];
@@ -185,143 +204,314 @@ const Monopoly = () => {
       game?.moves.pop();
 
       setGame(JSON.parse(JSON.stringify(game)));
+      updateLocalstorageGame();
 
       console.log("game", game);
     }
   };
+
+  const [createGame, setCreateGame] = useState(true);
+  const [joinGame, setJoinGame] = useState(false);
+  const [roomNumber, setRoomNumber] = useState("");
+  const createNewGame = () => {
+    console.log("create", roomNumber);
+    const newGame = {
+      players: [],
+      moneySteps: [1, 5, 10, 20, 50, 100, 200, 500],
+      moves: [],
+      uid: "",
+      state: GameState.Waiting,
+      roomNumber: roomNumber,
+    };
+    checkIfGameNameIsAvailable();
+    setItem("monopoly", newGame);
+  };
+  const checkIfGameNameIsAvailable = async (): Promise<boolean> => {
+    const ref = collection(db, "monopoly");
+    const q = query(ref);
+    const snapshot = await getDocs(q);
+    const itemsDoc = snapshot.docs.map((doc) => {
+      var rObj = { ...doc.data(), uid: doc.id };
+      return rObj;
+    });
+    console.log("gameItems", itemsDoc);
+
+    return true;
+  };
+
+  const setItem = async (collectionName: string, data: object) => {
+    const citiesRef = collection(db, collectionName);
+    const docRef = await addDoc(citiesRef, data);
+    addUidToNewList(collectionName, { ...data, uid: docRef.id }, docRef.id);
+  };
+
+  const addUidToNewList = (
+    collectionName: string,
+    data: object,
+    uid: string
+  ) => {
+    setDoc(doc(db, collectionName, uid), data);
+    const gameObject = {
+      uid: uid,
+      name: "Bank",
+    };
+    localStorage.setItem("monopolyGame", JSON.stringify(gameObject));
+    listenToGame(uid);
+  };
+
+  const listenToGame = (uid: string) => {
+    console.log("data123listen");
+    onSnapshot(doc(db, "monopoly", uid), (doc) => {
+      console.log("data123", doc);
+      if (doc?.data()) {
+        setGame({
+          ...(doc.data() as GameType),
+          uid: doc.id,
+        });
+      }
+    });
+  };
+  const joinExistingGame = async () => {
+    const ref = collection(db, "monopoly");
+    const q = query(ref, where("roomNumber", "==", roomNumber));
+    const snapshot = await getDocs(q);
+    const itemsDoc = snapshot.docs.map((doc) => {
+      var rObj = { ...doc.data(), uid: doc.id };
+      return rObj;
+    });
+    console.log("item", itemsDoc[0]);
+    setDoc(doc(db, "monopoly", itemsDoc[0].uid), {
+      ...itemsDoc[0],
+      players: [...itemsDoc[0]?.players, { name: userName }],
+    });
+    const gameObject = {
+      uid: itemsDoc[0].uid,
+      name: userName,
+    };
+    localStorage.setItem("monopolyGame", JSON.stringify(gameObject));
+    listenToGame(itemsDoc[0].uid);
+  };
+
+  const userIsBank = (): boolean => {
+    if (userName === "Bank") {
+      return true;
+    }
+    return false;
+  };
   return (
     <>
       <h1>Monopoly</h1>
+
       <div>
-        {!gameExists && !game ? (
+        {!game ? (
           <>
-            {names?.map((name, key) => (
-              <Row>
+            <Button
+              value="Erstellen"
+              onClick={() => {
+                setCreateGame(true);
+                setJoinGame(false);
+              }}
+            ></Button>
+            <Button
+              value="Beitreten"
+              onClick={() => {
+                setJoinGame(true);
+                setCreateGame(false);
+              }}
+            ></Button>
+
+            {createGame && (
+              <div>
+                Spiel erstellen
                 <Textfield
                   type="text"
-                  placeholder={"Name " + ++key}
-                  textInputChanged={(value) => setNameToList(value, key)}
+                  placeholder={"Raumnummer"}
+                  textInputChanged={(value) => setRoomNumber(value)}
                 ></Textfield>
+                <Button
+                  value="Erstellen"
+                  onClick={() => createNewGame()}
+                  disabled={!roomNumber}
+                  strech
+                ></Button>
+              </div>
+            )}
+            {joinGame && (
+              <div>
+                Beitreten
+                <Textfield
+                  type="text"
+                  placeholder={"Raumnummer"}
+                  textInputChanged={(value) => setRoomNumber(value)}
+                ></Textfield>
+                <Textfield
+                  type="text"
+                  placeholder={"Benutzername"}
+                  textInputChanged={(value) => setUserName(value)}
+                ></Textfield>
+                <Button
+                  value="Erstellen"
+                  onClick={() => joinExistingGame()}
+                  disabled={!roomNumber || !userName}
+                  strech
+                ></Button>
+              </div>
+            )}
+          </>
+        ) : game && game.state === GameState.Waiting ? (
+          <>
+            <HorizontalLine></HorizontalLine>
+            {game?.players.length > 0 && (
+              <>
+                <h1>Spieler</h1>
+                <PlayerWrapper>
+                  {game?.players?.map((player) => (
+                    <PlayerCard>
+                      <PlayerInnerBox>
+                        <h1 style={{ fontWeight: "normal" }}>{player.name}</h1>
+                      </PlayerInnerBox>
+                    </PlayerCard>
+                  ))}
+                </PlayerWrapper>
+                <HorizontalLine></HorizontalLine>
+              </>
+            )}
+            {userName === "Bank" && (
+              <>
+                <MoneyContainer>
+                  Startgeld
+                  <Textfield
+                    type="text"
+                    placeholder={"Geld"}
+                    textInputChanged={(value) => setMoney(value)}
+                  ></Textfield>
+                </MoneyContainer>
 
                 <Button
-                  value="Benutzer Löschen"
-                  onClick={() => removeUsername(key)}
+                  disabled={game?.players.length < 2}
+                  value="Starten"
+                  onClick={startGame}
                 ></Button>
-              </Row>
-            ))}
-
-            <Button value="Benutzer hinzufügen" onClick={addUser}></Button>
-            <MoneyContainer>
-              Startgeld
-              <Textfield
-                type="text"
-                placeholder={"Geld"}
-                textInputChanged={(value) => setMoney(value)}
-              ></Textfield>
-            </MoneyContainer>
-
-            <Button value="Starten" onClick={startGame}></Button>
+              </>
+            )}
           </>
         ) : (
           <>
+            <HorizontalLine></HorizontalLine>
             <PlayerWrapper>
               {game?.players?.map((player) => (
-                <PlayerCard isUserBankrupt={player.money <= 0}>
-                  <PlayerInnerBox>
-                    <h1 style={{ fontWeight: "normal" }}>{player.name}</h1>
-                    <h2>{player.money > 0 ? player.money : 0} €</h2>
-                    <SettingsButtons>
-                      <Button
-                        value={"Zahlt"}
-                        color={
-                          fromUser === player.name
-                            ? theme.primary
-                            : theme.surface
-                        }
-                        onClick={
-                          fromUser === player.name
-                            ? () => setFromUser("Bank")
-                            : () => setFromUser(player.name)
-                        }
-                      ></Button>
-                      <Button
-                        value={"Erhält"}
-                        color={
-                          toUser === player.name ? theme.primary : theme.surface
-                        }
-                        onClick={
-                          toUser === player.name
-                            ? () => setToUser("Bank")
-                            : () => setToUser(player.name)
-                        }
-                      ></Button>
-                    </SettingsButtons>
-                  </PlayerInnerBox>
-                </PlayerCard>
+                <>
+                  {(player.name === userName || userName === "Bank") && (
+                    <PlayerCard isUserBankrupt={player.money <= 0}>
+                      <PlayerInnerBox>
+                        <h1 style={{ fontWeight: "normal" }}>{player.name}</h1>
+                        <h2>{player.money > 0 ? player.money : 0} €</h2>
+                        {userIsBank() && (
+                          <SettingsButtons>
+                            <Button
+                              value={"Zahlt"}
+                              color={
+                                fromUser === player.name
+                                  ? theme.primary
+                                  : theme.surface
+                              }
+                              onClick={
+                                fromUser === player.name
+                                  ? () => setFromUser("Bank")
+                                  : () => setFromUser(player.name)
+                              }
+                            ></Button>
+                            <Button
+                              value={"Erhält"}
+                              color={
+                                toUser === player.name
+                                  ? theme.primary
+                                  : theme.surface
+                              }
+                              onClick={
+                                toUser === player.name
+                                  ? () => setToUser("Bank")
+                                  : () => setToUser(player.name)
+                              }
+                            ></Button>
+                          </SettingsButtons>
+                        )}
+                      </PlayerInnerBox>
+                    </PlayerCard>
+                  )}
+                </>
               ))}
             </PlayerWrapper>
             <HorizontalLine></HorizontalLine>
-            <BankWrapper>
-              <From>
-                <Dropdown
-                  items={dropdownItems()}
-                  activeItem={{ name: fromUser, id: fromUser }}
-                  itemClicked={(user) => setFromUser(user)}
-                ></Dropdown>
-              </From>
-              <Icon name="arrowRight" light={true}></Icon>
-              <Amount>
-                <Textfield
-                  dense
-                  type="text"
-                  placeholder={"Geld"}
-                  value={currentAmount}
-                  textInputChanged={(value) => setTheCurrentAmount(value)}
-                ></Textfield>
-              </Amount>
-              <Icon name="arrowRight" light={true}></Icon>
-              <To>
-                <Dropdown
-                  items={dropdownItems()}
-                  activeItem={{ name: toUser, id: toUser }}
-                  itemClicked={(user) => setToUser(user)}
-                ></Dropdown>
-              </To>
-            </BankWrapper>
-            <HorizontalLine></HorizontalLine>
-            <ButtonWrapper>
-              {game?.moneySteps.map((step) => {
-                return (
+            {userIsBank() && (
+              <>
+                <BankWrapper>
+                  <From>
+                    <Dropdown
+                      items={dropdownItems()}
+                      activeItem={{ name: fromUser, id: fromUser }}
+                      itemClicked={(user) => setFromUser(user)}
+                    ></Dropdown>
+                  </From>
+                  <Icon name="arrowRight" light={true}></Icon>
+                  <Amount>
+                    <Textfield
+                      dense
+                      type="text"
+                      placeholder={"Geld"}
+                      value={currentAmount}
+                      textInputChanged={(value) => setTheCurrentAmount(value)}
+                    ></Textfield>
+                  </Amount>
+                  <Icon name="arrowRight" light={true}></Icon>
+                  <To>
+                    <Dropdown
+                      items={dropdownItems()}
+                      activeItem={{ name: toUser, id: toUser }}
+                      itemClicked={(user) => setToUser(user)}
+                    ></Dropdown>
+                  </To>
+                </BankWrapper>
+                <HorizontalLine></HorizontalLine>
+                <ButtonWrapper>
+                  {game?.moneySteps?.map((step) => {
+                    return (
+                      <Button
+                        strech
+                        color={theme.green}
+                        value={"+ " + step.toString()}
+                        onClick={() => increaseMoney(step)}
+                      ></Button>
+                    );
+                  })}
+                </ButtonWrapper>
+                <ButtonWrapper>
+                  {game?.moneySteps?.map((step) => {
+                    return (
+                      <Button
+                        strech
+                        color={theme.red}
+                        value={"- " + step.toString()}
+                        onClick={() => decreaseMoney(step)}
+                      ></Button>
+                    );
+                  })}
+                </ButtonWrapper>
+                <Button
+                  value="Buchen"
+                  onClick={() => bookMoney()}
+                  strech
+                ></Button>
+                <HorizontalLine></HorizontalLine>
+                <SettingsButtons>
                   <Button
-                    strech
-                    color={theme.green}
-                    value={"+ " + step.toString()}
-                    onClick={() => increaseMoney(step)}
+                    value="Rückgängig"
+                    onClick={() => undoLastMove()}
                   ></Button>
-                );
-              })}
-            </ButtonWrapper>
-            <ButtonWrapper>
-              {game?.moneySteps.map((step) => {
-                return (
-                  <Button
-                    strech
-                    color={theme.red}
-                    value={"- " + step.toString()}
-                    onClick={() => decreaseMoney(step)}
-                  ></Button>
-                );
-              })}
-            </ButtonWrapper>
-            <Button value="Buchen" onClick={() => bookMoney()} strech></Button>
-            <HorizontalLine></HorizontalLine>
-            <SettingsButtons>
-              <Button
-                value="Rückgängig"
-                onClick={() => undoLastMove()}
-              ></Button>
-              <EndButton value="Beenden" onClick={endGame}></EndButton>
-            </SettingsButtons>
+                  <EndButton value="Beenden" onClick={endGame}></EndButton>
+                </SettingsButtons>
+              </>
+            )}
           </>
         )}
       </div>
