@@ -233,7 +233,11 @@ const Monopoly = () => {
                     <SettingsButtons>
                       <Button
                         value={"Zahlt"}
-                        color={theme.surface}
+                        color={
+                          fromUser === player.name
+                            ? theme.primary
+                            : theme.surface
+                        }
                         onClick={
                           fromUser === player.name
                             ? () => setFromUser("Bank")
@@ -242,7 +246,9 @@ const Monopoly = () => {
                       ></Button>
                       <Button
                         value={"Erhält"}
-                        color={theme.surface}
+                        color={
+                          toUser === player.name ? theme.primary : theme.surface
+                        }
                         onClick={
                           toUser === player.name
                             ? () => setToUser("Bank")
