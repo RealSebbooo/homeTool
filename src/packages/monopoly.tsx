@@ -385,7 +385,6 @@ const Monopoly = () => {
                     </PlayerCard>
                   ))}
                 </PlayerWrapper>
-                <HorizontalLine></HorizontalLine>
               </>
             )}
             {userName === "Bank" && (

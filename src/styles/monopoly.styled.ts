@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import Button from "../components/button";
-import theme from "../components/theme";
+import theme, { device } from "../components/theme";
 
 export const MoneyContainer = styled.div``;
 
@@ -8,6 +8,17 @@ export const PlayerWrapper = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr 1fr 1fr;
   column-gap: 10px;
+  @media ${device.mobile} {
+    grid-template-columns: 1fr;
+  }
+
+  @media ${device.tablet} {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  @media ${device.laptop} {
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+  }
 `;
 type PlayerCardType = {
   isUserBankrupt: boolean;
