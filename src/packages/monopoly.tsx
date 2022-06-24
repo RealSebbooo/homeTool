@@ -373,7 +373,6 @@ const Monopoly = () => {
           <>
             <HorizontalLine></HorizontalLine>
             <h1>Lobby</h1>
-            <HorizontalLine></HorizontalLine>
             {game?.players.length > 0 && (
               <>
                 <h1>Spieler</h1>
@@ -405,10 +404,6 @@ const Monopoly = () => {
                     disabled={game?.players.length < 2}
                     value="Starten"
                     onClick={startGame}
-                  ></Button>
-                  <Button
-                    value="Rückgängig"
-                    onClick={() => undoLastMove()}
                   ></Button>
                   <EndButton value="Beenden" onClick={endGame}></EndButton>
                 </SettingsButtons>
