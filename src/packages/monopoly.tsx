@@ -230,6 +230,26 @@ const Monopoly = () => {
                   <PlayerInnerBox>
                     <h1 style={{ fontWeight: "normal" }}>{player.name}</h1>
                     <h2>{player.money > 0 ? player.money : 0} €</h2>
+                    <SettingsButtons>
+                      <Button
+                        value={"Zahlt"}
+                        color={theme.surface}
+                        onClick={
+                          fromUser === player.name
+                            ? () => setFromUser("Bank")
+                            : () => setFromUser(player.name)
+                        }
+                      ></Button>
+                      <Button
+                        value={"Erhält"}
+                        color={theme.surface}
+                        onClick={
+                          toUser === player.name
+                            ? () => setToUser("Bank")
+                            : () => setToUser(player.name)
+                        }
+                      ></Button>
+                    </SettingsButtons>
                   </PlayerInnerBox>
                 </PlayerCard>
               ))}
