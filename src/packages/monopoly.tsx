@@ -80,12 +80,10 @@ const Monopoly = () => {
 
     startingGame.state = GameState.Running;
     setDoc(doc(db, "monopoly", startingGame.uid), startingGame);
-    console.log("startingGame", startingGame);
   };
 
   useEffect(() => {
     const localGame = localStorage.getItem("monopolyGame") || "";
-    console.log("game", game);
     if (localGame) {
       setUserName(JSON.parse(localGame).name);
       listenToGame(JSON.parse(localGame).uid);
@@ -101,7 +99,6 @@ const Monopoly = () => {
     location.reload();
   };
   const updateGame = (game: GameType) => {
-    console.log("newGame", game);
     setDoc(doc(db, "monopoly", game.uid), game);
   };
   const dropdownItems = () => {
@@ -123,7 +120,6 @@ const Monopoly = () => {
   const increaseMoney = (step: number) => {
     let newValue = parseInt(currentAmount);
     newValue = newValue + step;
-    console.log("newvalue", newValue, currentAmount, step);
     setCurrentAmount(newValue.toString());
   };
   const decreaseMoney = (step: number) => {
@@ -136,19 +132,15 @@ const Monopoly = () => {
   };
 
   const bookMoney = () => {
-    console.log("bookMoney", fromUser, toUser, currentAmount);
     if (fromUser !== "Bank") {
       let userObject = game?.players.find((player) => player.name === fromUser);
       if (userObject) {
         userObject = bookUser(userObject, currentAmount, false);
-        console.log("foundFrom", userObject);
       }
     }
     if (toUser !== "Bank") {
       let userObject = game?.players.find((player) => player.name === toUser);
       if (userObject) {
-        console.log("foundTo", userObject);
-
         userObject = bookUser(userObject, currentAmount, true);
       }
     }
@@ -163,7 +155,6 @@ const Monopoly = () => {
     setFromUser("Bank");
     setToUser("Bank");
     updateLocalstorageGame();
-    console.log("game", game);
   };
 
   const bookUser = (
@@ -205,8 +196,6 @@ const Monopoly = () => {
 
       setGame(JSON.parse(JSON.stringify(game)));
       updateLocalstorageGame();
-
-      console.log("game", game);
     }
   };
 
@@ -214,7 +203,6 @@ const Monopoly = () => {
   const [joinGame, setJoinGame] = useState(false);
   const [roomNumber, setRoomNumber] = useState("");
   const createNewGame = () => {
-    console.log("create", roomNumber);
     const newGame = {
       players: [],
       moneySteps: [1, 5, 10, 20, 50, 100, 200, 500],
@@ -234,7 +222,6 @@ const Monopoly = () => {
       var rObj = { ...doc.data(), uid: doc.id };
       return rObj;
     });
-    console.log("gameItems", itemsDoc);
 
     return true;
   };
@@ -260,11 +247,9 @@ const Monopoly = () => {
   };
 
   const listenToGame = (uid: string) => {
-    console.log("data123listen");
     onSnapshot(doc(db, "monopoly", uid), (doc) => {
-      console.log("data123", doc);
       if (doc?.data()) {
-        if (doc.data().state === GameState.Finished) {
+        if (doc?.data()?.state === GameState.Finished) {
           gameHasFinished();
         } else
           setGame({
@@ -285,7 +270,6 @@ const Monopoly = () => {
       var rObj = { ...doc.data(), uid: doc.id };
       return rObj;
     });
-    console.log("item", itemsDoc[0]);
     const playerAlreadyExists = !!itemsDoc[0].players.find(
       (player) => player.name === userName
     );
