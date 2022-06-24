@@ -32,7 +32,13 @@ export const ModalContent = styled.div`
 export const ModalHeader = styled.div`
   padding: 2px 16px;
   color: black;
+`;
+
+export const ModalBody = styled.div`
+  padding: 2px 16px;
+`;
+export const ModalFooter = styled.div`
   display: flex;
-  justify-content: space-between;
-  align-content: center;
+  padding: 2px 16px;
+  color: black !important;
 `;

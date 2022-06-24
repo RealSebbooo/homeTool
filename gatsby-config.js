@@ -1,11 +1,15 @@
 module.exports = {
   plugins: [
     {
-      resolve: `gatsby-plugin-styled-components`,
+      resolve: "gatsby-plugin-eslint",
+      options: {
+        exclude: /(node_modules|.cache|public)/,
+        stages: ["develop"],
+        options: {
+          emitWarning: true,
+          failOnError: false,
+        },
+      },
     },
   ],
-  siteMetadata: {
-    title: "Gaatsby Workshop",
-    description: "Learn Gatsby From scratch",
-  },
 };

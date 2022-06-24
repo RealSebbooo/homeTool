@@ -1,9 +1,10 @@
 import React, { FC, useEffect, useState } from "react";
-import Modal from "./../modal";
+import Modal from "./../modaltest";
 import Text from "./../text";
 import { ItemWrapper } from "./../item/item.styled";
 import { ArticelType, ShoppingListType, recentArticle } from "./../../types";
 import {
+  getAllShoppingList,
   getShoppingList,
   updateShoppingList,
 } from "./../../services/databaseHelper";
@@ -15,12 +16,17 @@ import {
   AmountUnitsGewicht,
   AmountUnitsMengen,
 } from "../../services/amountUnits";
+import Dropdown from "../dropdown/dropdown";
 
 export type ItemBoxProps = {
   isRecent: boolean;
 };
+export type ListDropdownItems = {
+  name: string;
+  id: string;
+};
 
-const ItemList: FC = () => {
+const ItemList: FC = (): JSX.Element => {
   const intervalRef = React.useRef(null);
   const [isHoldModal, setIsHoldModal] = useState(false);
   const [itemToEdit, setItemToEdit] = useState<ArticelType>();
@@ -32,25 +38,46 @@ const ItemList: FC = () => {
   }, []);
 
   const getShoppingListObjects = async () => {
-    await setShoppingList(await getShoppingList());
-    listenToShoppingList("dv1dnjZ1QicYNfQhuMzB");
+    if (typeof window == "undefined") return;
+    const userShoppingList = JSON.parse(
+      localStorage.getItem("htUser") || ""
+    )?.shoppingList;
+    await setShoppingList(await getShoppingList(userShoppingList));
+
+    fillShoppingListArray(userShoppingList);
+    if (typeof window == "undefined") return;
+    const user = JSON.parse(localStorage.getItem("htUser") || "");
+    listenToShoppingList(user?.shoppingList);
   };
 
-  const listenToShoppingList = (uid) =>
+  const fillShoppingListArray = async (userShoppingList: string) => {
+    const lists = await getAllShoppingList();
+    console.log("lists", lists, userShoppingList);
+
+    const mappedLists = lists?.map((list) => {
+      return {
+        name: list.name,
+        id: list.uid,
+      };
+    });
+  };
+
+  const listenToShoppingList = (uid: string) =>
     onSnapshot(doc(db, "shoppingLists", uid), (doc) => {
-      setShoppingList({ ...doc.data(), uid: doc.id });
+      if (doc?.data())
+        setShoppingList({
+          ...(doc.data() as ShoppingListType),
+          uid: doc.id,
+        });
     });
 
   useEffect(() => {
-    return () => stopCounter(); // when App is unmounted we should stop counter
+    return () => stopCounter();
   }, []);
-
-  // functions -----------------------------------
 
   const startCounter = (item: ArticelType, key: number) => {
     if (intervalRef.current) return;
     intervalRef.current = setTimeout(() => {
-      console.log("item", item);
       setItemToEdit(item);
       setItemToEditKey(key);
       setIsHoldModal(true);
@@ -63,27 +90,35 @@ const ItemList: FC = () => {
       intervalRef.current = null;
     }
   };
-  getShoppingList();
+  if (typeof window == "undefined") return;
+  const userShoppingList = JSON.parse(
+    localStorage.getItem("htUser") || "{}"
+  )?.shoppingList;
+  getShoppingList(userShoppingList);
   const removeItem = (item: ArticelType) => {
     if (!isHoldModal) {
       const index = shoppingList?.activeArticles?.indexOf(item);
-      if (index > -1) {
-        shoppingList?.activeArticles?.splice(index, 1);
+      if (typeof index === "number") {
+        if (index > -1) {
+          shoppingList?.activeArticles?.splice(index, 1);
+        }
+        shoppingList?.recentArticles.push({ ...item, lastUsed: new Date() });
       }
-      shoppingList?.recentArticles.push({ ...item, lastUsed: new Date() });
 
-      updateShoppingList(shoppingList);
+      updateShoppingList(shoppingList as ShoppingListType);
     }
   };
 
   const readdItem = (item: recentArticle) => {
     delete item.lastUsed;
     const index = shoppingList?.recentArticles?.indexOf(item);
-    if (index > -1) {
-      shoppingList?.recentArticles?.splice(index, 1);
+    if (typeof index === "number") {
+      if (index > -1) {
+        shoppingList?.recentArticles?.splice(index, 1);
+      }
+      shoppingList?.activeArticles.push(item);
+      updateShoppingList(shoppingList as ShoppingListType);
     }
-    shoppingList?.activeArticles.push(item);
-    updateShoppingList(shoppingList);
   };
 
   const disableModal = () => {
@@ -92,19 +127,11 @@ const ItemList: FC = () => {
   };
 
   const itemChanged = (item: ArticelType) => {
-    console.log(
-      "itemChanged",
-      item,
-      itemToEditKey,
-      shoppingList?.activeArticles
-    );
-
-    const index = shoppingList?.activeArticles?.indexOf(itemToEdit);
+    const index =
+      shoppingList?.activeArticles?.indexOf(itemToEdit as ArticelType) || -1;
     if (index > -1) {
       shoppingList?.activeArticles?.splice(index, 1);
     }
-    shoppingList?.activeArticles.push(item);
-    updateShoppingList(shoppingList);
     disableModal();
   };
 
@@ -140,7 +167,8 @@ const ItemList: FC = () => {
         ></Modal>
       )}
       <ItemWrapper>
-        {shoppingList?.activeArticles?.length > 0 &&
+        {shoppingList?.activeArticles &&
+          shoppingList?.activeArticles?.length > 0 &&
           shoppingList?.activeArticles?.map((item, key) => (
             <Item
               isRecent={false}
@@ -154,38 +182,39 @@ const ItemList: FC = () => {
               tag={
                 item.amount && item.amountUnit
                   ? `${item.amount} ${getShortAmountUnit(item)}`
-                  : null
+                  : undefined
               }
             ></Item>
           ))}
       </ItemWrapper>
-      {shoppingList?.recentArticles?.length > 0 && (
-        <>
-          <Text
-            fontSize="24"
-            bold={false}
-            content="Zuletzt verwendet"
-            light={true}
-            heading={true}
-          ></Text>
-          <ItemWrapper>
-            {shoppingList?.recentArticles?.length > 0 &&
-              shoppingList?.recentArticles?.map((item, key) => (
-                <Item
-                  isRecent={true}
-                  key={key}
-                  emitClick={() => readdItem(item)}
-                  articleTextValue={item.name}
-                  tag={
-                    item.amount && item.amountUnit
-                      ? `${item.amount} ${getShortAmountUnit(item)}`
-                      : null
-                  }
-                ></Item>
-              ))}
-          </ItemWrapper>
-        </>
-      )}
+      {shoppingList?.recentArticles &&
+        shoppingList?.recentArticles?.length > 0 && (
+          <>
+            <Text
+              fontSize="24"
+              bold={false}
+              content="Zuletzt verwendet"
+              light={true}
+              heading={true}
+            ></Text>
+            <ItemWrapper>
+              {shoppingList?.recentArticles?.length > 0 &&
+                shoppingList?.recentArticles?.map((item, key) => (
+                  <Item
+                    isRecent={true}
+                    key={key}
+                    emitClick={() => readdItem(item)}
+                    articleTextValue={item.name}
+                    tag={
+                      item.amount && item.amountUnit
+                        ? `${item.amount} ${getShortAmountUnit(item)}`
+                        : undefined
+                    }
+                  ></Item>
+                ))}
+            </ItemWrapper>
+          </>
+        )}
     </>
   );
 };

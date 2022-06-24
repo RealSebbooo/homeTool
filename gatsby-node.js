@@ -1,13 +1,16 @@
-exports.createPages = async ({ actions }) => {
-  const { createPage } = actions;
+const path = require(`path`);
 
-  const Einkaufsliste = require.resolve("./src/packages/index.tsx");
-  const Rezepte = require.resolve("./src/packages/rezepte.tsx");
-  const Wochenplan = require.resolve("./src/packages/wochenplan.tsx");
-  const Account = require.resolve("./src/packages/account.tsx");
-  const Artikel = require.resolve("./src/packages/articles.tsx");
-  const Login = require.resolve("./src/packages/login.tsx");
-  const Register = require.resolve("./src/packages/register.tsx");
+exports.createPages = ({ actions }) => {
+  const Einkaufsliste = path.resolve("./src/packages/shoppingList.tsx");
+  const Rezepte = path.resolve("./src/packages/rezepte.tsx");
+  const Recipe = path.resolve("./src/packages/recipe.tsx");
+  const Wochenplan = path.resolve("./src/packages/wochenplan.tsx");
+  const Account = path.resolve("./src/packages/account.tsx");
+  const Artikel = path.resolve("./src/packages/articles.tsx");
+  const Login = path.resolve("./src/packages/login.tsx");
+  const Register = path.resolve("./src/packages/register.tsx");
+  const Monopoly = path.resolve("./src/packages/monopoly.tsx");
+  const { createPage } = actions;
 
   createPage({
     path: "/",
@@ -16,6 +19,10 @@ exports.createPages = async ({ actions }) => {
   createPage({
     path: "/rezepte",
     component: Rezepte,
+  });
+  createPage({
+    path: "/recipe",
+    component: Recipe,
   });
   createPage({
     path: "/wochenplan",
@@ -37,4 +44,22 @@ exports.createPages = async ({ actions }) => {
     path: "/register",
     component: Register,
   });
+  createPage({
+    path: "/monopoly",
+    component: Monopoly,
+  });
+};
+exports.onCreateWebpackConfig = ({ stage, loaders, actions }) => {
+  if (stage === "build-html" || stage === "develop-html") {
+    return actions.setWebpackConfig({
+      module: {
+        rules: [
+          {
+            test: /bad-module/,
+            use: loaders.null(),
+          },
+        ],
+      },
+    });
+  }
 };

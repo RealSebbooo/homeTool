@@ -23,7 +23,12 @@ const AutocompleteField: FC = () => {
     getShoppingListObjects();
   }, []);
   const getShoppingListObjects = async () => {
-    setShoppingList(await getShoppingList());
+    if (typeof window == "undefined") return;
+    const userShoppingList = JSON.parse(
+      localStorage.getItem("htUser")
+    )?.shoppingList;
+
+    setShoppingList(await getShoppingList(userShoppingList));
   };
   const getArticleObjects = async () => {
     setArticles(await getArticles());
@@ -33,19 +38,19 @@ const AutocompleteField: FC = () => {
   }, []);
 
   const focusHandler = () => {
+    if (typeof window == "undefined") return;
     document.getElementById("bottomBox").style.display = "inline";
     setMachingArticles(JSON.parse(JSON.stringify(articles)));
   };
 
   const disableModal = () => {
+    if (typeof window == "undefined") return;
     document.getElementById("bottomBox").style.display = "none";
   };
 
   const addItemToList = (item: ArticelType) => {
-    const newShoppingList = JSON.parse(JSON.stringify(shoppingList));
-
-    newShoppingList?.activeArticles?.push(item);
-    updateShoppingList(newShoppingList);
+    shoppingList.activeArticles.push(item);
+    updateShoppingList(JSON.parse(JSON.stringify(shoppingList)));
     getShoppingListObjects();
   };
 

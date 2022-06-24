@@ -10,13 +10,7 @@ export const Email: FC<IconTagProps> = ({ fill }) => (
     version="1.1"
     xmlns="http://www.w3.org/2000/svg"
   >
-    <g
-      id="Icons"
-      stroke="none"
-      stroke-width="1"
-      fill="none"
-      fill-rule="evenodd"
-    >
+    <g id="Icons" stroke="none" fill="none">
       <g id="Rounded" transform="translate(-102.000000, -1218.000000)">
         <g id="Communication" transform="translate(100.000000, 1162.000000)">
           <g

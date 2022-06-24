@@ -7,4 +7,8 @@ export const Textfield = styled.span<TextProps>`
   font-weight: ${({ bold }) => (bold ? "bold" : "normal")};
   margin-top: ${({ heading }) => (heading ? "16px" : "0px")};
   color: ${({ light }) => (light ? theme.white : theme.background)};
+  color: ${({ spaceBetween }) =>
+    spaceBetween
+      ? "margin-left: 10px; margin-right: 10px"
+      : "theme.background"};
 `;

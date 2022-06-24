@@ -1,22 +1,24 @@
-import React from "react";
-import Title from "./../components/title";
-import Button from "./../components/button";
+import React, { FC } from "react";
+import Title from "../components/title";
+import Button from "../components/button";
 import { navigate } from "gatsby";
 import Textfield from "../components/textfield";
 import Icon from "../icons";
-import Row from "./../components/row";
+import Row from "../components/row";
 import Text from "../components/text";
 import { useState } from "react";
-import { updateUser } from "./../services/databaseHelper";
+import { updateUser } from "../services/databaseHelper";
 import styled from "styled-components";
 import theme from "../components/theme";
+
+import Lists from "../components/lists";
 
 const HorizontalLine = styled.div`
   background-color: ${theme.surface};
   height: 1px;
   margin: 8px 0;
 `;
-const Account = () => {
+const Account: FC = () => {
   const [editName, setEditName] = useState(false);
   const [username, setUsername] = useState(
     typeof window !== "undefined" &&
@@ -27,7 +29,6 @@ const Account = () => {
       JSON.parse(localStorage.getItem("htUser"))?.email
   );
   const handleClick = () => {
-    console.log("handle");
     if (editName) {
       updateUser({
         ...(typeof window !== "undefined" &&
@@ -73,9 +74,11 @@ const Account = () => {
       </Row>
       <Row>
         <Icon name="email" light={true} spaceRight={true} clickable={false} />
-        <Text bold={false} light={true} fontSize="18" content={email}></Text>)
+        <Text bold={false} light={true} fontSize="18" content={email}></Text>
       </Row>
 
+      <HorizontalLine></HorizontalLine>
+      <Lists></Lists>
       <HorizontalLine></HorizontalLine>
       <Button
         value="Artikel"

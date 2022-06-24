@@ -8,20 +8,16 @@ import { User } from "./svgs/user";
 import { Pencil } from "./svgs/pencil";
 import { Save } from "./svgs/save";
 import { Email } from "./svgs/email";
+import { Plus } from "./svgs/plus";
+import { ArrowRightIcon } from "./svgs/arrowRight";
 import { Iconsizer } from "./styled";
 import { navigate } from "gatsby";
 
 export type IconProps = {
-  //* * Icon Name */
   name?: string;
-  //* * SVG Fill Color */
-  /** @deprecated use size instead */
   small?: boolean;
-  //* *  onClick Event  */
   onClick?: () => void;
-  //* *  prop from styled components  */
   className?: string;
-  // Tiny Small Regular
   size?: string;
   ready?: boolean;
   progress?: boolean;
@@ -66,6 +62,8 @@ export const Icons = {
   pencil: Pencil,
   save: Save,
   email: Email,
+  plus: Plus,
+  arrowRight: ArrowRightIcon,
 };
 
 export const iconNames = [
@@ -77,6 +75,8 @@ export const iconNames = [
   { label: "pencil" },
   { label: "save" },
   { label: "email" },
+  { label: "plus" },
+  { label: "arrowRight" },
 ];
 
 const Icon: FC<IconProps> = ({
@@ -95,8 +95,6 @@ const Icon: FC<IconProps> = ({
   to = "/",
   right = false,
 }) => {
-  // @TODO use Typscript enum
-
   const IconTag = Icons[name as keyof typeof Icons];
   if (!IconTag) {
     return null;

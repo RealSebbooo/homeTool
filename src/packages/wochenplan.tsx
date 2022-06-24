@@ -1,7 +1,7 @@
-import React from "react";
+import React, { FC } from "react";
 import Title from "../components/title";
 
-const Wochenplan = () => {
+const Wochenplan: FC = () => {
   return (
     <>
       <Title titleText="Wochenplan"></Title>

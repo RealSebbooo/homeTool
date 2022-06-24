@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import Modal from "./../modal";
+import Modal from "./../modaltest";
 import { ArticelType } from "./../../types";
 
 import { ItemWrapper } from "./../item/item.styled";
@@ -38,6 +38,7 @@ const ItemList = () => {
     setArticles(await getArticles());
     listenToArticleList();
   };
+
   useEffect(() => {
     getArticleObjects();
   }, []);

@@ -5,7 +5,10 @@ export type UserObjectType = {
 export type UserType = {
   email: string;
   name: string;
-  uid: string;
+  uid?: string;
+  recipe: "";
+  shoppingList: "";
+  weekplan: "";
 };
 export type ArticelType = {
   name: string;
@@ -17,13 +20,41 @@ export type ArticelType = {
   amount?: string;
   amountUnit?: string;
 };
-export type ShoppingListType = {
-  owner?: string;
-  members?: string[];
-  activeArticles?: ArticelType[];
-  recentArticles?: recentArticle[];
+type ListType = {
+  owner: string;
+  members: string[];
   uid: string;
+  name: string;
+  listType: string;
 };
+export interface ShoppingListType extends ListType {
+  activeArticles: ArticelType[];
+  recentArticles: recentArticle[];
+}
+export interface RecipeListType extends ListType {
+  recipes: RecipesType[];
+}
+export type RecipesType = {
+  name: string;
+  uid: string;
+  image: string;
+  description: string;
+  portions: string;
+  ingredients: [
+    {
+      article: ArticelType;
+      amount: number;
+      amountUnit: string;
+    }?
+  ];
+};
+type WeekplanDayType = {
+  date: Date;
+  recipes: RecipesType[];
+};
+export interface WeekplanType extends ListType {
+  days: WeekplanDayType[];
+}
 
 export interface recentArticle extends ArticelType {
   lastUsed: Date;
