@@ -302,6 +302,7 @@ const Monopoly = () => {
           <>
             <Button
               value="Erstellen"
+              color={createGame ? theme.primary : theme.surface}
               onClick={() => {
                 setCreateGame(true);
                 setJoinGame(false);
@@ -309,6 +310,7 @@ const Monopoly = () => {
             ></Button>
             <Button
               value="Beitreten"
+              color={joinGame ? theme.primary : theme.surface}
               onClick={() => {
                 setJoinGame(true);
                 setCreateGame(false);
@@ -317,14 +319,13 @@ const Monopoly = () => {
 
             {createGame && (
               <div>
-                Spiel erstellen
                 <Textfield
                   type="text"
                   placeholder={"Raumnummer"}
                   textInputChanged={(value) => setRoomNumber(value)}
                 ></Textfield>
                 <Button
-                  value="Erstellen"
+                  value="Spiel Erstellen"
                   onClick={() => createNewGame()}
                   disabled={!roomNumber}
                   strech
@@ -333,7 +334,6 @@ const Monopoly = () => {
             )}
             {joinGame && (
               <div>
-                Beitreten
                 <Textfield
                   type="text"
                   placeholder={"Raumnummer"}
@@ -345,7 +345,7 @@ const Monopoly = () => {
                   textInputChanged={(value) => setUserName(value)}
                 ></Textfield>
                 <Button
-                  value="Erstellen"
+                  value="Spiel Beitreten"
                   onClick={() => joinExistingGame()}
                   disabled={!roomNumber || !userName}
                   strech
