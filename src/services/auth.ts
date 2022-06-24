@@ -54,8 +54,8 @@ export const register = (user: UserObjectType) => {
       const errorMessage = error.message;
     });
 };
+const exceptions = ["/monopoly"];
 export const showFooter = (): boolean => {
-  const exceptions = ["/monopoly"];
   if (typeof window == "undefined") return false;
   const path = globalHistory.location.pathname;
 
@@ -68,7 +68,10 @@ export const isLoggedIn = async () => {
   if (typeof window == "undefined") return;
   const lsUser = localStorage.getItem("htUser");
   const path = globalHistory.location.pathname;
-
+  if (exceptions.includes(path)) {
+    return true;
+  }
+  return false;
   if (lsUser === null) {
     if (path !== "/login" && path !== "/register") {
       navigate("/login");

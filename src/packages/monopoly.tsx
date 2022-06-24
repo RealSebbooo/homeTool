@@ -16,6 +16,8 @@ import {
   To,
   ButtonWrapper,
   EndButton,
+  HorizontalLine,
+  SettingsButtons,
 } from "./../styles/monopoly.styled";
 type PlayerType = {
   name: string;
@@ -67,17 +69,17 @@ const Monopoly = () => {
   };
 
   useEffect(() => {
-    const game = localStorage.getItem("monopolyGame");
-
+    const game = localStorage.getItem("monopolyGame") || "";
+    console.log("game", game);
     if (game) {
+      console.log("hiergame");
       setGameExists(true);
       setGame(JSON.parse(game));
     }
   }, []);
-
-  useEffect(() => {
+  const updateLocalstorageGame = () => {
     localStorage.setItem("monopolyGame", JSON.stringify(game));
-  }, [game]);
+  };
 
   const endGame = () => {
     localStorage.removeItem("monopolyGame");
@@ -131,12 +133,17 @@ const Monopoly = () => {
         userObject = bookUser(userObject, currentAmount, true);
       }
     }
-    game?.moves.push({
-      from: fromUser,
-      to: toUser,
-      amount: parseInt(currentAmount),
-    });
+    if (parseInt(currentAmount) > 0)
+      game?.moves.push({
+        from: fromUser,
+        to: toUser,
+        amount: parseInt(currentAmount),
+      });
     setGame(JSON.parse(JSON.stringify(game)));
+    setCurrentAmount("0");
+    setFromUser("Bank");
+    setToUser("Bank");
+    updateLocalstorageGame();
     console.log("game", game);
   };
 
@@ -219,14 +226,15 @@ const Monopoly = () => {
           <>
             <PlayerWrapper>
               {game?.players?.map((player) => (
-                <PlayerCard>
+                <PlayerCard isUserBankrupt={player.money <= 0}>
                   <PlayerInnerBox>
                     <h1 style={{ fontWeight: "normal" }}>{player.name}</h1>
-                    <h2>{player.money} €</h2>
+                    <h2>{player.money > 0 ? player.money : 0} €</h2>
                   </PlayerInnerBox>
                 </PlayerCard>
               ))}
             </PlayerWrapper>
+            <HorizontalLine></HorizontalLine>
             <BankWrapper>
               <From>
                 <Dropdown
@@ -238,6 +246,7 @@ const Monopoly = () => {
               <Icon name="arrowRight" light={true}></Icon>
               <Amount>
                 <Textfield
+                  dense
                   type="text"
                   placeholder={"Geld"}
                   value={currentAmount}
@@ -253,6 +262,7 @@ const Monopoly = () => {
                 ></Dropdown>
               </To>
             </BankWrapper>
+            <HorizontalLine></HorizontalLine>
             <ButtonWrapper>
               {game?.moneySteps.map((step) => {
                 return (
@@ -277,9 +287,15 @@ const Monopoly = () => {
                 );
               })}
             </ButtonWrapper>
-            <Button value="Buchen" onClick={() => bookMoney()}></Button>
-            <Button value="Rückgängig" onClick={() => undoLastMove()}></Button>
-            <EndButton value="Beenden" onClick={endGame}></EndButton>
+            <Button value="Buchen" onClick={() => bookMoney()} strech></Button>
+            <HorizontalLine></HorizontalLine>
+            <SettingsButtons>
+              <Button
+                value="Rückgängig"
+                onClick={() => undoLastMove()}
+              ></Button>
+              <EndButton value="Beenden" onClick={endGame}></EndButton>
+            </SettingsButtons>
           </>
         )}
       </div>

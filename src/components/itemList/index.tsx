@@ -92,7 +92,7 @@ const ItemList: FC = (): JSX.Element => {
   };
   if (typeof window == "undefined") return;
   const userShoppingList = JSON.parse(
-    localStorage.getItem("htUser") || ""
+    localStorage.getItem("htUser") || "{}"
   )?.shoppingList;
   getShoppingList(userShoppingList);
   const removeItem = (item: ArticelType) => {

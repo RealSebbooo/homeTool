@@ -2,8 +2,6 @@ import styled from "styled-components";
 import theme from "../theme";
 
 export const DropDownContainer = styled.div`
-  width: 10.5em;
-  margin-bottom: 12px;
   display: flex;
 `;
 
