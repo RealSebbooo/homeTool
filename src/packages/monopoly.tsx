@@ -372,7 +372,7 @@ const Monopoly = () => {
         ) : game && game.state === GameState.Waiting ? (
           <>
             <HorizontalLine></HorizontalLine>
-            <h1>Lobby</h1>
+            <h1>Lobby "{game.roomNumber}"</h1>
             {game?.players.length > 0 && (
               <>
                 <h1>Spieler</h1>
@@ -390,6 +390,7 @@ const Monopoly = () => {
             )}
             {userName === "Bank" && (
               <>
+                <HorizontalLine></HorizontalLine>
                 <MoneyContainer>
                   Startgeld
                   <Textfield
