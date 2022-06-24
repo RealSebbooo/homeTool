@@ -398,11 +398,18 @@ const Monopoly = () => {
                   ></Textfield>
                 </MoneyContainer>
 
-                <Button
-                  disabled={game?.players.length < 2}
-                  value="Starten"
-                  onClick={startGame}
-                ></Button>
+                <SettingsButtons>
+                  <Button
+                    disabled={game?.players.length < 2}
+                    value="Starten"
+                    onClick={startGame}
+                  ></Button>
+                  <Button
+                    value="Rückgängig"
+                    onClick={() => undoLastMove()}
+                  ></Button>
+                  <EndButton value="Beenden" onClick={endGame}></EndButton>
+                </SettingsButtons>
               </>
             )}
           </>
