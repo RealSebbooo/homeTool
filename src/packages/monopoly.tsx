@@ -264,12 +264,18 @@ const Monopoly = () => {
     onSnapshot(doc(db, "monopoly", uid), (doc) => {
       console.log("data123", doc);
       if (doc?.data()) {
-        setGame({
-          ...(doc.data() as GameType),
-          uid: doc.id,
-        });
+        if (doc.data().state === GameState.Finished) {
+          gameHasFinished();
+        } else
+          setGame({
+            ...(doc.data() as GameType),
+            uid: doc.id,
+          });
       }
     });
+  };
+  const gameHasFinished = () => {
+    localStorage.removeItem("monopolyGame");
   };
   const joinExistingGame = async () => {
     const ref = collection(db, "monopoly");
