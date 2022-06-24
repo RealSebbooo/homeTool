@@ -286,10 +286,15 @@ const Monopoly = () => {
       return rObj;
     });
     console.log("item", itemsDoc[0]);
-    setDoc(doc(db, "monopoly", itemsDoc[0].uid), {
-      ...itemsDoc[0],
-      players: [...itemsDoc[0]?.players, { name: userName }],
-    });
+    const playerAlreadyExists = !!itemsDoc[0].players.find(
+      (player) => player.name === userName
+    );
+    if (!playerAlreadyExists) {
+      setDoc(doc(db, "monopoly", itemsDoc[0].uid), {
+        ...itemsDoc[0],
+        players: [...itemsDoc[0]?.players, { name: userName }],
+      });
+    }
     const gameObject = {
       uid: itemsDoc[0].uid,
       name: userName,
