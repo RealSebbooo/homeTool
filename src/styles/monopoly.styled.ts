@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import Button from "../components/button";
 import theme, { device } from "../components/theme";
+import { StreetColors } from "../services/streets";
 
 export const MoneyContainer = styled.div``;
 
@@ -65,4 +66,47 @@ export const EndButton = styled(Button)`
 export const SettingsButtons = styled.div`
   display: flex;
   justify-content: space-between;
+`;
+
+export const Tabs = styled.div`
+  display: flex;
+  width: 100%;
+`;
+export const Tab = styled.div<{ active: boolean }>`
+  margin-right: 8px;
+  border: 1px solid grey;
+  padding: 8px;
+  background-color: ${({ active }) => active && "grey"};
+`;
+
+export const TabsContents = styled.div`
+  display: flex;
+`;
+export const TabContent = styled.div<{ shown: boolean }>`
+  display: flex;
+  padding: 8px;
+  margin-top: 10px;
+  width: 100%;
+  display: ${({ shown }) => (shown ? "block" : "none")};
+`;
+
+export const StreetsWrapper = styled.div`
+  display: flex;
+  justify-content: space-between;
+`;
+
+export const StreetGroups = styled.div`
+  display: flex;
+  flex-direction: column;
+`;
+
+export const StreetComp = styled.div<{ color: StreetColors; isTaken: boolean }>`
+  aspect-ratio: 1;
+  min-width: 55px;
+  background-color: ${({ color }) => color};
+  border: 2px solid white;
+  box-shadow: 0px -2px 4px 1px ${({ isTaken }) => (isTaken ? "rgba(255, 0, 0, 1)" : "rgba(0, 255, 0, 1)")};
+  &:not(:first-child) {
+    margin-top: -15px;
+  }
 `;

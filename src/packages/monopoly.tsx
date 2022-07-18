@@ -18,6 +18,13 @@ import {
   EndButton,
   HorizontalLine,
   SettingsButtons,
+  Tabs,
+  Tab,
+  TabsContents,
+  TabContent,
+  StreetsWrapper,
+  StreetGroups,
+  StreetComp,
 } from "./../styles/monopoly.styled";
 
 import db from "./../services/firebase";
@@ -32,6 +39,7 @@ import {
   where,
 } from "firebase/firestore";
 import { dividerClasses } from "@mui/material";
+import { streetArray, StreetType } from "../services/streets";
 type PlayerType = {
   name: string;
   money: number;
@@ -53,6 +61,19 @@ type GameType = {
   uid: string;
   state: GameState;
   roomNumber: string;
+  streets: StreetType[];
+};
+type StreetObjectType = {
+  "#965337": StreetType[];
+  "#AAE1F3": StreetType[];
+  "#D83996": StreetType[];
+  "#F7941D": StreetType[];
+  "#ED1B24": StreetType[];
+  yellow: StreetType[];
+  "#1FB25A": StreetType[];
+  "#0072BE": StreetType[];
+  "#100615": StreetType[];
+  grey: StreetType[];
 };
 const Monopoly = () => {
   if (typeof window === "undefined") return;
@@ -202,6 +223,7 @@ const Monopoly = () => {
   const [createGame, setCreateGame] = useState(true);
   const [joinGame, setJoinGame] = useState(false);
   const [roomNumber, setRoomNumber] = useState("");
+  const [streets, setStreets] = useState<StreetObjectType>();
   const createNewGame = () => {
     const newGame = {
       players: [],
@@ -210,6 +232,7 @@ const Monopoly = () => {
       uid: "",
       state: GameState.Waiting,
       roomNumber: roomNumber,
+      streets: JSON.parse(JSON.stringify(streetArray)),
     };
     checkIfGameNameIsAvailable();
     setItem("monopoly", newGame);
@@ -256,8 +279,31 @@ const Monopoly = () => {
             ...(doc.data() as GameType),
             uid: doc.id,
           });
+        groupStreets(doc.data().streets);
       }
     });
+  };
+  const groupStreets = (streets: StreetType[]) => {
+    console.log("streets", streets);
+    let streetObject: StreetObjectType = {
+      "#965337": [],
+      "#AAE1F3": [],
+      "#D83996": [],
+      "#F7941D": [],
+      "#ED1B24": [],
+      yellow: [],
+      "#1FB25A": [],
+      "#0072BE": [],
+      "#100615": [],
+      grey: [],
+    };
+
+    for (let i = 0; i < streets.length; i++) {
+      if (!streetObject[streets[i].farbe]) streetObject[streets[i].farbe] = [];
+      streetObject[streets[i].farbe].push(streets[i]);
+    }
+    setStreets(streetObject);
+    console.log("streetsObejct", streetObject);
   };
   const gameHasFinished = () => {
     localStorage.removeItem("monopolyGame");
@@ -293,6 +339,8 @@ const Monopoly = () => {
     }
     return false;
   };
+
+  const [activeTab, setActiveTab] = useState(0);
   return (
     <>
       <h1>Monopoly</h1>
@@ -444,63 +492,105 @@ const Monopoly = () => {
             <HorizontalLine></HorizontalLine>
             {userIsBank() && (
               <>
-                <BankWrapper>
-                  <From>
-                    <Dropdown
-                      items={dropdownItems()}
-                      activeItem={{ name: fromUser, id: fromUser }}
-                      itemClicked={(user) => setFromUser(user)}
-                    ></Dropdown>
-                  </From>
-                  <Icon name="arrowRight" light={true}></Icon>
-                  <Amount>
-                    <Textfield
-                      dense
-                      type="text"
-                      placeholder={"Geld"}
-                      value={currentAmount}
-                      textInputChanged={(value) => setTheCurrentAmount(value)}
-                    ></Textfield>
-                  </Amount>
-                  <Icon name="arrowRight" light={true}></Icon>
-                  <To>
-                    <Dropdown
-                      items={dropdownItems()}
-                      activeItem={{ name: toUser, id: toUser }}
-                      itemClicked={(user) => setToUser(user)}
-                    ></Dropdown>
-                  </To>
-                </BankWrapper>
-                <HorizontalLine></HorizontalLine>
-                <ButtonWrapper>
-                  {game?.moneySteps?.map((step) => {
-                    return (
-                      <Button
-                        strech
-                        color={theme.green}
-                        value={"+ " + step.toString()}
-                        onClick={() => increaseMoney(step)}
-                      ></Button>
-                    );
-                  })}
-                </ButtonWrapper>
-                <ButtonWrapper>
-                  {game?.moneySteps?.map((step) => {
-                    return (
-                      <Button
-                        strech
-                        color={theme.red}
-                        value={"- " + step.toString()}
-                        onClick={() => decreaseMoney(step)}
-                      ></Button>
-                    );
-                  })}
-                </ButtonWrapper>
-                <Button
-                  value="Buchen"
-                  onClick={() => bookMoney()}
-                  strech
-                ></Button>
+                <Tabs>
+                  <Tab onClick={() => setActiveTab(0)} active={activeTab === 0}>
+                    Geld
+                  </Tab>
+                  <Tab onClick={() => setActiveTab(1)} active={activeTab === 1}>
+                    Straßen
+                  </Tab>
+                  <Tab onClick={() => setActiveTab(2)} active={activeTab === 2}>
+                    Handel
+                  </Tab>
+                </Tabs>
+                <TabsContents>
+                  <TabContent shown={activeTab === 0}>
+                    <BankWrapper>
+                      <From>
+                        <Dropdown
+                          items={dropdownItems()}
+                          activeItem={{ name: fromUser, id: fromUser }}
+                          itemClicked={(user) => setFromUser(user)}
+                        ></Dropdown>
+                      </From>
+                      <Icon name="arrowRight" light={true}></Icon>
+                      <Amount>
+                        <Textfield
+                          dense
+                          type="text"
+                          placeholder={"Geld"}
+                          value={currentAmount}
+                          textInputChanged={(value) =>
+                            setTheCurrentAmount(value)
+                          }
+                        ></Textfield>
+                      </Amount>
+                      <Icon name="arrowRight" light={true}></Icon>
+                      <To>
+                        <Dropdown
+                          items={dropdownItems()}
+                          activeItem={{ name: toUser, id: toUser }}
+                          itemClicked={(user) => setToUser(user)}
+                        ></Dropdown>
+                      </To>
+                    </BankWrapper>
+                    <HorizontalLine></HorizontalLine>
+                    <ButtonWrapper>
+                      {game?.moneySteps?.map((step) => {
+                        return (
+                          <Button
+                            strech
+                            color={theme.green}
+                            value={"+ " + step.toString()}
+                            onClick={() => increaseMoney(step)}
+                          ></Button>
+                        );
+                      })}
+                    </ButtonWrapper>
+                    <ButtonWrapper>
+                      {game?.moneySteps?.map((step) => {
+                        return (
+                          <Button
+                            strech
+                            color={theme.red}
+                            value={"- " + step.toString()}
+                            onClick={() => decreaseMoney(step)}
+                          ></Button>
+                        );
+                      })}
+                    </ButtonWrapper>
+                    <Button
+                      value="Buchen"
+                      onClick={() => bookMoney()}
+                      strech
+                    ></Button>
+                  </TabContent>
+                  <TabContent shown={activeTab === 1}>
+                    Straßen
+                    <StreetsWrapper>
+                      {Object.keys(streets)?.map((streetGroup, key) => {
+                        return (
+                          <StreetGroups>
+                            <>
+                              {streets[streetGroup]?.map((street) => {
+                                return (
+                                  <StreetComp
+                                    color={street.farbe}
+                                    isTaken={!!street.takenBy}
+                                  >
+                                    {" "}
+                                  </StreetComp>
+                                );
+                              })}
+                            </>
+                          </StreetGroups>
+                        );
+                      })}
+                    </StreetsWrapper>
+                  </TabContent>
+                  <TabContent shown={activeTab === 2}>Handel</TabContent>
+                </TabsContents>
+
                 <HorizontalLine></HorizontalLine>
                 <SettingsButtons>
                   <Button
