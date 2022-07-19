@@ -25,6 +25,15 @@ import {
   StreetsWrapper,
   StreetGroups,
   StreetComp,
+  StreetWrapper,
+  StreetActions,
+  StreetCompWrapper,
+  BuyCardWrapper,
+  Trade,
+  TradeFrom,
+  TradeTo,
+  MoneyInput,
+  TotalValue,
 } from "./../styles/monopoly.styled";
 
 import db from "./../services/firebase";
@@ -40,6 +49,8 @@ import {
 } from "firebase/firestore";
 import { dividerClasses } from "@mui/material";
 import { streetArray, StreetType } from "../services/streets";
+import StreetCard from "../monopolyComponents/streetCard";
+import { ListDropdownItems } from "../components/itemList";
 type PlayerType = {
   name: string;
   money: number;
@@ -132,6 +143,7 @@ const Monopoly = () => {
     return items;
   };
   const [fromUser, setFromUser] = useState("Bank");
+  const [tradeUser, setTradeUser] = useState(userName);
   const [toUser, setToUser] = useState("Bank");
 
   const setTheCurrentAmount = (amount: string) => {
@@ -232,8 +244,9 @@ const Monopoly = () => {
       uid: "",
       state: GameState.Waiting,
       roomNumber: roomNumber,
-      streets: JSON.parse(JSON.stringify(streetArray)),
+      streets: streetArray,
     };
+    console.log("newGame", newGame, streetArray);
     checkIfGameNameIsAvailable();
     setItem("monopoly", newGame);
   };
@@ -284,7 +297,7 @@ const Monopoly = () => {
     });
   };
   const groupStreets = (streets: StreetType[]) => {
-    console.log("streets", streets);
+    console.log("streets123", streets);
     let streetObject: StreetObjectType = {
       "#965337": [],
       "#AAE1F3": [],
@@ -340,7 +353,106 @@ const Monopoly = () => {
     return false;
   };
 
-  const [activeTab, setActiveTab] = useState(0);
+  const [activeTab, setActiveTab] = useState(userIsBank() ? 0 : 1);
+  const [activeCard, setActiveCard] = useState<string>("");
+
+  const [tradeFromMoneyValue, setTradeFromMoneyValue] = useState("0");
+  const [tradeToMoneyValue, setTradeToMoneyValue] = useState("0");
+  const [tradeFromStreets, setTradeFromStreets] = useState<StreetType[]>([]);
+  const [tradeToStreets, setTradeToStreets] = useState<StreetType[]>([]);
+
+  const getTotalFromValue = () => {
+    let value = 0;
+    if (
+      parseInt(tradeFromMoneyValue) >
+      game?.players?.find((player) => player.name === userName)?.money
+    ) {
+      value = game?.players?.find((player) => player.name === userName)?.money;
+    } else {
+      value = parseInt(tradeFromMoneyValue);
+    }
+
+    if (tradeFromStreets?.length || 0 > 0) {
+      tradeFromStreets.forEach((street) => {
+        value += street.preis;
+        if (street.anzahlHaus > 0) {
+          value += street.anzahlHaus * street.bauenKosten;
+        }
+      });
+    }
+
+    return value;
+  };
+  const getTotalToValue = () => {
+    let value = 0;
+
+    if (
+      parseInt(tradeToMoneyValue) >
+      game?.players?.find((player) => player.name === tradeUser)?.money
+    ) {
+      value = game?.players?.find((player) => player.name === tradeUser)?.money;
+    } else {
+      value = parseInt(tradeToMoneyValue);
+    }
+
+    if (tradeToStreets?.length || 0 > 0) {
+      tradeToStreets.forEach((street) => {
+        value += street.preis;
+        if (street.anzahlHaus > 0) {
+          value += street.anzahlHaus * street.bauenKosten;
+        }
+      });
+    }
+
+    return value;
+  };
+
+  const getPossibleTradeFromStreets = (): ListDropdownItems[] => {
+    let streets = JSON.parse(JSON.stringify(game?.streets));
+    console.log("get", streets, tradeFromStreets);
+
+    streets = streets
+      .filter(
+        (street: StreetType) =>
+          street.takenBy === (userName === "Bank" ? "" : userName)
+      )
+      .filter(
+        (street: StreetType) =>
+          !tradeFromStreets?.find((item) => item.name === street.name)
+      );
+
+    return streets.map((street: StreetType) => ({
+      name: street.name,
+      id: street.name,
+    }));
+  };
+  const getPossibleTradeToStreets = (): ListDropdownItems[] => {
+    let streets = JSON.parse(JSON.stringify(game?.streets));
+
+    streets = streets
+      .filter(
+        (street: StreetType) =>
+          street.takenBy === (userName === "Bank" ? "" : tradeUser)
+      )
+      .filter(
+        (street: StreetType) =>
+          !tradeToStreets?.find((item) => item.name === street.name)
+      );
+
+    return streets.map((street: StreetType) => ({
+      name: street.name,
+      id: street.name,
+    }));
+  };
+  const removeItemFromFromList = (name: string) => {
+    setTradeFromStreets(
+      tradeFromStreets.filter((street) => street.name !== name)
+    );
+  };
+  const removeItemFromToList = (name: string) => {
+    setTradeToStreets(tradeToStreets.filter((street) => street.name !== name));
+  };
+
   return (
     <>
       <h1>Monopoly</h1>
@@ -490,117 +602,221 @@ const Monopoly = () => {
               ))}
             </PlayerWrapper>
             <HorizontalLine></HorizontalLine>
-            {userIsBank() && (
-              <>
-                <Tabs>
-                  <Tab onClick={() => setActiveTab(0)} active={activeTab === 0}>
-                    Geld
-                  </Tab>
-                  <Tab onClick={() => setActiveTab(1)} active={activeTab === 1}>
-                    Straßen
-                  </Tab>
-                  <Tab onClick={() => setActiveTab(2)} active={activeTab === 2}>
-                    Handel
-                  </Tab>
-                </Tabs>
-                <TabsContents>
-                  <TabContent shown={activeTab === 0}>
-                    <BankWrapper>
-                      <From>
-                        <Dropdown
-                          items={dropdownItems()}
-                          activeItem={{ name: fromUser, id: fromUser }}
-                          itemClicked={(user) => setFromUser(user)}
-                        ></Dropdown>
-                      </From>
-                      <Icon name="arrowRight" light={true}></Icon>
-                      <Amount>
-                        <Textfield
-                          dense
-                          type="text"
-                          placeholder={"Geld"}
-                          value={currentAmount}
-                          textInputChanged={(value) =>
-                            setTheCurrentAmount(value)
-                          }
-                        ></Textfield>
-                      </Amount>
-                      <Icon name="arrowRight" light={true}></Icon>
-                      <To>
-                        <Dropdown
-                          items={dropdownItems()}
-                          activeItem={{ name: toUser, id: toUser }}
-                          itemClicked={(user) => setToUser(user)}
-                        ></Dropdown>
-                      </To>
-                    </BankWrapper>
-                    <HorizontalLine></HorizontalLine>
-                    <ButtonWrapper>
-                      {game?.moneySteps?.map((step) => {
-                        return (
-                          <Button
-                            strech
-                            color={theme.green}
-                            value={"+ " + step.toString()}
-                            onClick={() => increaseMoney(step)}
-                          ></Button>
-                        );
-                      })}
-                    </ButtonWrapper>
-                    <ButtonWrapper>
-                      {game?.moneySteps?.map((step) => {
-                        return (
-                          <Button
-                            strech
-                            color={theme.red}
-                            value={"- " + step.toString()}
-                            onClick={() => decreaseMoney(step)}
-                          ></Button>
-                        );
-                      })}
-                    </ButtonWrapper>
-                    <Button
-                      value="Buchen"
-                      onClick={() => bookMoney()}
-                      strech
-                    ></Button>
-                  </TabContent>
-                  <TabContent shown={activeTab === 1}>
-                    Straßen
-                    <StreetsWrapper>
-                      {Object.keys(streets)?.map((streetGroup, key) => {
-                        return (
-                          <StreetGroups>
-                            <>
-                              {streets[streetGroup]?.map((street) => {
-                                return (
-                                  <StreetComp
-                                    color={street.farbe}
-                                    isTaken={!!street.takenBy}
-                                  >
-                                    {" "}
-                                  </StreetComp>
-                                );
-                              })}
-                            </>
-                          </StreetGroups>
-                        );
-                      })}
-                    </StreetsWrapper>
-                  </TabContent>
-                  <TabContent shown={activeTab === 2}>Handel</TabContent>
-                </TabsContents>
-
-                <HorizontalLine></HorizontalLine>
-                <SettingsButtons>
+            <Tabs>
+              {userIsBank() && (
+                <Tab onClick={() => setActiveTab(0)} active={activeTab === 0}>
+                  Geld
+                </Tab>
+              )}
+              <Tab onClick={() => setActiveTab(1)} active={activeTab === 1}>
+                Straßen
+              </Tab>
+              <Tab onClick={() => setActiveTab(2)} active={activeTab === 2}>
+                Handel
+              </Tab>
+            </Tabs>
+            <TabsContents>
+              {userIsBank() && (
+                <TabContent shown={activeTab === 0}>
+                  <BankWrapper>
+                    <From>
+                      <Dropdown
+                        items={dropdownItems()}
+                        activeItem={{ name: fromUser, id: fromUser }}
+                        itemClicked={(user) => setFromUser(user)}
+                      ></Dropdown>
+                    </From>
+                    <Icon name="arrowRight" light={true}></Icon>
+                    <Amount>
+                      <Textfield
+                        dense
+                        type="text"
+                        placeholder={"Geld"}
+                        value={currentAmount}
+                        textInputChanged={(value) => setTheCurrentAmount(value)}
+                      ></Textfield>
+                    </Amount>
+                    <Icon name="arrowRight" light={true}></Icon>
+                    <To>
+                      <Dropdown
+                        items={dropdownItems()}
+                        activeItem={{ name: toUser, id: toUser }}
+                        itemClicked={(user) => setToUser(user)}
+                      ></Dropdown>
+                    </To>
+                  </BankWrapper>
+                  <HorizontalLine></HorizontalLine>
+                  <ButtonWrapper>
+                    {game?.moneySteps?.map((step) => {
+                      return (
+                        <Button
+                          strech
+                          color={theme.green}
+                          value={"+ " + step.toString()}
+                          onClick={() => increaseMoney(step)}
+                        ></Button>
+                      );
+                    })}
+                  </ButtonWrapper>
+                  <ButtonWrapper>
+                    {game?.moneySteps?.map((step) => {
+                      return (
+                        <Button
+                          strech
+                          color={theme.red}
+                          value={"- " + step.toString()}
+                          onClick={() => decreaseMoney(step)}
+                        ></Button>
+                      );
+                    })}
+                  </ButtonWrapper>
                   <Button
-                    value="Rückgängig"
-                    onClick={() => undoLastMove()}
+                    value="Buchen"
+                    onClick={() => bookMoney()}
+                    strech
                   ></Button>
-                  <EndButton value="Beenden" onClick={endGame}></EndButton>
-                </SettingsButtons>
-              </>
-            )}
+                </TabContent>
+              )}
+              <TabContent shown={activeTab === 1}>
+                <StreetsWrapper>
+                  {Object.keys(streets)?.map((streetGroup, key) => {
+                    return (
+                      <StreetGroups>
+                        <>
+                          {streets[streetGroup]?.map((street) => {
+                            return (
+                              <StreetComp
+                                color={street.farbe}
+                                isTaken={
+                                  userName === "Bank"
+                                    ? !!street.takenBy
+                                    : street.takenBy === userName
+                                }
+                                onClick={() => setActiveCard(street.name)}
+                              ></StreetComp>
+                            );
+                          })}
+                        </>
+                      </StreetGroups>
+                    );
+                  })}
+                </StreetsWrapper>{" "}
+                {game?.streets.find((street) => street.name === activeCard) && (
+                  <StreetWrapper>
+                    <StreetCard
+                      street={
+                        game?.streets.find(
+                          (street) => street.name === activeCard
+                        ) as StreetType
+                      }
+                    ></StreetCard>
+                  </StreetWrapper>
+                )}
+              </TabContent>
+              <TabContent shown={activeTab === 2}>
+                Handeln mit
+                <Dropdown
+                  items={dropdownItems().filter(
+                    (item) => item.name !== userName
+                  )}
+                  activeItem={{ name: tradeUser, id: tradeUser }}
+                  itemClicked={(user) => setTradeUser(user)}
+                ></Dropdown>
+                {tradeUser && (
+                  <Trade>
+                    <TradeFrom>
+                      <h4>Biete</h4>
+                      <Textfield
+                        type="number"
+                        placeholder="Biete Geld"
+                        value="0"
+                        disabled={false}
+                        textInputChanged={(value) =>
+                          setTradeFromMoneyValue(value)
+                        }
+                      ></Textfield>
+                      {getPossibleTradeFromStreets().length > 0 && (
+                        <Dropdown
+                          items={getPossibleTradeFromStreets()}
+                          activeItem={getPossibleTradeFromStreets()[0]}
+                          itemClicked={(streetName) =>
+                            setTradeFromStreets([
+                              ...tradeFromStreets,
+                              game.streets.find(
+                                (street) => street.name === streetName
+                              ),
+                            ])
+                          }
+                        ></Dropdown>
+                      )}
+                      <>
+                        {tradeFromStreets?.map((street) => {
+                          return (
+                            <p
+                              onClick={() =>
+                                removeItemFromFromList(street.name)
+                              }
+                            >
+                              {street.name}
+                            </p>
+                          );
+                        })}
+                      </>
+                      <TotalValue>
+                        Gesamtwert {getTotalFromValue()} €
+                      </TotalValue>
+                    </TradeFrom>
+                    <TradeTo>
+                      <h4>Fordere</h4>
+                      <Textfield
+                        type="number"
+                        placeholder="Fordere Geld"
+                        value="0"
+                        disabled={false}
+                        textInputChanged={(value) =>
+                          setTradeToMoneyValue(value)
+                        }
+                      ></Textfield>
+                      {getPossibleTradeToStreets().length > 0 && (
+                        <Dropdown
+                          items={getPossibleTradeToStreets()}
+                          activeItem={getPossibleTradeToStreets()[0]}
+                          itemClicked={(streetName) =>
+                            setTradeToStreets([
+                              ...tradeToStreets,
+                              game.streets.find(
+                                (street) => street.name === streetName
+                              ),
+                            ])
+                          }
+                        ></Dropdown>
+                      )}
+                      <>
+                        {tradeToStreets?.map((street) => {
+                          return (
+                            <p
+                              onClick={() => removeItemFromToList(street.name)}
+                            >
+                              {street.name}
+                            </p>
+                          );
+                        })}
+                      </>
+                      <TotalValue>Gesamtwert {getTotalToValue()} €</TotalValue>
+                    </TradeTo>
+                  </Trade>
+                )}
+              </TabContent>
+            </TabsContents>
+
+            <HorizontalLine></HorizontalLine>
+            <SettingsButtons>
+              <Button
+                value="Rückgängig"
+                onClick={() => undoLastMove()}
+              ></Button>
+              <EndButton value="Beenden" onClick={endGame}></EndButton>
+            </SettingsButtons>
           </>
         )}
       </div>

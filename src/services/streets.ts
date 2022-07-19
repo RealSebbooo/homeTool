@@ -16,7 +16,7 @@ export type StreetType = {
   straße: boolean;
   bahnhof: boolean;
   sonderstraße: boolean;
-  takenBy: undefined | string;
+  takenBy: string;
 };
 
 export enum StreetColors {
@@ -51,7 +51,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Turmstraße",
@@ -71,7 +71,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Chausseestraße",
@@ -91,7 +91,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Elisenstraße",
@@ -111,7 +111,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Poststraße",
@@ -131,7 +131,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Seestraße",
@@ -151,7 +151,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Hafenstraße",
@@ -171,7 +171,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Neue Straße",
@@ -191,7 +191,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Münchener Straße",
@@ -211,7 +211,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Wiener Straße",
@@ -231,7 +231,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Berliner Straße",
@@ -251,7 +251,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Theaterstraße",
@@ -271,7 +271,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Museumstraße",
@@ -291,7 +291,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Opernplatz",
@@ -311,7 +311,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Lessingstraße",
@@ -331,7 +331,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Schillerstraße",
@@ -351,7 +351,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Goethestraße",
@@ -371,7 +371,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Rathausplatz",
@@ -391,7 +391,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Hauptstraße",
@@ -411,7 +411,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Bahnhofstraße",
@@ -431,7 +431,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Parkstraße",
@@ -451,7 +451,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Schlossallee",
@@ -471,7 +471,7 @@ export const streetArray: StreetType[] = [
     straße: true,
     bahnhof: false,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Südbahnhof",
@@ -491,7 +491,7 @@ export const streetArray: StreetType[] = [
     straße: false,
     bahnhof: true,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Westbahnhof",
@@ -511,7 +511,7 @@ export const streetArray: StreetType[] = [
     straße: false,
     bahnhof: true,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Nordbahnhof",
@@ -531,7 +531,7 @@ export const streetArray: StreetType[] = [
     straße: false,
     bahnhof: true,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Hauptbahnhof",
@@ -551,7 +551,7 @@ export const streetArray: StreetType[] = [
     straße: false,
     bahnhof: true,
     sonderstraße: false,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Elektrizitätswerk",
@@ -571,7 +571,7 @@ export const streetArray: StreetType[] = [
     straße: false,
     bahnhof: false,
     sonderstraße: true,
-    takenBy: undefined,
+    takenBy: "",
   },
   {
     name: "Wasserwerk",
@@ -591,6 +591,6 @@ export const streetArray: StreetType[] = [
     straße: false,
     bahnhof: false,
     sonderstraße: true,
-    takenBy: undefined,
+    takenBy: "",
   },
 ];

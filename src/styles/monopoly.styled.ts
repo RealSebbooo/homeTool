@@ -100,13 +100,47 @@ export const StreetGroups = styled.div`
   flex-direction: column;
 `;
 
-export const StreetComp = styled.div<{ color: StreetColors; isTaken: boolean }>`
+export const StreetComp = styled.div<{
+  color: StreetColors;
+  isTaken: undefined | boolean;
+}>`
   aspect-ratio: 1;
-  min-width: 55px;
+  min-width: 5vw;
   background-color: ${({ color }) => color};
   border: 2px solid white;
-  box-shadow: 0px -2px 4px 1px ${({ isTaken }) => (isTaken ? "rgba(255, 0, 0, 1)" : "rgba(0, 255, 0, 1)")};
+  box-shadow: 0px -2px 4px 1px ${({ isTaken }) => (typeof isTaken === "undefined" ? "rgba(255, 255, 255, 1)" : !isTaken ? "rgba(255, 0, 0, 1)" : "rgba(0, 255, 0, 1)")};
   &:not(:first-child) {
-    margin-top: -15px;
+    margin-top: -10px;
   }
 `;
+
+export const StreetWrapper = styled.div`
+  width: 100%;
+  @media ${device.tablet} {
+    width: 50%;
+  }
+`;
+
+export const Trade = styled.div`
+  margin-top: 16px;
+  width: 100%;
+  display: block;
+  @media ${device.tablet} {
+    display: flex;
+  }
+`;
+
+export const TradeFrom = styled.div`
+  border: 1px solid grey;
+  padding: 8px;
+  width: 100%;
+  margin: 4px;
+  @media ${device.tablet} {
+    width: 50%;
+  }
+  display: flex;
+  justify-content: flex-start;
+  flex-direction: column;
+`;
+export const TradeTo = styled(TradeFrom)``;
+export const TotalValue = styled.div``;
