@@ -11,6 +11,7 @@ export const DropDownHeader = styled.div`
   color: ${theme.white};
   background: ${theme.surface};
   min-width: 200px;
+  min-height: 20px;
 `;
 
 export const DropDownListContainer = styled.div`

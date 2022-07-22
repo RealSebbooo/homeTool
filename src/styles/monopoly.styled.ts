@@ -108,7 +108,7 @@ export const StreetComp = styled.div<{
   width: 7vw;
 
   @media ${device.tablet} {
-    width: 4vw;
+    width: 5vw;
   }
 
   background-color: ${({ color }) => color};
