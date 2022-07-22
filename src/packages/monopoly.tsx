@@ -35,6 +35,9 @@ import {
   MoneyInput,
   TotalValue,
   TradeActions,
+  TradeStreet,
+  Haus,
+  BuildMenu,
 } from "./../styles/monopoly.styled";
 
 import db from "./../services/firebase";
@@ -58,16 +61,22 @@ type PlayerType = {
 enum MoveTypes {
   Trade = "trade",
   Transaction = "transaction",
+  AddHouse = "addHouse",
+  RemoveHouse = "removeHouse",
+  AddHypothek = "AddHypothek",
+  RemoveHypothek = "removeHypothek",
+  Buy = "buy",
 }
 type Move = {
   from: string;
-  to: string;
+  to?: string;
   toMoney?: number;
   fromMoney?: number;
   toStreets?: StreetType[];
   fromStreets?: StreetType[];
   amount?: number;
   type: MoveTypes;
+  street?: string;
 };
 enum GameState {
   Waiting = "waiting",
@@ -149,7 +158,9 @@ const Monopoly = () => {
   const endGame = () => {
     localStorage.removeItem("monopolyGame");
     updateGame({ ...game, state: GameState.Finished });
-    location.reload();
+    setTimeout(() => {
+      location.reload();
+    }, 1000);
   };
   const updateGame = (game: GameType) => {
     setDoc(doc(db, "monopoly", game.uid), game);
@@ -203,6 +214,7 @@ const Monopoly = () => {
         from: fromUser,
         to: toUser,
         amount: parseInt(currentAmount),
+        type: MoveTypes.Transaction,
       });
     setGame(JSON.parse(JSON.stringify(game)));
     setCurrentAmount("0");
@@ -223,27 +235,56 @@ const Monopoly = () => {
   const undoLastMove = () => {
     if (game?.moves.length || 0 > 0) {
       const lastMove = game?.moves[game?.moves.length - 1];
-      if (lastMove?.to !== "Bank") {
-        let userObject = game?.players.find(
-          (player) => player.name === lastMove?.to
-        );
-        if (userObject)
-          userObject = bookUser(
-            userObject,
-            lastMove?.amount.toString() || "0",
-            false
-          );
-      }
-      if (lastMove?.from !== "Bank") {
-        let userObject = game?.players.find(
-          (player) => player.name === lastMove?.from
-        );
-        if (userObject)
-          userObject = bookUser(
-            userObject,
-            lastMove?.amount.toString() || "0",
-            true
-          );
+      if (!lastMove) return;
+      switch (lastMove.type) {
+        case MoveTypes.Trade:
+          lastMove?.fromStreets?.forEach((element) => {
+            game.streets.find(
+              (street: StreetType) => street.name === element.name
+            ).takenBy = lastMove.from === "Bank" ? "" : lastMove.from;
+          });
+          lastMove?.toStreets?.forEach((element) => {
+            game.streets.find(
+              (street: StreetType) => street.name === element.name
+            ).takenBy = lastMove.to === "Bank" ? "" : lastMove.to;
+          });
+          if (lastMove.from !== "Bank") {
+            game.players.find(
+              (player: PlayerType) => player.name === lastMove.from
+            ).money =
+              game.players.find(
+                (player: PlayerType) => player.name === lastMove.from
+              )?.money -
+              (lastMove.toMoney || 0) +
+              (lastMove.fromMoney || 0);
+          }
+
+          if (lastMove.to !== "Bank") {
+            game.players.find(
+              (player: PlayerType) => player.name === lastMove.to
+            ).money =
+              (game.players.find(
+                (player: PlayerType) => player.name === lastMove.to
+              ).money || 0) -
+              (lastMove.fromMoney || 0) +
+              (lastMove.toMoney || 0);
+          }
+          break;
+        case MoveTypes.Transaction:
+          if (lastMove.to !== "Bank") {
+            game.players.find(
+              (player: PlayerType) => player.name === lastMove.to
+            ).money -= lastMove.amount || 0;
+          }
+          if (lastMove.from !== "Bank") {
+            game.players.find(
+              (player: PlayerType) => player.name === lastMove.from
+            ).money += lastMove.amount || 0;
+          }
+        case MoveTypes.AddHouse:
+
+        default:
+          break;
       }
 
       game?.moves.pop();
@@ -443,6 +484,7 @@ const Monopoly = () => {
     return streets.map((street: StreetType) => ({
       name: street.name,
       id: street.name,
+      color: street.farbe,
     }));
   };
   const getPossibleTradeToStreets = (): ListDropdownItems[] => {
@@ -458,6 +500,7 @@ const Monopoly = () => {
     return streets.map((street: StreetType) => ({
       name: street.name,
       id: street.name,
+      color: street.farbe,
     }));
   };
   const removeItemFromFromList = (name: string) => {
@@ -565,6 +608,97 @@ const Monopoly = () => {
 
   const declineTradeOffer = () => {
     updateGame({ ...game, tradeOffer: {} });
+  };
+
+  const addHouse = () => {
+    if (!game) return;
+    const street = game.streets.find((s) => s.name === activeCard);
+    const player = game.players.find((p) => p.name === street.takenBy);
+    if (!street || !player) return;
+    if (player.money < street.bauenKosten) return;
+    game.players.find((p) => p.name === street.takenBy).money -=
+      street.bauenKosten;
+    game.streets.find((street) => street.name === activeCard).anzahlHaus += 1;
+    const move: Move = {
+      type: MoveTypes.AddHouse,
+      from: street.takenBy,
+      street: street.name,
+    };
+    game.moves.push(move);
+    updateGame(game);
+  };
+  const removeHouse = () => {
+    if (!game) return;
+    const street = game.streets.find((s) => s.name === activeCard);
+    const player = game.players.find((p) => p.name === street.takenBy);
+    if (!street || !player) return;
+    if (player.money < street.bauenKosten / 2) return;
+    game.players.find((p) => p.name === street.takenBy).money -=
+      street.bauenKosten / 2;
+    game.streets.find((street) => street.name === activeCard).anzahlHaus -= 1;
+    const move: Move = {
+      type: MoveTypes.RemoveHouse,
+      from: street.takenBy,
+      street: street.name,
+    };
+    game.moves.push(move);
+    updateGame(game);
+  };
+  const removeHypothek = () => {
+    if (!game) return;
+    const street = game.streets.find((s) => s.name === activeCard);
+    const player = game.players.find((p) => p.name === street.takenBy);
+    if (!street || !player) return;
+    if (player.money < street.hypothek + street.hypothek * 0.1) return;
+    game.players.find((p) => p.name === street.takenBy).money -= Math.round(
+      street.hypothek + street.hypothek * 0.1
+    );
+    game.streets.find((street) => street.name === activeCard).hypothekisiert =
+      false;
+    const move: Move = {
+      type: MoveTypes.RemoveHypothek,
+      from: street.takenBy,
+      street: street.name,
+    };
+    game.moves.push(move);
+    updateGame(game);
+  };
+  const addHypothek = () => {
+    if (!game) return;
+    const street = game.streets.find((s) => s.name === activeCard);
+    const player = game.players.find((p) => p.name === street.takenBy);
+    if (!street || !player) return;
+    game.players.find((p) => p.name === street.takenBy).money +=
+      street.hypothek;
+    game.streets.find((street) => street.name === activeCard).hypothekisiert =
+      true;
+    const move: Move = {
+      type: MoveTypes.AddHypothek,
+      from: street.takenBy,
+      street: street.name,
+    };
+    game.moves.push(move);
+    updateGame(game);
+  };
+  const [buyUser, setBuyUser] = useState("");
+
+  const buyHouse = () => {
+    const street = game.streets.find((s) => s.name === activeCard);
+    const player = game.players.find((p) => p.name === buyUser);
+    if (!player || !street) return;
+
+    if (player.money < street.preis) return;
+
+    game.streets.find((s) => s.name === activeCard).takenBy = buyUser;
+    game.players.find((p) => p.name === buyUser).money -= street.preis;
+
+    const move: Move = {
+      type: MoveTypes.Buy,
+      from: buyUser,
+      street: street.name,
+    };
+    game.moves.push(move);
+    updateGame(game);
   };
   return (
     <>
@@ -798,20 +932,32 @@ const Monopoly = () => {
                         {streets[streetGroup]?.map((street) => {
                           return (
                             <StreetComp
-                              color={street.farbe}
+                              color={
+                                street.hypothekisiert ? "gray" : street.farbe
+                              }
                               isTaken={
                                 userName === "Bank"
                                   ? !!street.takenBy
                                   : street.takenBy === userName
                               }
                               onClick={() => setActiveCard(street.name)}
-                            ></StreetComp>
+                            >
+                              <p>{street.name}</p>
+                              {street.straße && street.anzahlHaus === 5 ? (
+                                <Haus hotel />
+                              ) : (
+                                street.anzahlHaus > 0 &&
+                                Array.from({ length: street.anzahlHaus }).map(
+                                  (haus) => <Haus />
+                                )
+                              )}
+                            </StreetComp>
                           );
                         })}
                       </StreetGroups>
                     );
                   })}
-                </StreetsWrapper>{" "}
+                </StreetsWrapper>
                 {game?.streets.find((street) => street.name === activeCard) && (
                   <StreetWrapper>
                     <StreetCard
@@ -821,6 +967,103 @@ const Monopoly = () => {
                         ) as StreetType
                       }
                     ></StreetCard>
+                    {userIsBank() &&
+                    game?.streets?.find((street) => street.name === activeCard)
+                      ?.takenBy ? (
+                      <BuildMenu>
+                        {game?.streets?.find(
+                          (street) => street.name === activeCard
+                        )?.straße && (
+                          <>
+                            {game?.streets?.find(
+                              (street) => street.name === activeCard
+                            )?.anzahlHaus < 5 && (
+                              <Button
+                                color={theme.green}
+                                value={`+ ${
+                                  game?.streets?.find(
+                                    (street) => street.name === activeCard
+                                  )?.anzahlHaus === 4
+                                    ? "Hotel"
+                                    : "Haus"
+                                }`}
+                                onClick={() => addHouse()}
+                              ></Button>
+                            )}
+                            {game?.streets?.find(
+                              (street) => street.name === activeCard
+                            )?.anzahlHaus > 0 && (
+                              <Button
+                                color={theme.red}
+                                value={`- ${
+                                  game?.streets?.find(
+                                    (street) => street.name === activeCard
+                                  )?.anzahlHaus === 5
+                                    ? "Hotel"
+                                    : "Haus"
+                                }`}
+                                onClick={() => removeHouse()}
+                              ></Button>
+                            )}
+                            <br />
+                          </>
+                        )}
+                        <Button
+                          color={"gray"}
+                          value={`${
+                            game?.streets?.find(
+                              (street) => street.name === activeCard
+                            )?.hypothekisiert
+                              ? "Hypothek auflösen (-" +
+                                Math.round(
+                                  game?.streets?.find(
+                                    (street) => street.name === activeCard
+                                  )?.hypothek +
+                                    game?.streets?.find(
+                                      (street) => street.name === activeCard
+                                    )?.hypothek *
+                                      0.1
+                                ) +
+                                "€)"
+                              : "Hypothek aufnehmen (+" +
+                                game?.streets?.find(
+                                  (street) => street.name === activeCard
+                                )?.hypothek +
+                                "€)"
+                          }`}
+                          onClick={
+                            game?.streets?.find(
+                              (street) => street.name === activeCard
+                            )?.hypothekisiert
+                              ? () => removeHypothek()
+                              : () => addHypothek()
+                          }
+                        ></Button>
+                      </BuildMenu>
+                    ) : (
+                      <>
+                        {userIsBank() && (
+                          <BuildMenu>
+                            <Button
+                              color={theme.green}
+                              value={`Kaufen (${
+                                game?.streets?.find(
+                                  (street) => street.name === activeCard
+                                )?.preis
+                              }€)`}
+                              onClick={buyUser ? () => buyHouse() : () => {}}
+                            ></Button>
+                            <Dropdown
+                              items={dropdownItems().filter(
+                                (item) => item.name !== "Bank"
+                              )}
+                              activeItem={{ name: buyUser, id: buyUser }}
+                              itemClicked={(user) => setBuyUser(user)}
+                            ></Dropdown>
+                          </BuildMenu>
+                        )}
+                      </>
+                    )}
                   </StreetWrapper>
                 )}
               </TabContent>
@@ -909,13 +1152,14 @@ const Monopoly = () => {
                             <>
                               {tradeFromStreets?.map((street) => {
                                 return (
-                                  <p
+                                  <TradeStreet
+                                    color={street.farbe}
                                     onClick={() =>
                                       removeItemFromFromList(street.name)
                                     }
                                   >
-                                    {street.name}
-                                  </p>
+                                    {street.name} - {street.preis}€
+                                  </TradeStreet>
                                 );
                               })}
                             </>
@@ -951,13 +1195,14 @@ const Monopoly = () => {
                             <>
                               {tradeToStreets?.map((street) => {
                                 return (
-                                  <p
+                                  <TradeStreet
+                                    color={street.farbe}
                                     onClick={() =>
                                       removeItemFromToList(street.name)
                                     }
                                   >
-                                    {street.name}
-                                  </p>
+                                    {street.name} - {street.preis}€
+                                  </TradeStreet>
                                 );
                               })}
                             </>
@@ -982,14 +1227,18 @@ const Monopoly = () => {
               </TabContent>
             </TabsContents>
 
-            <HorizontalLine></HorizontalLine>
-            <SettingsButtons>
-              <Button
-                value="Rückgängig"
-                onClick={() => undoLastMove()}
-              ></Button>
-              <EndButton value="Beenden" onClick={endGame}></EndButton>
-            </SettingsButtons>
+            {userIsBank() && (
+              <>
+                <HorizontalLine></HorizontalLine>
+                <SettingsButtons>
+                  <Button
+                    value="Rückgängig"
+                    onClick={() => undoLastMove()}
+                  ></Button>
+                  <EndButton value="Beenden" onClick={endGame}></EndButton>
+                </SettingsButtons>
+              </>
+            )}
           </>
         )}
       </div>

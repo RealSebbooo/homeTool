@@ -24,6 +24,7 @@ export type ItemBoxProps = {
 export type ListDropdownItems = {
   name: string;
   id: string;
+  color?: string;
 };
 
 const ItemList: FC = (): JSX.Element => {

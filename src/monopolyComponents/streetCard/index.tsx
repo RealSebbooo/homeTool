@@ -17,7 +17,8 @@ type StreetCardType = {
 const StreetCard: FC<StreetCardType> = ({ street }) => {
   return (
     <Card>
-      <Header color={street?.farbe}>
+      <Header color={street.hypothekisiert ? "gray" : street?.farbe}>
+        {street.hypothekisiert && <span>HYPOTHEKISIERT</span>}
         <p>{street.name.toUpperCase()}</p>
         {street.takenBy && <span>Gehört {street.takenBy}</span>}
       </Header>
@@ -31,23 +32,23 @@ const StreetCard: FC<StreetCardType> = ({ street }) => {
             <LeftCol>Miete bei ganzer Farbgruppe</LeftCol>
             <RightCol>{street?.mieteGesamt}€</RightCol>
           </Row>
-          <Row>
+          <Row activeRow={street.anzahlHaus === 1}>
             <LeftCol>Miete 1 Haus</LeftCol>
             <RightCol>{street?.miete1Haus}€</RightCol>
           </Row>
-          <Row>
+          <Row activeRow={street.anzahlHaus === 2}>
             <LeftCol>Miete 2 Häuser</LeftCol>
             <RightCol>{street?.miete2Haus}€</RightCol>
           </Row>
-          <Row>
+          <Row activeRow={street.anzahlHaus === 3}>
             <LeftCol>Miete 3 Häuser</LeftCol>
             <RightCol>{street?.miete3Haus}€</RightCol>
           </Row>
-          <Row>
+          <Row activeRow={street.anzahlHaus === 4}>
             <LeftCol>Miete 4 Häuser</LeftCol>
             <RightCol>{street?.miete4Haus}€</RightCol>
           </Row>
-          <Row>
+          <Row activeRow={street.anzahlHaus === 5}>
             <LeftCol>Miete Hotel</LeftCol>
             <RightCol>{street?.mieteHotel}€</RightCol>
           </Row>

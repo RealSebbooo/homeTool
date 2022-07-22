@@ -1,12 +1,16 @@
 import styled from "styled-components";
-import theme from "../../components/theme";
+import theme, { device } from "../../components/theme";
 
 export const Card = styled.div`
   background-color: white;
   padding: 8px;
+  width: 100%;
+  @media ${device.tablet} {
+    width: 50%;
+  }
   border: 1px solid black;
 `;
-export const Header = styled.div<{ color: string }>`
+export const Header = styled.div<{ color?: string }>`
   background-color: ${({ color }) => color};
   border: 2px solid black;
   color: ${({ color }) => (color === "#100615" ? "white" : "black")};
@@ -29,11 +33,12 @@ export const Miete = styled.div`
 `;
 export const Footer = styled.div``;
 
-export const Row = styled.div`
+export const Row = styled.div<{ activeRow?: boolean }>`
   display: flex;
   color: black;
   padding: 4px 8px;
   font-size: 22px;
+  border: ${({ activeRow }) => (activeRow ? `2px solid ${theme.green}` : "")};
 `;
 
 export const LeftCol = styled.div`

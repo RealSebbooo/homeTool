@@ -25,6 +25,7 @@ const Dropdown: FC<DropdownProps> = ({ activeItem, items, itemClicked }) => {
             {items.map((item, key: number) => {
               return (
                 <ListItem
+                  backgroundColor={item?.color}
                   key={key}
                   onClick={() => {
                     itemClicked(item.id);

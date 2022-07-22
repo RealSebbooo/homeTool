@@ -27,10 +27,18 @@ export const DropDownList = styled.ul`
   color: ${theme.white};
 `;
 
-export const ListItem = styled.li`
+export const ListItem = styled.li<{ backgroundColor: string }>`
   border-bottom: 1px solid ${theme.surface};
   padding-left: 12px;
   list-style: none;
   padding-top: 0.5em;
   padding-bottom: 0.5em;
+  background-color: ${({ backgroundColor }) =>
+    backgroundColor && backgroundColor};
+  color: ${({ backgroundColor }) =>
+    !backgroundColor
+      ? "white"
+      : backgroundColor === "#100615"
+      ? "white"
+      : "black"};
 `;

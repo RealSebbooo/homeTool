@@ -117,13 +117,27 @@ export const StreetComp = styled.div<{
   &:not(:first-child) {
     margin-top: -10px;
   }
+  display: flex;
+  justify-content: start;
+
+  & p {
+    display: none;
+    @media ${device.laptop} {
+      display: flex;
+      font-size: 7.5px;
+      font-weight: bold;
+      color: ${({ color }) => (color === "#100615" ? "white" : "black")};
+    }
+  }
 `;
 
 export const StreetWrapper = styled.div`
   width: 100%;
   @media ${device.tablet} {
-    width: 50%;
+    display: flex;
+    width: 100%;
   }
+  margin-top: 20px;
 `;
 
 export const Trade = styled.div`
@@ -158,4 +172,26 @@ export const TotalValue = styled.div`
 
 export const TradeActions = styled.div`
   margin-top: 30px;
+`;
+
+export const TradeStreet = styled.div<{ color?: string }>`
+  padding: 8px;
+  background-color: ${({ color }) => color};
+  color: ${({ color }) => (color === "#100615" ? "white" : "black")};
+  border: 1px solid gray;
+  margin-bottom: -1px;
+`;
+export const Haus = styled.div<{ hotel?: boolean }>`
+  background-color: ${({ hotel }) => (hotel ? "red" : "green")};
+  border: 1px solid white;
+  width: 15%;
+  height: 15%;
+  aspect-ratio: 1;
+  margin-right: 2px;
+`;
+export const BuildMenu = styled.div`
+  width: 100%;
+  @media ${device.tablet} {
+    width: 50%;
+  }
 `;
