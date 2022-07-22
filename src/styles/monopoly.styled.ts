@@ -119,16 +119,6 @@ export const StreetComp = styled.div<{
   }
   display: flex;
   justify-content: start;
-
-  & p {
-    display: none;
-    @media ${device.laptop} {
-      display: flex;
-      font-size: 7.5px;
-      font-weight: bold;
-      color: ${({ color }) => (color === "#100615" ? "white" : "black")};
-    }
-  }
 `;
 
 export const StreetWrapper = styled.div`

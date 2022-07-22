@@ -942,7 +942,6 @@ const Monopoly = () => {
                               }
                               onClick={() => setActiveCard(street.name)}
                             >
-                              <p>{street.name}</p>
                               {street.straße && street.anzahlHaus === 5 ? (
                                 <Haus hotel />
                               ) : (
