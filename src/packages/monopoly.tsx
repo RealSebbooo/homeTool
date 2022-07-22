@@ -511,35 +511,38 @@ const Monopoly = () => {
   const acceptTradeOffer = () => {
     const currentGame = JSON.parse(JSON.stringify(game));
     const tradeOffer = currentGame.tradeOffer;
-
-    currentGame.players.find(
-      (player: PlayerType) => player.name === tradeOffer.from
-    ).money =
+    console.log("currentGame", currentGame);
+    if (tradeOffer.from !== "Bank") {
       currentGame.players.find(
         (player: PlayerType) => player.name === tradeOffer.from
-      )?.money +
-      tradeOffer.toMoney -
-      tradeOffer.fromMoney;
+      ).money =
+        currentGame.players.find(
+          (player: PlayerType) => player.name === tradeOffer.from
+        )?.money +
+        tradeOffer.toMoney -
+        tradeOffer.fromMoney;
+    }
 
-    currentGame.players.find(
-      (player: PlayerType) => player.name === tradeOffer.to
-    ).money =
+    if (tradeOffer.to !== "Bank") {
       currentGame.players.find(
         (player: PlayerType) => player.name === tradeOffer.to
-      )?.money +
-      tradeOffer.fromMoney -
-      tradeOffer.toMoney;
+      ).money =
+        currentGame.players.find(
+          (player: PlayerType) => player.name === tradeOffer.to
+        )?.money +
+        tradeOffer.fromMoney -
+        tradeOffer.toMoney;
+    }
 
     tradeOffer.fromStreets.forEach((element: StreetType) => {
-      console.log("elementaccepttrade", element, tradeOffer.fromStreets);
       currentGame.streets.find(
         (street: StreetType) => street.name === element.name
-      ).takenBy = tradeOffer.to;
+      ).takenBy = tradeOffer.to === "Bank" ? "" : tradeOffer.to;
     });
     tradeOffer.toStreets.forEach((element: StreetType) => {
       currentGame.streets.find(
         (street: StreetType) => street.name === element.name
-      ).takenBy = tradeOffer.from;
+      ).takenBy = tradeOffer.from === "Bank" ? "" : tradeOffer.from;
     });
 
     const move: Move = {
@@ -792,21 +795,19 @@ const Monopoly = () => {
                   {Object.keys(streets)?.map((streetGroup, key) => {
                     return (
                       <StreetGroups>
-                        <>
-                          {streets[streetGroup]?.map((street) => {
-                            return (
-                              <StreetComp
-                                color={street.farbe}
-                                isTaken={
-                                  userName === "Bank"
-                                    ? !!street.takenBy
-                                    : street.takenBy === userName
-                                }
-                                onClick={() => setActiveCard(street.name)}
-                              ></StreetComp>
-                            );
-                          })}
-                        </>
+                        {streets[streetGroup]?.map((street) => {
+                          return (
+                            <StreetComp
+                              color={street.farbe}
+                              isTaken={
+                                userName === "Bank"
+                                  ? !!street.takenBy
+                                  : street.takenBy === userName
+                              }
+                              onClick={() => setActiveCard(street.name)}
+                            ></StreetComp>
+                          );
+                        })}
                       </StreetGroups>
                     );
                   })}

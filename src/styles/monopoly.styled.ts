@@ -105,7 +105,12 @@ export const StreetComp = styled.div<{
   isTaken: undefined | boolean;
 }>`
   aspect-ratio: 1;
-  min-width: 4vw;
+  width: 7vw;
+
+  @media ${device.tablet} {
+    width: 4vw;
+  }
+
   background-color: ${({ color }) => color};
   border: 2px solid white;
   box-shadow: 0px -2px 4px 1px ${({ isTaken }) => (typeof isTaken === "undefined" ? "rgba(255, 255, 255, 1)" : !isTaken ? "rgba(255, 0, 0, 1)" : "rgba(0, 255, 0, 1)")};

@@ -25,31 +25,31 @@ const StreetCard: FC<StreetCardType> = ({ street }) => {
         <Miete>
           <Row>
             <LeftCol>Miete</LeftCol>
-            <RightCol>{street?.miete}</RightCol>
+            <RightCol>{street?.miete}€</RightCol>
           </Row>
           <Row>
             <LeftCol>Miete bei ganzer Farbgruppe</LeftCol>
-            <RightCol>{street?.mieteGesamt}</RightCol>
+            <RightCol>{street?.mieteGesamt}€</RightCol>
           </Row>
           <Row>
             <LeftCol>Miete 1 Haus</LeftCol>
-            <RightCol>{street?.miete1Haus}</RightCol>
+            <RightCol>{street?.miete1Haus}€</RightCol>
           </Row>
           <Row>
             <LeftCol>Miete 2 Häuser</LeftCol>
-            <RightCol>{street?.miete2Haus}</RightCol>
+            <RightCol>{street?.miete2Haus}€</RightCol>
           </Row>
           <Row>
             <LeftCol>Miete 3 Häuser</LeftCol>
-            <RightCol>{street?.miete3Haus}</RightCol>
+            <RightCol>{street?.miete3Haus}€</RightCol>
           </Row>
           <Row>
             <LeftCol>Miete 4 Häuser</LeftCol>
-            <RightCol>{street?.miete4Haus}</RightCol>
+            <RightCol>{street?.miete4Haus}€</RightCol>
           </Row>
           <Row>
             <LeftCol>Miete Hotel</LeftCol>
-            <RightCol>{street?.mieteHotel}</RightCol>
+            <RightCol>{street?.mieteHotel}€</RightCol>
           </Row>
         </Miete>
       )}
@@ -57,19 +57,19 @@ const StreetCard: FC<StreetCardType> = ({ street }) => {
         <Miete>
           <Row>
             <LeftCol>Miete</LeftCol>
-            <RightCol>{street?.miete1Haus}</RightCol>
+            <RightCol>{street?.miete1Haus}€</RightCol>
           </Row>
           <Row>
             <LeftCol>Miete 2 Bahnhöfe</LeftCol>
-            <RightCol>{street?.miete2Haus}</RightCol>
+            <RightCol>{street?.miete2Haus}€</RightCol>
           </Row>
           <Row>
             <LeftCol>Miete 3 Bahnhöfe</LeftCol>
-            <RightCol>{street?.miete3Haus}</RightCol>
+            <RightCol>{street?.miete3Haus}€</RightCol>
           </Row>
           <Row>
             <LeftCol>Miete 4 Bahnhöfe</LeftCol>
-            <RightCol>{street?.miete4Haus}</RightCol>
+            <RightCol>{street?.miete4Haus}€</RightCol>
           </Row>
         </Miete>
       )}
@@ -93,7 +93,7 @@ const StreetCard: FC<StreetCardType> = ({ street }) => {
           <Footer>
             <Row>
               <LeftCol>1 Haus kostet</LeftCol>
-              <RightCol>{street?.bauenKosten}</RightCol>
+              <RightCol>{street?.bauenKosten}€</RightCol>
             </Row>
             <Row>
               <LeftCol>
@@ -101,7 +101,7 @@ const StreetCard: FC<StreetCardType> = ({ street }) => {
                 <br />
                 (+ 4 Häuser)
               </LeftCol>
-              <RightCol>{street?.bauenKosten}</RightCol>
+              <RightCol>{street?.bauenKosten}€</RightCol>
             </Row>
           </Footer>
         </>
