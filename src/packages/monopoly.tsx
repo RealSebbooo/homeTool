@@ -381,6 +381,7 @@ const Monopoly = () => {
   };
   const gameHasFinished = () => {
     localStorage.removeItem("monopolyGame");
+    location.reload();
   };
   const joinExistingGame = async () => {
     const ref = collection(db, "monopoly");
