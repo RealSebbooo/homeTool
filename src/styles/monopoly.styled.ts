@@ -92,7 +92,7 @@ export const TabContent = styled.div<{ shown: boolean }>`
 
 export const StreetsWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: space-around;
 `;
 
 export const StreetGroups = styled.div`
@@ -105,7 +105,7 @@ export const StreetComp = styled.div<{
   isTaken: undefined | boolean;
 }>`
   aspect-ratio: 1;
-  min-width: 5vw;
+  min-width: 4vw;
   background-color: ${({ color }) => color};
   border: 2px solid white;
   box-shadow: 0px -2px 4px 1px ${({ isTaken }) => (typeof isTaken === "undefined" ? "rgba(255, 255, 255, 1)" : !isTaken ? "rgba(255, 0, 0, 1)" : "rgba(0, 255, 0, 1)")};
@@ -143,4 +143,14 @@ export const TradeFrom = styled.div`
   flex-direction: column;
 `;
 export const TradeTo = styled(TradeFrom)``;
-export const TotalValue = styled.div``;
+export const TotalValue = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: end;
+  height: 100%;
+  margin-top: 20px;
+`;
+
+export const TradeActions = styled.div`
+  margin-top: 30px;
+`;

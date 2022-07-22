@@ -52,7 +52,6 @@ const ItemList: FC = (): JSX.Element => {
 
   const fillShoppingListArray = async (userShoppingList: string) => {
     const lists = await getAllShoppingList();
-    console.log("lists", lists, userShoppingList);
 
     const mappedLists = lists?.map((list) => {
       return {

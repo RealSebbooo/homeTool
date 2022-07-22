@@ -28,8 +28,6 @@ const RecipesList = () => {
     if (recipesList?.recipes && recipesList?.recipes?.length > 0)
       newRecipeId = recipesList?.recipes[recipesList?.recipes?.length - 1]?.uid;
 
-    console.log("new", newRecipeId, recipesList);
-
     navigate("/recipe/?id=" + newRecipeId);
   };
 

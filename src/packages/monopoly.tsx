@@ -34,6 +34,7 @@ import {
   TradeTo,
   MoneyInput,
   TotalValue,
+  TradeActions,
 } from "./../styles/monopoly.styled";
 
 import db from "./../services/firebase";
@@ -47,7 +48,6 @@ import {
   getDocs,
   where,
 } from "firebase/firestore";
-import { dividerClasses } from "@mui/material";
 import { streetArray, StreetType } from "../services/streets";
 import StreetCard from "../monopolyComponents/streetCard";
 import { ListDropdownItems } from "../components/itemList";
@@ -55,16 +55,35 @@ type PlayerType = {
   name: string;
   money: number;
 };
+enum MoveTypes {
+  Trade = "trade",
+  Transaction = "transaction",
+}
 type Move = {
   from: string;
   to: string;
-  amount: number;
+  toMoney?: number;
+  fromMoney?: number;
+  toStreets?: StreetType[];
+  fromStreets?: StreetType[];
+  amount?: number;
+  type: MoveTypes;
 };
 enum GameState {
   Waiting = "waiting",
   Running = "running",
   Finished = "finished",
 }
+
+type TradeType = {
+  from: string;
+  to: string;
+  fromStreets: StreetType[];
+  fromMoney: number;
+  toStreets: StreetType[];
+  toMoney: number;
+};
+
 type GameType = {
   players: PlayerType[];
   moneySteps: number[];
@@ -73,7 +92,9 @@ type GameType = {
   state: GameState;
   roomNumber: string;
   streets: StreetType[];
+  tradeOffer: TradeType | object;
 };
+
 type StreetObjectType = {
   "#965337": StreetType[];
   "#AAE1F3": StreetType[];
@@ -245,8 +266,8 @@ const Monopoly = () => {
       state: GameState.Waiting,
       roomNumber: roomNumber,
       streets: streetArray,
+      tradeOffer: {},
     };
-    console.log("newGame", newGame, streetArray);
     checkIfGameNameIsAvailable();
     setItem("monopoly", newGame);
   };
@@ -293,11 +314,11 @@ const Monopoly = () => {
             uid: doc.id,
           });
         groupStreets(doc.data().streets);
+        if (doc.data().tradeOffer?.to === userName) setActiveTab(2);
       }
     });
   };
   const groupStreets = (streets: StreetType[]) => {
-    console.log("streets123", streets);
     let streetObject: StreetObjectType = {
       "#965337": [],
       "#AAE1F3": [],
@@ -316,7 +337,6 @@ const Monopoly = () => {
       streetObject[streets[i].farbe].push(streets[i]);
     }
     setStreets(streetObject);
-    console.log("streetsObejct", streetObject);
   };
   const gameHasFinished = () => {
     localStorage.removeItem("monopolyGame");
@@ -409,7 +429,6 @@ const Monopoly = () => {
 
   const getPossibleTradeFromStreets = (): ListDropdownItems[] => {
     let streets = JSON.parse(JSON.stringify(game?.streets));
-    console.log("get", streets, tradeFromStreets);
 
     streets = streets
       .filter(
@@ -430,10 +449,7 @@ const Monopoly = () => {
     let streets = JSON.parse(JSON.stringify(game?.streets));
 
     streets = streets
-      .filter(
-        (street: StreetType) =>
-          street.takenBy === (userName === "Bank" ? "" : tradeUser)
-      )
+      .filter((street: StreetType) => street.takenBy === tradeUser)
       .filter(
         (street: StreetType) =>
           !tradeToStreets?.find((item) => item.name === street.name)
@@ -452,7 +468,101 @@ const Monopoly = () => {
   const removeItemFromToList = (name: string) => {
     setTradeToStreets(tradeToStreets.filter((street) => street.name !== name));
   };
+  const sendTradeOffer = () => {
+    const currentGame = JSON.parse(JSON.stringify(game));
+    let fromMoney = 0;
+    if (
+      parseInt(tradeFromMoneyValue) >
+      game?.players?.find((player) => player.name === userName)?.money
+    ) {
+      fromMoney = game?.players?.find(
+        (player) => player.name === userName
+      )?.money;
+    } else {
+      fromMoney = parseInt(tradeFromMoneyValue);
+    }
+    let toMoney = 0;
+    if (
+      parseInt(tradeToMoneyValue) >
+      game?.players?.find((player) => player.name === tradeUser)?.money
+    ) {
+      toMoney = game?.players?.find(
+        (player) => player.name === tradeUser
+      )?.money;
+    } else {
+      toMoney = parseInt(tradeToMoneyValue);
+    }
+    const currentTrade: TradeType = {
+      from: userName,
+      to: tradeUser,
+      fromStreets: tradeFromStreets,
+      toStreets: tradeToStreets,
+      fromMoney: fromMoney,
+      toMoney: toMoney,
+    };
+    currentGame.tradeOffer = currentTrade;
+    console.log("send trade offer", currentGame, currentTrade);
 
+    updateGame(currentGame);
+  };
+
+  const tradeIsActive = () => !!Object.keys(game.tradeOffer).length > 0;
+
+  const acceptTradeOffer = () => {
+    const currentGame = JSON.parse(JSON.stringify(game));
+    const tradeOffer = currentGame.tradeOffer;
+
+    currentGame.players.find(
+      (player: PlayerType) => player.name === tradeOffer.from
+    ).money =
+      currentGame.players.find(
+        (player: PlayerType) => player.name === tradeOffer.from
+      )?.money +
+      tradeOffer.toMoney -
+      tradeOffer.fromMoney;
+
+    currentGame.players.find(
+      (player: PlayerType) => player.name === tradeOffer.to
+    ).money =
+      currentGame.players.find(
+        (player: PlayerType) => player.name === tradeOffer.to
+      )?.money +
+      tradeOffer.fromMoney -
+      tradeOffer.toMoney;
+
+    tradeOffer.fromStreets.forEach((element: StreetType) => {
+      console.log("elementaccepttrade", element, tradeOffer.fromStreets);
+      currentGame.streets.find(
+        (street: StreetType) => street.name === element.name
+      ).takenBy = tradeOffer.to;
+    });
+    tradeOffer.toStreets.forEach((element: StreetType) => {
+      currentGame.streets.find(
+        (street: StreetType) => street.name === element.name
+      ).takenBy = tradeOffer.from;
+    });
+
+    const move: Move = {
+      from: tradeOffer.from,
+      to: tradeOffer.to,
+      toStreets: tradeOffer.toStreets,
+      fromStreets: tradeOffer.fromStreets,
+      toMoney: tradeOffer.toMoney,
+      fromMoney: tradeOffer.fromMoney,
+      type: MoveTypes.Trade,
+    };
+
+    currentGame.moves.push(move);
+
+    console.log("acceptTrade", currentGame);
+    currentGame.tradeOffer = {};
+
+    updateGame(currentGame);
+  };
+
+  const declineTradeOffer = () => {
+    updateGame({ ...game, tradeOffer: {} });
+  };
   return (
     <>
       <h1>Monopoly</h1>
@@ -714,97 +824,159 @@ const Monopoly = () => {
                 )}
               </TabContent>
               <TabContent shown={activeTab === 2}>
-                Handeln mit
-                <Dropdown
-                  items={dropdownItems().filter(
-                    (item) => item.name !== userName
-                  )}
-                  activeItem={{ name: tradeUser, id: tradeUser }}
-                  itemClicked={(user) => setTradeUser(user)}
-                ></Dropdown>
-                {tradeUser && (
-                  <Trade>
-                    <TradeFrom>
-                      <h4>Biete</h4>
-                      <Textfield
-                        type="number"
-                        placeholder="Biete Geld"
-                        value="0"
-                        disabled={false}
-                        textInputChanged={(value) =>
-                          setTradeFromMoneyValue(value)
-                        }
-                      ></Textfield>
-                      {getPossibleTradeFromStreets().length > 0 && (
-                        <Dropdown
-                          items={getPossibleTradeFromStreets()}
-                          activeItem={getPossibleTradeFromStreets()[0]}
-                          itemClicked={(streetName) =>
-                            setTradeFromStreets([
-                              ...tradeFromStreets,
-                              game.streets.find(
-                                (street) => street.name === streetName
-                              ),
-                            ])
-                          }
-                        ></Dropdown>
+                {tradeIsActive() ? (
+                  <>
+                    <h2>
+                      Handelsangebot von {game.tradeOffer.from} an{" "}
+                      {game.tradeOffer.to}
+                    </h2>
+                    <Trade>
+                      <TradeFrom>
+                        <h4>Forderung</h4>
+                        {game.tradeOffer?.toMoney} €
+                        {game.tradeOffer?.toStreets?.map((street) => (
+                          <>
+                            <br />
+                            {street.name} {street.preis} €
+                          </>
+                        ))}
+                      </TradeFrom>
+                      <TradeTo>
+                        <h4>Angebot</h4>
+                        {game.tradeOffer.fromMoney} €
+                        {game.tradeOffer.fromStreets?.map((street) => (
+                          <>
+                            <br />
+                            {street.name} {street.preis} €
+                          </>
+                        ))}
+                      </TradeTo>
+                    </Trade>
+                    {game.tradeOffer.to === userName && (
+                      <TradeActions>
+                        <Button
+                          color={theme.green}
+                          value="Annehmen"
+                          onClick={() => acceptTradeOffer()}
+                        ></Button>
+                        <Button
+                          color={theme.red}
+                          value="Ablehnen"
+                          onClick={() => declineTradeOffer()}
+                        ></Button>
+                      </TradeActions>
+                    )}
+                  </>
+                ) : (
+                  <>
+                    Handeln mit
+                    <Dropdown
+                      items={dropdownItems().filter(
+                        (item) => item.name !== userName
                       )}
+                      activeItem={{ name: tradeUser, id: tradeUser }}
+                      itemClicked={(user) => setTradeUser(user)}
+                    ></Dropdown>
+                    {tradeUser && (
                       <>
-                        {tradeFromStreets?.map((street) => {
-                          return (
-                            <p
-                              onClick={() =>
-                                removeItemFromFromList(street.name)
+                        <Trade>
+                          <TradeFrom>
+                            <h4>Biete</h4>
+                            <Textfield
+                              type="number"
+                              placeholder="Biete Geld"
+                              value="0"
+                              disabled={false}
+                              textInputChanged={(value) =>
+                                setTradeFromMoneyValue(value)
                               }
-                            >
-                              {street.name}
-                            </p>
-                          );
-                        })}
+                            ></Textfield>
+                            {getPossibleTradeFromStreets().length > 0 && (
+                              <Dropdown
+                                items={getPossibleTradeFromStreets()}
+                                activeItem={getPossibleTradeFromStreets()[0]}
+                                itemClicked={(streetName) =>
+                                  setTradeFromStreets([
+                                    ...tradeFromStreets,
+                                    game.streets.find(
+                                      (street) => street.name === streetName
+                                    ),
+                                  ])
+                                }
+                              ></Dropdown>
+                            )}
+                            <>
+                              {tradeFromStreets?.map((street) => {
+                                return (
+                                  <p
+                                    onClick={() =>
+                                      removeItemFromFromList(street.name)
+                                    }
+                                  >
+                                    {street.name}
+                                  </p>
+                                );
+                              })}
+                            </>
+                            <TotalValue>
+                              Gesamtwert {getTotalFromValue()} €
+                            </TotalValue>
+                          </TradeFrom>
+                          <TradeTo>
+                            <h4>Fordere</h4>
+                            <Textfield
+                              type="number"
+                              placeholder="Fordere Geld"
+                              value="0"
+                              disabled={false}
+                              textInputChanged={(value) =>
+                                setTradeToMoneyValue(value)
+                              }
+                            ></Textfield>
+                            {getPossibleTradeToStreets().length > 0 && (
+                              <Dropdown
+                                items={getPossibleTradeToStreets()}
+                                activeItem={getPossibleTradeToStreets()[0]}
+                                itemClicked={(streetName) =>
+                                  setTradeToStreets([
+                                    ...tradeToStreets,
+                                    game.streets.find(
+                                      (street) => street.name === streetName
+                                    ),
+                                  ])
+                                }
+                              ></Dropdown>
+                            )}
+                            <>
+                              {tradeToStreets?.map((street) => {
+                                return (
+                                  <p
+                                    onClick={() =>
+                                      removeItemFromToList(street.name)
+                                    }
+                                  >
+                                    {street.name}
+                                  </p>
+                                );
+                              })}
+                            </>
+
+                            <TotalValue>
+                              Gesamtwert {getTotalToValue()} €
+                            </TotalValue>
+                          </TradeTo>
+                        </Trade>
+
+                        <TradeActions>
+                          <Button
+                            strech
+                            value="Handel anfragen"
+                            onClick={() => sendTradeOffer()}
+                          ></Button>
+                        </TradeActions>
                       </>
-                      <TotalValue>
-                        Gesamtwert {getTotalFromValue()} €
-                      </TotalValue>
-                    </TradeFrom>
-                    <TradeTo>
-                      <h4>Fordere</h4>
-                      <Textfield
-                        type="number"
-                        placeholder="Fordere Geld"
-                        value="0"
-                        disabled={false}
-                        textInputChanged={(value) =>
-                          setTradeToMoneyValue(value)
-                        }
-                      ></Textfield>
-                      {getPossibleTradeToStreets().length > 0 && (
-                        <Dropdown
-                          items={getPossibleTradeToStreets()}
-                          activeItem={getPossibleTradeToStreets()[0]}
-                          itemClicked={(streetName) =>
-                            setTradeToStreets([
-                              ...tradeToStreets,
-                              game.streets.find(
-                                (street) => street.name === streetName
-                              ),
-                            ])
-                          }
-                        ></Dropdown>
-                      )}
-                      <>
-                        {tradeToStreets?.map((street) => {
-                          return (
-                            <p
-                              onClick={() => removeItemFromToList(street.name)}
-                            >
-                              {street.name}
-                            </p>
-                          );
-                        })}
-                      </>
-                      <TotalValue>Gesamtwert {getTotalToValue()} €</TotalValue>
-                    </TradeTo>
-                  </Trade>
+                    )}
+                  </>
                 )}
               </TabContent>
             </TabsContents>

@@ -15,7 +15,6 @@ type StreetCardType = {
   street: StreetType;
 };
 const StreetCard: FC<StreetCardType> = ({ street }) => {
-  console.log("streetCardStreet", street);
   return (
     <Card>
       <Header color={street?.farbe}>
