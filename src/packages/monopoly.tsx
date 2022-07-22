@@ -506,7 +506,7 @@ const Monopoly = () => {
     updateGame(currentGame);
   };
 
-  const tradeIsActive = () => !!Object.keys(game.tradeOffer).length > 0;
+  const tradeIsActive = () => !!(Object.keys(game.tradeOffer || {}).length > 0);
 
   const acceptTradeOffer = () => {
     const currentGame = JSON.parse(JSON.stringify(game));
